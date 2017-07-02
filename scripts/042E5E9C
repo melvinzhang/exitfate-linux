@@ -1,0 +1,93 @@
+#==============================================================================
+# ** Sprite_WarTop
+#------------------------------------------------------------------------------
+#  Displays top bar of war battle screen
+#==============================================================================
+
+class Sprite_WarTop < Sprite
+  #--------------------------------------------------------------------------
+  # * Object Initialization
+  #--------------------------------------------------------------------------
+  def initialize(player_name, enemy_name, player_flag, enemy_flag)
+    super()
+    @player_name = player_name
+    @enemy_name = enemy_name
+    @player_flag = player_flag
+    @enemy_flag = enemy_flag
+    self.bitmap = Bitmap.new(640, 250)
+    self.z = 5000
+    refresh
+  end
+  #--------------------------------------------------------------------------
+  # * Dispose
+  #--------------------------------------------------------------------------
+  def dispose
+    if self.bitmap != nil
+      self.bitmap.dispose
+    end
+    super
+  end
+  #--------------------------------------------------------------------------
+  # * Refresh
+  #--------------------------------------------------------------------------
+  def refresh
+    self.bitmap.clear
+    # Draw flags
+    bitmap = RPG::Cache.picture("Flag_" + @player_flag.to_s)
+    cw = bitmap.width
+    ch = bitmap.height
+    src_rect = Rect.new(0, 0, cw, ch)
+    self.bitmap.blt(0, 0, bitmap, src_rect)    
+    bitmap = RPG::Cache.picture("Flag_" + @enemy_flag.to_s)
+    self.bitmap.blt(640-cw, 0, bitmap, src_rect)        
+    # Army names
+    self.bitmap.font.size = 20
+    self.bitmap.font.bold = false
+    self.bitmap.font.color = Color.new(255, 255, 255, 255)
+    draw_text(5, 80, 300, 50, @player_name, 0)
+    draw_text(640-300-5, 80, 300, 50, @enemy_name, 2)    
+    # Line
+    bitmap = RPG::Cache.picture("War_HLine_L")
+    cw = bitmap.width
+    ch = bitmap.height
+    src_rect = Rect.new(0, 0, cw, ch)
+    self.bitmap.blt(0, 114, bitmap, src_rect)    
+    bitmap = RPG::Cache.picture("War_HLine_R")
+    self.bitmap.blt(640-cw, 114, bitmap, src_rect)     
+    # Number of men
+    p_men = 0
+    e_men = 0    
+    for unit in $game_temp.war_units
+      if unit.player_side
+        p_men += unit.men
+      else
+        if unit.unit_type == UNIT_DEMON
+          e_men += 1
+        else
+          e_men += unit.men
+        end
+      end
+    end    
+    oldfont = self.bitmap.font.name
+    self.bitmap.font.name = ["Georgia", "Times New Roman"]
+    self.bitmap.font.size = 32
+    self.bitmap.font.bold = true
+    self.bitmap.font.color = Color.new(255, 255, 255, 255)
+    draw_text(10, 108, 200, 50, p_men.to_s, 0)
+    draw_text(430, 108, 200, 50, e_men.to_s, 2)    
+    self.bitmap.font.name = oldfont
+  end
+  #--------------------------------------------------------------------------
+  # * Draw Text (with shadow)
+  #--------------------------------------------------------------------------
+  def draw_text(x, y, width, height, text, align = 0)
+    tempc = self.bitmap.font.color.clone
+    self.bitmap.font.color = Color.new(0, 0, 0, 192)
+    self.bitmap.draw_text(x + 1, y + 1, width, height, text, align)
+    self.bitmap.draw_text(x + 1, y + 2, width, height, text, align)
+    self.bitmap.draw_text(x + 2, y + 1, width, height, text, align)
+    self.bitmap.draw_text(x + 2, y + 2, width, height, text, align)
+    self.bitmap.font.color = tempc
+    self.bitmap.draw_text(x, y, width, height, text, align)  
+  end
+end

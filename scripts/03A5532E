@@ -1,0 +1,315 @@
+#==============================================================================
+# ** Game_System
+#------------------------------------------------------------------------------
+#  This class handles data surrounding the system. Backround music, etc.
+#  is managed here as well. Refer to "$game_system" for the instance of 
+#  this class.
+#==============================================================================
+
+class Game_System
+  #--------------------------------------------------------------------------
+  # * Public Instance Variables
+  #--------------------------------------------------------------------------
+  attr_reader   :map_interpreter          # map event interpreter
+  attr_reader   :battle_interpreter       # battle event interpreter
+  attr_accessor :timer                    # timer
+  attr_accessor :timer_working            # timer working flag
+  attr_accessor :save_disabled            # save forbidden
+  attr_accessor :menu_disabled            # menu forbidden
+  attr_accessor :encounter_disabled       # encounter forbidden
+  attr_accessor :message_position         # text option: positioning
+  attr_accessor :message_frame            # text option: window frame
+  attr_accessor :save_count               # save count
+  attr_accessor :magic_number             # magic number
+  
+  attr_accessor :windowskin_id            # id of the current menu skin
+  attr_accessor :volume_music       # General music volume
+  attr_accessor :volume_sfx       # General sfx volume  
+  attr_accessor :battle_magic_selection # 0 = All, 1 = Own element, 2 = Remember
+  attr_accessor :battle_cursor_type # 0 = Reset, 1 = Remember
+  attr_accessor :autoheal_priority   # 0 = Single, 1 = All
+  attr_accessor :lock_bgm   # Don't change BGM upon map change
+  attr_accessor :interview_id  # id of character being interviewed
+  attr_accessor :interview_timer   # time left for interview
+  attr_accessor :darwin_timer   # timer for Darwin's work
+  attr_accessor :war_sim_cutscenes  # Cutscenes on for war simulation?
+  attr_accessor :show_partyswitch_icon # For Shiva Passage
+  #--------------------------------------------------------------------------
+  # * Object Initialization
+  #--------------------------------------------------------------------------
+  def initialize
+    @map_interpreter = Interpreter.new(0, true)
+    @battle_interpreter = Interpreter.new(0, false)
+    @timer = 0
+    @timer_working = false
+    @save_disabled = false
+    @menu_disabled = false
+    @encounter_disabled = false
+    @message_position = 2
+    @message_frame = 0
+    @save_count = 0
+    @magic_number = 0
+    
+    @volume_music = 100
+    @volume_sfx = 100
+    @windowskin_id = 1    
+    @battle_magic_selection = 0
+    @battle_cursor_type = 0
+    @autoheal_priority = 0
+    @lock_bgm = false
+    @interview_id = 0
+    @interview_timer = 0
+    @war_sim_cutscenes = true
+    @show_partyswitch_icon = false    
+  end
+  #--------------------------------------------------------------------------
+  # * Play Background Music
+  #     bgm : background music to be played
+  #--------------------------------------------------------------------------
+  def bgm_play(bgm)
+    @playing_bgm = bgm
+    if bgm != nil and bgm.name != ""
+      real_volume  =  @volume_music == 0 ? 0 : bgm.volume * @volume_music / 100
+      Audio.bgm_play("Audio/BGM/" + bgm.name, real_volume, bgm.pitch)
+    else
+      Audio.bgm_stop
+    end
+    Graphics.frame_reset
+  end
+  #--------------------------------------------------------------------------
+  # * Stop Background Music
+  #--------------------------------------------------------------------------
+  def bgm_stop
+    Audio.bgm_stop
+  end
+  #--------------------------------------------------------------------------
+  # * Fade Out Background Music
+  #     time : fade-out time (in seconds)
+  #--------------------------------------------------------------------------
+  def bgm_fade(time)
+    @playing_bgm = nil
+    Audio.bgm_fade(time * 1000)
+  end
+  #--------------------------------------------------------------------------
+  # * Fade Out Background Music
+  #     time : fade-out time (in seconds)
+  #--------------------------------------------------------------------------
+  def bgm_fade_to(time, target = 100)
+    @bgm_fade_to = target
+    @bgm_fade_step = @playing_bgm.volume > target ? -1 : 1
+  end
+  #--------------------------------------------------------------------------
+  # * Background Music Memory
+  #--------------------------------------------------------------------------
+  def bgm_memorize
+    @memorized_bgm = @playing_bgm
+  end
+  #--------------------------------------------------------------------------
+  # * Restore Background Music
+  #--------------------------------------------------------------------------
+  def bgm_restore
+    bgm_play(@memorized_bgm)
+  end
+  #--------------------------------------------------------------------------
+  # * Play Background Sound
+  #     bgs : background sound to be played
+  #--------------------------------------------------------------------------
+  def bgs_play(bgs)
+    @playing_bgs = bgs
+    if bgs != nil and bgs.name != ""
+      real_volume  = @volume_music == 0 ? 0 : bgs.volume * @volume_music / 100
+      Audio.bgs_play("Audio/BGS/" + bgs.name, real_volume, bgs.pitch)
+    else
+      Audio.bgs_stop
+    end
+    Graphics.frame_reset
+  end
+  #--------------------------------------------------------------------------
+  # * Fade Out Background Sound
+  #     time : fade-out time (in seconds)
+  #--------------------------------------------------------------------------
+  def bgs_fade(time)
+    @playing_bgs = nil
+    Audio.bgs_fade(time * 1000)
+  end
+  #--------------------------------------------------------------------------
+  # * Fade Out Background Music
+  #     time : fade-out time (in seconds)
+  #--------------------------------------------------------------------------
+  def bgs_fade_to(time, target = 100)
+    @bgs_fade_to = target
+    @bgs_fade_step = @playing_bgs.volume < target ? 1 : -1
+  end
+  #--------------------------------------------------------------------------
+  # * Background Sound Memory
+  #--------------------------------------------------------------------------
+  def bgs_memorize
+    @memorized_bgs = @playing_bgs
+  end
+  #--------------------------------------------------------------------------
+  # * Restore Background Sound
+  #--------------------------------------------------------------------------
+  def bgs_restore
+    bgs_play(@memorized_bgs)
+  end
+  #--------------------------------------------------------------------------
+  # * Play Music Effect
+  #     me : music effect to be played
+  #--------------------------------------------------------------------------
+  def me_play(me)
+    if me != nil and me.name != ""
+      real_volume  =  @volume_sfx == 0 ? 0 : me.volume * @volume_sfx / 100
+      Audio.me_play("Audio/ME/" + me.name, real_volume, me.pitch)
+    else
+      Audio.me_stop
+    end
+    Graphics.frame_reset
+  end
+  #--------------------------------------------------------------------------
+  # * Fade Out Music Effect
+  #     time : fade-out time (in seconds)
+  #--------------------------------------------------------------------------
+  def me_fade(time)
+    @playing_me = nil
+    Audio.me_fade(time * 1000)
+  end
+  #--------------------------------------------------------------------------
+  # * Play Sound Effect
+  #     se : sound effect to be played
+  #--------------------------------------------------------------------------
+  def se_play(se)
+    if se != nil and se.name != ""
+      real_volume  = @volume_sfx == 0 ? 0 : se.volume * @volume_sfx / 100
+      Audio.se_play("Audio/SE/" + se.name,real_volume, se.pitch)
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Stop Sound Effect
+  #--------------------------------------------------------------------------
+  def se_stop
+    Audio.se_stop
+  end
+  #--------------------------------------------------------------------------
+  # * Get Playing Background Music
+  #--------------------------------------------------------------------------
+  def playing_bgm
+    return @playing_bgm
+  end
+  #--------------------------------------------------------------------------
+  # * Get Playing Background Sound
+  #--------------------------------------------------------------------------
+  def playing_bgs
+    return @playing_bgs
+  end
+  #--------------------------------------------------------------------------
+  # * Get Windowskin File Name
+  #--------------------------------------------------------------------------
+  def windowskin_name
+    return "Menu-" + @windowskin_id.to_s
+  end
+  #--------------------------------------------------------------------------
+  # * Set Windowskin File Name
+  #     windowskin_name : new windowskin file name
+  #--------------------------------------------------------------------------
+  def windowskin_name=(windowskin_name)
+    @windowskin_name = windowskin_name
+  end
+  #--------------------------------------------------------------------------
+  # * Should the windowskin be stretched (or tiled)?
+  #--------------------------------------------------------------------------  
+  def windowskin_stretch?
+    return (not [6, 7, 8].include?(@windowskin_id))
+  end
+  #--------------------------------------------------------------------------
+  # * Get Battle Background Music
+  #--------------------------------------------------------------------------
+  def battle_bgm
+    if @battle_bgm == nil
+      return $data_system.battle_bgm
+    else
+      return @battle_bgm
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Set Battle Background Music
+  #     battle_bgm : new battle background music
+  #--------------------------------------------------------------------------
+  def battle_bgm=(battle_bgm)
+    @battle_bgm = battle_bgm
+  end
+  #--------------------------------------------------------------------------
+  # * Get Background Music for Battle Ending
+  #--------------------------------------------------------------------------
+  def battle_end_me
+    if @battle_end_me == nil
+      return $data_system.battle_end_me
+    else
+      return @battle_end_me
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Set Background Music for Battle Ending
+  #     battle_end_me : new battle ending background music
+  #--------------------------------------------------------------------------
+  def battle_end_me=(battle_end_me)
+    @battle_end_me = battle_end_me
+  end
+  #--------------------------------------------------------------------------
+  # * Update bgm
+  #--------------------------------------------------------------------------
+  def bgm_update
+    return if @playing_bgm == nil or @playing_bgm.name == ""
+    real_volume  = @volume_music == 0 ? 0 : @playing_bgm.volume * @volume_music / 100
+    Audio.bgm_play("Audio/BGM/" + @playing_bgm.name, real_volume, @playing_bgm.pitch)     
+  end
+  #--------------------------------------------------------------------------
+  # * Update bgs
+  #--------------------------------------------------------------------------
+  def bgs_update
+    return if @playing_bgs == nil or @playing_bgs.name == ""
+    real_volume  = @volume_music == 0 ? 0 : @playing_bgs.volume * @volume_music / 100
+    Audio.bgs_play("Audio/BGS/" + @playing_bgs.name, real_volume, @playing_bgs.pitch)     
+  end
+  #--------------------------------------------------------------------------
+  # * Frame Update
+  #--------------------------------------------------------------------------
+  def update
+    # reduce timer by 1
+    if @timer_working and @timer > 0
+      @timer -= 1
+      if @timer == 0
+        # Nothing happening yet
+      end
+    end
+    # Interview timer
+    if @interview_timer
+      if @interview_timer > 0
+        @interview_timer -= 1      
+      end
+    end
+    # Interview timer
+    if @darwin_timer
+      if @darwin_timer > 0
+        @darwin_timer -= 1      
+      end
+    end
+    # BGM fading
+    if @bgm_fade_to != nil and @playing_bgm != nil
+      @playing_bgm.volume += @bgm_fade_step
+      bgm_update
+      if (@bgm_fade_step >= 0 and @playing_bgm.volume >= @bgm_fade_to) or
+         (@bgm_fade_step < 0 and @playing_bgm.volume <= @bgm_fade_to)
+         @bgm_fade_to = nil
+      end
+    end
+    # BGS fading
+    if @bgs_fade_to != nil and @playing_bgs != nil
+      @playing_bgs.volume += @bgs_fade_step
+      bgs_update
+      if (@bgs_fade_step >= 0 and @playing_bgs.volume >= @bgs_fade_to) or
+         (@bgs_fade_step < 0 and @playing_bgs.volume <= @bgs_fade_to)
+         @bgs_fade_to = nil
+      end
+    end
+  end  
+end

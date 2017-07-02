@@ -1,0 +1,122 @@
+#==============================================================================
+# ** Scene_Status
+#------------------------------------------------------------------------------
+#  This class performs status screen processing.
+#==============================================================================
+
+class Scene_Status
+  #--------------------------------------------------------------------------
+  # * Object Initialization
+  #     actor_index : actor index
+  #--------------------------------------------------------------------------
+  def initialize(actor_index = 0, from_entourage = false)
+    @actor_index = actor_index
+    @from_entourage = from_entourage
+  end
+  #--------------------------------------------------------------------------
+  # * Main Processing
+  #--------------------------------------------------------------------------
+  def main
+    # Get actor
+    if @from_entourage
+      @actor = $game_party.entourage[@actor_index]
+    else
+      @actor = $game_party.actors[@actor_index]
+    end
+    # Make title graphic
+    @sprite = Sprite.new
+    @sprite.bitmap = RPG::Cache.picture("Backgrounds/Menu" + $game_system.windowskin_id.to_s)    
+    bitmap = RPG::Cache.picture("Portraits/" + @actor.portrait_name)
+    cw = bitmap.width
+    ch = bitmap.height
+    src_rect = Rect.new(0, 0, cw, ch)
+    @sprite.bitmap.blt(0, 480-ch, bitmap, src_rect)    
+    # Make status window
+    @status_window = Window_Status.new(@actor)
+    @label_window = Window_Label.new("Stats")
+    # Execute transition
+    Graphics.transition
+    # Main loop
+    loop do
+      # Update game screen
+      Graphics.update
+      # Update input information
+      Input.update
+      # Frame update
+      update
+      # Abort loop if screen is changed
+      if $scene != self
+        break
+      end
+    end
+    # Prepare for transition
+    Graphics.freeze
+    # Dispose of windows
+    @status_window.dispose
+    @label_window.dispose
+    @sprite.bitmap.dispose
+    @sprite.dispose
+  end
+  #--------------------------------------------------------------------------
+  # * Frame Update
+  #--------------------------------------------------------------------------
+  def update
+    # If B button was pressed
+    if Input.trigger?(Input::B)
+      # Play cancel SE
+      $game_system.se_play($data_system.cancel_se)
+      # Switch to menu screen
+      $scene = Scene_Menu.new(3)
+      return
+    end
+    # If R button was pressed
+    if Input.trigger?(Input::R) or Input.trigger?(Input::RIGHT) 
+      # Play cursor SE
+      $game_system.se_play($data_system.cursor_se)
+      # To next actor
+      @actor_index += 1
+      # Switch between entourage and party
+      if @from_entourage
+        if @actor_index >= $game_party.entourage.size 
+          @actor_index = 0
+          @from_entourage = false
+        end
+      else
+        if @actor_index >= $game_party.actors.size
+          @actor_index = 0
+          if $game_party.entourage.size > 0
+            @from_entourage = true
+          end
+        end
+      end      
+      # Switch to different status screen
+      $scene = Scene_Status.new(@actor_index, @from_entourage)
+      return
+    end
+    # If L button was pressed
+    if Input.trigger?(Input::L) or Input.trigger?(Input::LEFT) 
+      # Play cursor SE
+      $game_system.se_play($data_system.cursor_se)
+      # To previous actor
+      @actor_index -= 1
+      if @from_entourage
+        if @actor_index < 0
+          @actor_index = $game_party.actors.size - 1
+          @from_entourage = false
+        end
+      else
+        if @actor_index < 0
+          if $game_party.entourage.size > 0
+            @actor_index =  $game_party.entourage.size - 1
+            @from_entourage = true
+          else
+            @actor_index =  $game_party.actors.size - 1            
+          end
+        end
+      end      
+      # Switch to different status screen
+      $scene = Scene_Status.new(@actor_index, @from_entourage)
+      return
+    end
+  end
+end

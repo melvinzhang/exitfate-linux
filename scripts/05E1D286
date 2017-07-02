@@ -1,0 +1,23 @@
+#==============================================================================
+# ** Sprite_WarSquare
+#------------------------------------------------------------------------------
+#  Simple square covering a tile on the war field, for move/attack targets
+#==============================================================================
+
+class Sprite_WarSquare < Sprite_WarCursor
+  #--------------------------------------------------------------------------
+  # * Object Initialization
+  #     viewport  : viewport
+  #     character : character (Game_Character)
+  #--------------------------------------------------------------------------
+  def initialize(x, y, is_attack, viewport)
+    super(x, y, viewport)
+    @grid_x = x
+    @grid_y = y
+    color = is_attack ? Color.new(255, 0, 0, 96) : 
+      $game_temp.war_is_icemap ? Color.new(64, 64, 64, 96)  : # Ice map
+                                                             Color.new(255, 255, 255, 96)    
+    self.bitmap = Bitmap.new(32, 32)
+    self.bitmap.fill_rect(0, 0, 32, 32, color)
+  end
+end

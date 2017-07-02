@@ -1,0 +1,79 @@
+#==============================================================================
+# ** Window_WarSetupType
+#------------------------------------------------------------------------------
+#  Allows changing between four unit types
+#==============================================================================
+
+class Window_WarSetupType < Window_Selectable
+  attr_accessor   :stat_window  
+  #--------------------------------------------------------------------------
+  # * Object Initialization
+  #--------------------------------------------------------------------------
+  def initialize
+    super(320, 150, 200, 128)
+    self.index = -1
+    self.contents = Bitmap.new(self.width - 32, self.height - 32)
+    @item_max = 4
+    @id = nil
+  end
+  #--------------------------------------------------------------------------
+  # * Set id
+  #--------------------------------------------------------------------------  
+  def id=(v)
+    @id = v
+    refresh
+  end
+  #--------------------------------------------------------------------------
+  # * Get Item
+  #--------------------------------------------------------------------------
+  def item
+    return @data[self.index]
+  end
+  #--------------------------------------------------------------------------
+  # * Refresh
+  #--------------------------------------------------------------------------
+  def refresh
+    return if @id == nil
+    self.contents.clear
+    leader = $data_warleaders[@id]    
+    self.contents.font.color = normal_color
+    self.draw_text(32, -4, 200, 32, "Infantry", 0)
+    self.draw_text(32, 20, 200, 32, "Cavalry", 0)
+    self.draw_text(32, 44, 200, 32, "Scout", 0)
+    self.draw_text(32, 68, 200, 32, "Sorcery", 0)    
+    y = -4
+    for i in UNIT_INFANTRY..UNIT_SORCERY
+      bitmap = RPG::Cache.icon("Rating_" + leader.rating[i])
+      self.contents.blt(-4, y, bitmap, Rect.new(0, 0, 32, 32))                 
+      y += 24
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Help Text Update
+  #--------------------------------------------------------------------------
+  def update_help
+    @help_window.set_text(self.index == 0 ? "Solid attack unit, moves well everywhere" : 
+                                              self.index == 1 ? "Moves fast on open terrain" : 
+                                              self.index == 2 ? "Two square attack, good movement outside mountains" :
+                                              "Long-range attack, but cannot counter"
+                                              )
+    return if @stat_window == nil
+    return if @lastindex == self.index
+    @lastindex = @index
+    @stat_window.contents.clear
+    b = @stat_window.contents
+    b.font.color = system_color
+    b.draw_text(0, 0, 100, 32, "Attack")
+    b.draw_text(0, 24, 100, 32, "Defence")
+    b.font.color = normal_color
+    val_a = self.index == 0 ? "+1" : self.index == 3 ? "-1" : ""
+    val_d = self.index == 0 ? "+1" : ""
+    b.draw_text(100, 0, 100, 32, val_a)
+    b.draw_text(100, 24, 100, 32, val_d)           
+    b.font.color = Color.new(255, 100, 100)
+    rating = $data_warleaders[@id].rating[self.index + 1]
+    val = rating == "A" ? "" : rating == "B" ? "-1" : "-2"
+    b.draw_text(120, 0, 100, 32, val)
+    b.draw_text(120, 24, 100, 32, val)          
+  end
+end

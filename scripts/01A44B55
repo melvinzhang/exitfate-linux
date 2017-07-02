@@ -1,0 +1,416 @@
+#==============================================================================
+# ** Data_Enemies
+#------------------------------------------------------------------------------
+#  Contains static data that can't be set in the GUI
+#==============================================================================
+
+class Data_Enemy
+  attr_accessor :boss   # Is a boss
+  attr_accessor :endboss   # Is the final boss
+  attr_accessor :projectile_sprite  # Sprite for long-range attack
+  attr_accessor :steal_type  # 0 - item, 1 - magic, 2 - armor
+  attr_accessor :steal_id # item id for stealing
+  attr_accessor :steal_chance # chance of stealing
+  def initialize
+    @boss = false
+    @endboss = false
+    @projectile_sprite = nil
+    @steal_type = -1
+    @steal_id = -1
+    @steal_chance = 0
+  end
+  # Set steal
+  def set_steal(type, id, chance)
+    @steal_type = type
+    @steal_id = id
+    @steal_chance = chance
+  end
+end
+
+# Set empty data for all enemies
+$exdata_enemies = []
+tmp = load_data("Data/Enemies.rxdata")
+for i in 1...tmp.size
+  $exdata_enemies[i] = Data_Enemy.new
+end
+
+
+i = 2 # Long-range Bandit
+$exdata_enemies[i].projectile_sprite = "crossbow"
+i = 4 # Bandit Lord
+$exdata_enemies[i].boss = true
+i = 13 # Long-range Lizardman
+$exdata_enemies[i].projectile_sprite = "crossbow"
+i = 25 # Long-range Forest Spirit
+$exdata_enemies[i].projectile_sprite = "_Blank"
+i = 27 # Bruce
+$exdata_enemies[i].boss = true
+i = 37 # Long-range Highland Scout
+$exdata_enemies[i].projectile_sprite = "crossbow"
+i = 39 # Joshua
+$exdata_enemies[i].boss = true
+i = 40 # Trevor
+$exdata_enemies[i].boss = true
+i = 41 # Sick
+$exdata_enemies[i].boss = true
+i = 51 # Keyser
+$exdata_enemies[i].boss = true
+i = 52 # Iron Golem
+$exdata_enemies[i].boss = true
+i = 54 # Long-range Dragon Man
+$exdata_enemies[i].projectile_sprite = "crossbow"
+i = 57 # Frostmonger
+$exdata_enemies[i].boss = true
+i = 64 # Tiamat
+$exdata_enemies[i].boss = true
+i = 65 # Boris
+$exdata_enemies[i].boss = true
+i = 66 # Ice
+$exdata_enemies[i].boss = true
+i = 67 # Orlando
+$exdata_enemies[i].boss = true
+i = 68 # The Mad King
+$exdata_enemies[i].boss = true
+i = 73 # Wyvern
+$exdata_enemies[i].boss = true
+i = 74 # Wyvern Left Wing
+$exdata_enemies[i].boss = true
+i = 75 # Wyvern Right Wing
+$exdata_enemies[i].boss = true
+i = 79 # Boris
+$exdata_enemies[i].boss = true
+i = 81 # Long-range Belgugon
+$exdata_enemies[i].projectile_sprite = "belgugon"
+i = 84 # Pestilence
+$exdata_enemies[i].boss = true
+i = 89 # Pendragon
+$exdata_enemies[i].boss = true
+i = 90 # Trevor
+$exdata_enemies[i].boss = true
+i = 91 # Sick
+$exdata_enemies[i].boss = true
+i = 92 # Clint
+$exdata_enemies[i].boss = true
+$exdata_enemies[i].projectile_sprite = "Fitch"
+i = 97 # Brunhild
+$exdata_enemies[i].boss = true
+i = 103 # Ghost Magus
+$exdata_enemies[i].boss = true
+i = 108 # Long-range Hunter
+$exdata_enemies[i].projectile_sprite = "crossbow"
+i = 110 # Beastmaster
+$exdata_enemies[i].boss = true
+i = 111 # Black Beast
+$exdata_enemies[i].boss = true
+i = 112 # White Beast
+$exdata_enemies[i].boss = true
+i = 118 # Soth
+$exdata_enemies[i].boss = true
+i = 126 # Indra
+$exdata_enemies[i].boss = true
+i = 127 # Mahadevi
+$exdata_enemies[i].boss = true
+i = 128 # Nandi
+$exdata_enemies[i].boss = true
+i = 129 # Kama
+$exdata_enemies[i].boss = true
+i = 132 # Demilich
+$exdata_enemies[i].boss = true
+i = 137 # Rashnu
+$exdata_enemies[i].boss = true
+i = 138 # D-Trevor
+$exdata_enemies[i].boss = true
+i = 139 # D-Sick
+$exdata_enemies[i].boss = true
+i = 142 # Long-range Paragon
+$exdata_enemies[i].projectile_sprite = "belgugon"
+i = 144 # Tiamat
+$exdata_enemies[i].boss = true
+i = 145 # Riftgate
+$exdata_enemies[i].boss = true
+i = 146 # Long-range Drow Fairy
+$exdata_enemies[i].projectile_sprite = "_Blank"
+i = 148 # Long-range Tortoise
+$exdata_enemies[i].projectile_sprite = "Projectile"
+i = 158 # Long-range Stalker
+$exdata_enemies[i].projectile_sprite = "crossbow"
+i = 156 # Vanrushal
+$exdata_enemies[i].boss = true
+i = 163 # Marid King
+$exdata_enemies[i].boss = true
+i = 164 # Fafnir
+$exdata_enemies[i].boss = true
+i = 165 # Fafnir Left
+$exdata_enemies[i].boss = true
+i = 166 # Fafnir Right
+$exdata_enemies[i].boss = true
+i = 167 # Tlazolteotl
+$exdata_enemies[i].boss = true
+i = 168 # Thanatos
+$exdata_enemies[i].boss = true
+i = 169 # Phaseshaper
+$exdata_enemies[i].boss = true
+i = 178 # Fukubei
+$exdata_enemies[i].boss = true
+i = 179 # D-Trevor
+$exdata_enemies[i].boss = true
+i = 180 # D-Sick
+$exdata_enemies[i].boss = true
+i = 181 # D-Trevor
+$exdata_enemies[i].boss = true
+i = 182 # D-Sick
+$exdata_enemies[i].boss = true
+i = 187 # Mephisto
+$exdata_enemies[i].boss = true
+i = 189 # Long-range Tortoise
+$exdata_enemies[i].projectile_sprite = "Projectile"
+i = 197 # Long-range Almenga
+$exdata_enemies[i].projectile_sprite = "crossbow"
+i = 205 # HoF
+$exdata_enemies[i].endboss = true
+i = 206 # Finger
+$exdata_enemies[i].boss = true
+i = 207 # Finger
+$exdata_enemies[i].boss = true
+i = 208 # Finger
+$exdata_enemies[i].boss = true
+i = 209 # Finger
+$exdata_enemies[i].boss = true
+i = 210 # Finger
+$exdata_enemies[i].boss = true
+i = 211 # Hugin
+$exdata_enemies[i].boss = true
+i = 212 # Munin
+$exdata_enemies[i].boss = true
+i = 214 # Shadow Daniel
+$exdata_enemies[i].boss = true
+$exdata_enemies[i].projectile_sprite = "_Blank"
+i = 215 # Shadow Erin
+$exdata_enemies[i].boss = true
+i = 216 # Shadow Tarlia
+$exdata_enemies[i].boss = true
+i = 217 # Shadow Eander
+$exdata_enemies[i].boss = true
+i = 218 # Shadow Ljusalf
+$exdata_enemies[i].boss = true
+i = 219 # Shadow Yan Angwa
+$exdata_enemies[i].boss = true
+$exdata_enemies[i].projectile_sprite = "Yan Angwa"
+
+# ===========================
+# Stealing list - separate since it's for ALL enemies
+# ===========================
+$exdata_enemies[1].set_steal(0, 4, STEAL_COMN)         # Bandit (Brown Herb)
+$exdata_enemies[2].set_steal(0, 4, STEAL_COMN)         # Bandit (Brown Herb)
+$exdata_enemies[3].set_steal(0, 4, STEAL_COMN)         # Bat (Brown Herb)
+#$exdata_enemies[4].set_steal(0, 4, STEAL_COMN)         # Bandit Lord (-)
+$exdata_enemies[5].set_steal(0, 4, STEAL_COMN)         # Killer Hornet (Brown Herb)
+$exdata_enemies[6].set_steal(0, 4, STEAL_COMN)         # Spider (Brown Herb)
+$exdata_enemies[7].set_steal(0, 4, STEAL_COMN)         # Puddle (Brown Herb) 
+#$exdata_enemies[8].set_steal(0, 4, STEAL_COMN)         # Kirgard 4th (-)
+#$exdata_enemies[9].set_steal(0, 4, STEAL_COMN)         # Kirgard Sgt (-)
+$exdata_enemies[10].set_steal(0, 4, STEAL_UNCM)         # Green VIper (Brown Herb)
+$exdata_enemies[11].set_steal(2, 6, STEAL_RARE)         # Goblin (Goblin Helm)
+$exdata_enemies[12].set_steal(0, 4, STEAL_UNCM)         # Grey Wolf (Brown Herb)
+$exdata_enemies[13].set_steal(2, 103, STEAL_UNCM)         # Lizardman (Blue Robe)
+$exdata_enemies[14].set_steal(0, 4, STEAL_COMN)         # Orc (Brown Herb)
+#$exdata_enemies[15].set_steal()         # Mist Monster (-)
+$exdata_enemies[16].set_steal(1, 18, STEAL_RARE)         # Matrian Wolf (Vigour)
+$exdata_enemies[17].set_steal(2, 320, STEAL_UNCM)         # Wandering Mage (Copper Ring)
+$exdata_enemies[18].set_steal(2, 300, STEAL_UNCM)         # Tin Soldier (Iron Bracer)
+$exdata_enemies[19].set_steal(0, 17, STEAL_COMN)         # Surprise Box (Voice box)
+$exdata_enemies[20].set_steal(0, 111, STEAL_UNCM)         # Hermit (Brown Clay)
+$exdata_enemies[21].set_steal(0, 4, STEAL_UNCM)         # Mud Golem (Brown Herb)
+$exdata_enemies[22].set_steal(2, 301, STEAL_RARE)         # Hill Orc (Steel Bracer)
+$exdata_enemies[23].set_steal(1, 40, STEAL_UNCM)         # Yellow Puddle (Noise)
+$exdata_enemies[24].set_steal(0, 4, STEAL_UNCM)         # Mantis (Brown Herb)
+$exdata_enemies[25].set_steal(0, 10, STEAL_RARE)         # Forest Spirit (Silver Dust)
+$exdata_enemies[26].set_steal(0, 4, STEAL_UNCM)         # Maneater (Brown Herb)
+$exdata_enemies[27].set_steal(2, 331, STEAL_COMN)         # Bruce (Bronze Badge)
+$exdata_enemies[28].set_steal(0, 4, STEAL_COMN)         # Kirgard 2nd (Brown Herb)
+$exdata_enemies[29].set_steal(0, 4, STEAL_COMN)         # Vampire Bat (Brown Herb)
+$exdata_enemies[30].set_steal(2, 380, STEAL_UNCM)         # Dead Knight (Hide Belt)
+$exdata_enemies[31].set_steal(0, 15, STEAL_COMN)         # Zombie (Antidote)
+$exdata_enemies[32].set_steal(2, 7, STEAL_RARE)         # Spectral Mage (Pointed Hat)
+$exdata_enemies[33].set_steal(0, 4, STEAL_COMN)         # Minotaur (Brown Herb)
+$exdata_enemies[34].set_steal(2, 203, STEAL_UNCM)         # Ogre (Hard Boots)
+$exdata_enemies[35].set_steal(2, 381, STEAL_UNCM)         # Wild Barbarian (Leather Belt)
+$exdata_enemies[36].set_steal(0, 4, STEAL_COMN)         # Highlander (Brown Herb)
+$exdata_enemies[37].set_steal(0, 4, STEAL_COMN)         # Highlander Scout (Brown Herb)
+$exdata_enemies[38].set_steal(0, 25, STEAL_UNCM)         # Guard Tiger (Battery)
+$exdata_enemies[39].set_steal(1, 25, STEAL_COMN)         # Joshua (Waterfall)
+#$exdata_enemies[40].set_steal()         # Rorschach (-)
+$exdata_enemies[41].set_steal(2, 109, STEAL_COMN)         # Trevor (Black Kirgard Plate)
+$exdata_enemies[42].set_steal(1, 22, STEAL_COMN)         # Sick (Mend-All)
+$exdata_enemies[43].set_steal(1, 5, STEAL_UNCM)         # Mist Monster (Lightning)
+$exdata_enemies[44].set_steal(0, 25, STEAL_UNCM)         # Proto-Mist (Battery)
+$exdata_enemies[45].set_steal(0, 11, STEAL_COMN)         # Mist Queen (Gold Dust)
+$exdata_enemies[46].set_steal(0, 4, STEAL_COMN)         # Kirgard 2nd (Brown Herb)
+$exdata_enemies[47].set_steal(1, 7, STEAL_COMN)         # Kirgard Sarge (Icicle)
+$exdata_enemies[48].set_steal(2, 11, STEAL_UNCM)         # Kirgard Captain (Silver Helmet)
+$exdata_enemies[49].set_steal(0, 20, STEAL_UNCM)         # Relic (White Ash)
+$exdata_enemies[50].set_steal(2, 380, STEAL_COMN)         # Sentinel (Hide Belt)
+$exdata_enemies[51].set_steal(2, 302, STEAL_COMN)         # Keyser (Mithril Bracer)
+$exdata_enemies[52].set_steal(2, 111, STEAL_COMN)         # Iron Golem (Granite Mail)
+$exdata_enemies[53].set_steal(0, 4, STEAL_COMN)         # Black Cobra (Brown Herb)
+$exdata_enemies[54].set_steal(1, 6, STEAL_COMN)         # Dragon Man (Splash)
+$exdata_enemies[55].set_steal(0, 4, STEAL_COMN)         # Wood Berserker (Brown Herb)
+$exdata_enemies[56].set_steal(2, 381, STEAL_COMN)         # Basilisk (Leather Belt)
+$exdata_enemies[57].set_steal(2, 112, STEAL_COMN)         # Frostmonger (Brigandine)
+$exdata_enemies[58].set_steal(0, 4, STEAL_COMN)         # Devourer (Brown Herb)
+#$exdata_enemies[59].set_steal()         # Almenga (-)
+$exdata_enemies[60].set_steal(0, 24, STEAL_COMN)         # Blue Elemental (Blue Drop)
+$exdata_enemies[61].set_steal(0, 23, STEAL_COMN)         # White Elemental (Ice Cube)
+$exdata_enemies[62].set_steal(0, 21, STEAL_COMN)         # Black Elemental (Black Ash)
+$exdata_enemies[63].set_steal(1, 6, STEAL_COMN)         # Deep Puddle (Splash)
+$exdata_enemies[64].set_steal(2, 322, STEAL_COMN)         # Tiamat (Brass Ring)
+$exdata_enemies[65].set_steal(2, 382, STEAL_COMN)         # Boris (Chain Belt)
+$exdata_enemies[66].set_steal(1, 25, STEAL_COMN)         # Orlando (Waterfall)
+$exdata_enemies[67].set_steal(1, 26, STEAL_COMN)         # Ice (Frostwave)
+$exdata_enemies[68].set_steal(0, 12, STEAL_COMN)         # The Mad King (Diamond Dust)
+$exdata_enemies[69].set_steal(1, 22, STEAL_UNCM)         # Light Stalker (Mend-All)
+$exdata_enemies[70].set_steal(1, 39, STEAL_RARE)         # Brain Leech (Enlight)
+$exdata_enemies[71].set_steal(0, 4, STEAL_COMN)         # Lurker (Brown Herb)
+$exdata_enemies[72].set_steal(2, 206, STEAL_RARE)         # Cathead (Fur Sandals)
+$exdata_enemies[73].set_steal(0, 12, STEAL_COMN)         # Wyvern (Gold Dust)
+$exdata_enemies[74].set_steal(1, 29, STEAL_COMN)         # Left Wing (Photon Beam)
+$exdata_enemies[75].set_steal(2, 332, STEAL_COMN)         # Right Wing (Brass Badge)
+#$exdata_enemies[76].set_steal()         # Matrech Soldier
+#$exdata_enemies[77].set_steal()         # Matrech Corporal
+#$exdata_enemies[78].set_steal()         # Mai
+$exdata_enemies[79].set_steal(2, 303, STEAL_COMN)         # Boris (Titanium Bracer)
+$exdata_enemies[80].set_steal(0, 4, STEAL_COMN)         # Dire Spider (Brown Herb)
+$exdata_enemies[81].set_steal(1, 40, STEAL_UNCM)         # Belgugon (Balance)
+$exdata_enemies[82].set_steal(2, 381, STEAL_COMN)         # Carrion Worm (Leather Belt)
+$exdata_enemies[83].set_steal(0, 5, STEAL_RARE)         # Cave Troll (Green Herb)
+$exdata_enemies[84].set_steal(2, 313, STEAL_COMN)         # Pestilence (Titanium Orb)
+$exdata_enemies[85].set_steal(0, 30, STEAL_UNCM)         # Enchanter (Charged Pearl)
+$exdata_enemies[86].set_steal(2, 332, STEAL_COMN)         # Crusader (Brass Badge)
+$exdata_enemies[87].set_steal(1, 29, STEAL_RARE)         # Templar (Photon Beam)
+$exdata_enemies[88].set_steal(1, 22, STEAL_COMN)         # Unicorn (Mend All)
+$exdata_enemies[89].set_steal(2, 373, STEAL_COMN)         # Pendragon (Blue Bandana)
+$exdata_enemies[90].set_steal(1, 48, STEAL_COMN)         # Trevor (Darkstrike)
+$exdata_enemies[91].set_steal(1, 49, STEAL_COMN)         # Sick (Lightstrike)
+$exdata_enemies[92].set_steal(2, 120, STEAL_COMN)         # Clint (Adventurer's Jacket)
+$exdata_enemies[93].set_steal(0, 4, STEAL_COMN)         # Ogre Soldier (Brown Herb)
+$exdata_enemies[94].set_steal(0, 4, STEAL_COMN)         # Ogre King (Brown Herb)
+$exdata_enemies[95].set_steal(2, 391, STEAL_COMN)         # Orc Shaman (Quartz Amulet)
+$exdata_enemies[96].set_steal(1, 39, STEAL_UNCM)         # Nightmare (Enlight)
+$exdata_enemies[97].set_steal(0, 4, STEAL_COMN)         # Hill Giant (Brown Herb)
+$exdata_enemies[98].set_steal(2, 15, STEAL_COMN)         # Brunhild (Silver Tiara)
+$exdata_enemies[99].set_steal(0, 4, STEAL_COMN)         # Matrech Knight (Brown Herb)
+$exdata_enemies[100].set_steal(2, 301, STEAL_COMN)      # Matrech Elite (Steel Bracer)
+$exdata_enemies[101].set_steal(1, 25, STEAL_RARE)         # Sahagin (Waterfall)
+$exdata_enemies[102].set_steal(0, 11, STEAL_UNCM)         # Land Shark (Gold Dust)
+$exdata_enemies[103].set_steal(2, 123, STEAL_COMN)         # Ghost Magus (Fine Silk Robe)
+$exdata_enemies[104].set_steal(0, 113, STEAL_COMN)         # Hoarder (Black Ruby)
+$exdata_enemies[105].set_steal(0, 4, STEAL_COMN)         # Azure Golem (Brown Herb)
+$exdata_enemies[106].set_steal(0, 4, STEAL_COMN)         # Tribal Warrior (Brown Herb)
+$exdata_enemies[107].set_steal(2, 391, STEAL_UNCM)         # Warlock (Quartz Amulet)
+$exdata_enemies[108].set_steal(0, 5, STEAL_UNCM)         # Hunter (Green Herb)
+$exdata_enemies[109].set_steal(0, 18, STEAL_COMN)         # Savak (Energy Drink)
+$exdata_enemies[110].set_steal(0, 4, STEAL_COMN)         # Beastmaster (Brown Herb)
+$exdata_enemies[111].set_steal(2, 383, STEAL_COMN)         # Black Beast (Studded Belt)
+$exdata_enemies[112].set_steal(2, 333, STEAL_COMN)         # White Beast (Silver Badge)
+$exdata_enemies[113].set_steal(0, 4, STEAL_COMN)         # Lava Bones (Brown Herb)
+$exdata_enemies[114].set_steal(2, 207, STEAL_COMN)         # Hobgoblin (Long Boots)
+$exdata_enemies[115].set_steal(0, 4, STEAL_COMN)         # Imp (Brown Herb)
+$exdata_enemies[116].set_steal(0, 11, STEAL_UNCM)         # Gargoyle (Gold Dust)
+$exdata_enemies[117].set_steal(1, 56, STEAL_UNCM)         # Catoblepas (Eclipse)
+$exdata_enemies[118].set_steal(2, 19, STEAL_COMN)         # Soth (Blackened Helmet)
+$exdata_enemies[119].set_steal(0, 4, STEAL_COMN)         # Almenga Soldier (Brown Herb)
+$exdata_enemies[120].set_steal(2, 124, STEAL_UNCM)         # Almenga Capt (Imperial Mail)
+$exdata_enemies[121].set_steal(0, 31, STEAL_UNCM)         # Almenga Summoner (Charged Jet)
+$exdata_enemies[122].set_steal(0, 135, STEAL_RARE)         # Pandora's Box (Menu Set #6)
+$exdata_enemies[123].set_steal(0, 4, STEAL_COMN)         # Mountain Tiger (Brown Herb)
+$exdata_enemies[124].set_steal(1, 33, STEAL_UNCM)         # Parasite (Restore)
+$exdata_enemies[125].set_steal(1, 36, STEAL_UNCM)         # Manticore (Nerveheal)
+$exdata_enemies[126].set_steal(1, 24, STEAL_COMN)         # Indra (Thunderbolt)
+$exdata_enemies[127].set_steal(1, 27, STEAL_COMN)         # Mahadevi (Fireball)
+$exdata_enemies[128].set_steal(1, 26, STEAL_COMN)         # Nandi (Frostwave)
+$exdata_enemies[129].set_steal(1, 29, STEAL_COMN)         # Kama (Photon Beam)
+$exdata_enemies[130].set_steal(0, 31, STEAL_UNCM)         # Elder Summoner (Charged Jet)
+$exdata_enemies[131].set_steal(0, 4, STEAL_COMN)         # Almenga Soldier (Brown Herb)
+$exdata_enemies[132].set_steal(2, 128, STEAL_COMN)      # Demilich (Black-Green Cloak)
+$exdata_enemies[133].set_steal(0, 4, STEAL_COMN)         # Black Death (Brown Herb)
+$exdata_enemies[134].set_steal(1, 16, STEAL_COMN)         # Brown Serpent (Muscleheal)
+$exdata_enemies[135].set_steal(0, 4, STEAL_COMN)         # Sand Shark (Brown Herb)
+$exdata_enemies[136].set_steal(2, 342, STEAL_UNCM)       # Harpy (Velvet Scarf)
+$exdata_enemies[137].set_steal(2, 22, STEAL_COMN)         # Rashnu (White Fez)
+#$exdata_enemies[138].set_steal()         # D-Trevor (-)
+#$exdata_enemies[139].set_steal()         # D-Sick (-)
+$exdata_enemies[140].set_steal(0, 4, STEAL_COMN)         # Earthworm (Brown Herb)
+$exdata_enemies[141].set_steal(2, 382, STEAL_UNCM)         # Deathgaze (Chain Belt)
+$exdata_enemies[142].set_steal(0, 11, STEAL_UNCM)         # Paragon (Gold Dust)
+$exdata_enemies[143].set_steal(2, 392, STEAL_RARE)       # Chimaera (Opal Amulet)
+$exdata_enemies[144].set_steal(1, 69, STEAL_COMN)         # Tiamat (Lock)
+$exdata_enemies[145].set_steal(1, 65, STEAL_COMN)         # Riftgate (Blink)
+$exdata_enemies[146].set_steal(1, 40, STEAL_COMN)         # Drow Fairy (Balance)
+$exdata_enemies[147].set_steal(0, 4, STEAL_COMN)         # Flying Fish (Brown Herb)
+$exdata_enemies[148].set_steal(0, 5, STEAL_COMN)         # Needler Turtle (Green Herb)
+$exdata_enemies[149].set_steal(0, 33, STEAL_COMN)         # Frost Giant (Frost Shard)
+$exdata_enemies[150].set_steal(0, 4, STEAL_COMN)         # Ice Worm (Brown Herb)
+$exdata_enemies[151].set_steal(0, 4, STEAL_COMN)         # Snow Wolf (Brown Herb)
+$exdata_enemies[152].set_steal(0, 4, STEAL_COMN)         # Ghoul (Brown Herb)
+$exdata_enemies[153].set_steal(2, 322, STEAL_UNCM)         # Wraith (Brass Ring)
+$exdata_enemies[154].set_steal(1, 39, STEAL_COMN)         # Harbinger (Enlight)
+$exdata_enemies[155].set_steal(0, 5, STEAL_UNCM)         # Little Scarlet (Green Herb)
+$exdata_enemies[156].set_steal(1, 77, STEAL_COMN)         # Vanrushal (Dark Matter)
+$exdata_enemies[157].set_steal(0, 4, STEAL_COMN)         # Merman (Brown Herb)
+$exdata_enemies[158].set_steal(0, 4, STEAL_COMN)         # Stalker (Brown Herb)
+$exdata_enemies[159].set_steal(0, 5, STEAL_COMN)         # Deep Spawn (Green Herb)
+$exdata_enemies[160].set_steal(2, 323, STEAL_RARE)         # Black Cat (Silver Ring)
+$exdata_enemies[161].set_steal(1, 36, STEAL_COMN)         # Scylla (Nerveheal)
+$exdata_enemies[162].set_steal(0, 34, STEAL_UNCM)         # Charybdis (Marid Tear)
+$exdata_enemies[163].set_steal(2, 215, STEAL_COMN)         # Marid King (Djinni Shoes)
+$exdata_enemies[164].set_steal(2, 364, STEAL_COMN)         # Fafnir (Purple Cape)
+#$exdata_enemies[165].set_steal(0, 4, STEAL_COMN)         # Left Wing (-)
+#$exdata_enemies[166].set_steal(0, 4, STEAL_COMN)         # Right Wing (-)
+$exdata_enemies[167].set_steal(1, 68, STEAL_COMN)         # Tlazolteotl (Haste)
+$exdata_enemies[168].set_steal(2, 131, STEAL_COMN)         # Thanatos (Power Gear)
+$exdata_enemies[169].set_steal(1, 78, STEAL_COMN)         # Phaseshaper (Solar Flare)
+$exdata_enemies[170].set_steal(0, 5, STEAL_COMN)         # Shadow Clan (Green Herb)
+$exdata_enemies[171].set_steal(0, 11, STEAL_COMN)         # Assassin (Gold Duswt)
+$exdata_enemies[172].set_steal(1, 44, STEAL_UNCM)         # Navar (Thunderstrike)
+#$exdata_enemies[173].set_steal(0, 4, STEAL_COMN)         # (-)
+#$exdata_enemies[174].set_steal(0, 4, STEAL_COMN)         # (-)
+#$exdata_enemies[175].set_steal(0, 4, STEAL_COMN)         # (-)
+#$exdata_enemies[176].set_steal(0, 4, STEAL_COMN)         # (-)
+#$exdata_enemies[177].set_steal(0, 4, STEAL_COMN)         # (-)
+#$exdata_enemies[178].set_steal(0, 4, STEAL_COMN)         # (-)
+$exdata_enemies[179].set_steal(2, 334, STEAL_COMN)         # D-Trevor (Gold Badge)
+$exdata_enemies[180].set_steal(2, 324, STEAL_COMN)         # D-Sick (Gold Ring)
+$exdata_enemies[181].set_steal(2, 334, STEAL_COMN)         # D-Trevor (Gold Badge)
+$exdata_enemies[182].set_steal(2, 324, STEAL_COMN)         # D-Sick (Gold Ring)
+$exdata_enemies[183].set_steal(0, 30, STEAL_UNCM)         # Poltergeist (Charged Pearl)
+$exdata_enemies[184].set_steal(0, 5, STEAL_COMN)         # Eyestalker (Green Herb)
+$exdata_enemies[185].set_steal(0, 114, STEAL_RARE)         # Mara (Rainbow Ore)
+$exdata_enemies[186].set_steal(0, 5, STEAL_COMN)         # Non-Euclidian Horror (Green Herb)
+$exdata_enemies[187].set_steal(2, 134, STEAL_COMN)         # Mephisto (Checkered Robe)
+$exdata_enemies[188].set_steal(0, 5, STEAL_COMN)         # Mustang (Green Herb)
+$exdata_enemies[189].set_steal(0, 5, STEAL_COMN)         # Ice Tortoise (Green Herb)
+$exdata_enemies[190].set_steal(1, 65, STEAL_RARE)         # Thunderbeast (Blink)
+$exdata_enemies[191].set_steal(0, 5, STEAL_COMN)         # Almenga Elite (Green Herb)
+$exdata_enemies[192].set_steal(0, 5, STEAL_COMN)         # Almenga Colonel (Green Herb)
+$exdata_enemies[193].set_steal(0, 114, STEAL_UNCM)         # Grand Conjurer (Rainbow Ore)
+$exdata_enemies[194].set_steal(0, 35, STEAL_COMN)         # Lightning Bolt (Lightning Rod)
+$exdata_enemies[195].set_steal(2, 304, STEAL_RARE)         # Dracoknight (Crystal Bracer)
+#$exdata_enemies[196].set_steal(0, 4, STEAL_COMN)         # (-)
+$exdata_enemies[197].set_steal(0, 5, STEAL_COMN)         # Almenga Elite Archer (Green Herb)
+$exdata_enemies[198].set_steal(0, 5, STEAL_COMN)         # Almenga General (Green Herb)
+$exdata_enemies[199].set_steal(1, 40, STEAL_COMN)         # Apocalypse (Balance)
+$exdata_enemies[200].set_steal(2, 135, STEAL_COMN)         # Gudrun (Valkyrie Dress)
+$exdata_enemies[201].set_steal(2, 314, STEAL_RARE)         # Red Dracoknight (Crystal Orb)
+$exdata_enemies[202].set_steal(1, 72, STEAL_UNCM)         # Sirius Lux (Heal)
+$exdata_enemies[203].set_steal(0, 11, STEAL_COMN)         # Starshine (Gold Dust)
+#$exdata_enemies[204].set_steal(0, 4, STEAL_COMN)         # (-)
+#$exdata_enemies[205].set_steal(0, 4, STEAL_COMN)         # (-)
+#$exdata_enemies[206].set_steal(0, 4, STEAL_COMN)         # (-)
+#$exdata_enemies[207].set_steal(0, 4, STEAL_COMN)         # (-)
+#$exdata_enemies[208].set_steal(0, 4, STEAL_COMN)         # (-)
+#$exdata_enemies[209].set_steal(0, 4, STEAL_COMN)         # (-)
+#$exdata_enemies[210].set_steal(0, 4, STEAL_COMN)         # (-)
+$exdata_enemies[211].set_steal(2, 145, STEAL_COMN)         # Hugin (Asgard Plate)
+$exdata_enemies[212].set_steal(2, 146, STEAL_COMN)         # Munin (Asgard Robe)
+#$exdata_enemies[213].set_steal(0, 4, STEAL_COMN)         # (-)
+

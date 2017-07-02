@@ -1,0 +1,124 @@
+#==============================================================================
+# ** Interpreter (part 7)
+#------------------------------------------------------------------------------
+#  This interpreter runs event commands. This class is used within the
+#  Game_System class and the Game_Event class.
+#
+# Custom additions
+#==============================================================================
+
+class Interpreter
+  #--------------------------------------------------------------------------
+  # * Show Text (called from script)
+  #--------------------------------------------------------------------------
+  def show_text (text)
+    # Remove first newline
+    text.sub!("\n"){ $2 }
+    # If other text has been set to message_text
+    if $game_temp.message_text != nil or $game_temp.message_text_small != nil
+      # End
+      return false
+    end
+    # Set message end waiting flag and callback
+    @message_waiting = true
+    $game_temp.message_proc = Proc.new { @message_waiting = false }
+    # Set message text
+    $game_temp.message_text = text    
+  end  
+  #--------------------------------------------------------------------------
+  # * Show Single Line Text (called from script)
+  #--------------------------------------------------------------------------
+  def show_textline (text)
+    # Remove first newline
+    text.sub!("\n"){ $2 }
+    # If other text has been set to message_text
+    if $game_temp.message_text != nil or $game_temp.message_text_small != nil
+      # End
+      return false
+    end
+    # Set message end waiting flag and callback
+    @message_waiting = true
+    $game_temp.message_proc = Proc.new { @message_waiting = false }
+    # Set message text
+    $game_temp.message_text_small = text    
+  end  
+  #--------------------------------------------------------------------------
+  # * Show Location Name (called from script)
+  #--------------------------------------------------------------------------
+  def show_location_name (name)
+    $game_temp.location_name = name   
+  end
+  #--------------------------------------------------------------------------
+  # * Vault Box Puzzle (called from script)
+  #--------------------------------------------------------------------------
+  def vault_box_puzzle
+    e = get_character(0)
+    # Find all adjacent boxes
+    possible_exit_exists = false
+    for event in $game_map.events.values
+      if event != e and (event.event.name == "BOX 1" or event.event.name == "BOX 2")
+        if (event.x - e.x).abs + (event.y - e.y).abs == 1
+          # Toggle box position
+          if event.direction == 4
+            event.direction_fix = false
+            event.turn_right
+            event.through = false
+            event.direction_fix = true
+          else
+            event.direction_fix = false
+            event.turn_left
+            event.through = true
+            event.direction_fix = true
+          end
+          # Check if this is a possible exit
+          if event.direction == 4
+            possible_exit_exists = true
+          end
+        end
+      end
+    end  
+    if e.y > 13 and e.y < 17 and not possible_exit_exists 
+      $game_switches[13] = true
+      $game_map.need_refresh = true
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Vault Box Puzzle (called from script)
+  #--------------------------------------------------------------------------
+  def vault_reset
+    e = get_character(0)
+    # Find all adjacent boxes
+    possible_exit_exists = false
+    for event in $game_map.events.values
+        if event.event.name == "BOX 1" 
+            event.turn_left
+            event.through = true
+        end          
+        if event.event.name == "BOX 2"
+            event.turn_right
+            event.through = false
+        end
+      end
+    end  
+  #--------------------------------------------------------------------------
+  # * Calculate party stats total for Wilona recruiitment (called from script)  
+  #--------------------------------------------------------------------------  
+  def calc_stats
+    total_s = 0
+    total_m = 0
+    for actor in $game_party.actors
+      total_m += actor.mag
+      total_s += actor.str
+    end   
+    if total_m > total_s
+      $game_switches[15] = true
+      $game_variables[1] = total_m
+    else      
+      $game_switches[15] = false
+      $game_variables[1] = total_s
+    end    
+  end
+end
+
+
+

@@ -1,0 +1,474 @@
+#==============================================================================
+# ** Game_Enemy
+#------------------------------------------------------------------------------
+#  This class handles enemies. It's used within the Game_Troop class
+#  ($game_troop).
+#==============================================================================
+
+class Game_Enemy < Game_Battler
+  attr_accessor :stolen_from   # Has this enemy been stolen from?  
+  attr_reader :troop_index        # Index determining the order of this enemy within the troop
+  #--------------------------------------------------------------------------
+  # * Object Initialization
+  #--------------------------------------------------------------------------
+  def initialize(troop_id, troop_index, enemy_id, battle_row, battle_column)
+    super()
+    @troop_id = troop_id
+    troop = $data_troops[@troop_id]
+    @enemy_id = enemy_id
+    @troop_index = troop_index
+    enemy = $data_enemies[@enemy_id]
+    @battler_name = enemy.battler_name
+    @battler_hue = enemy.battler_hue
+    @base_battler_name = @battler_name
+    @hp = maxhp
+    @mp = 0
+    @battle_row = battle_row
+    @battle_column = battle_column
+    @hidden = false #troop.members[@member_index].hidden
+    @immortal = false #troop.members[@member_index].immortal
+    @stolen_from = false
+    @scanned = false
+    # Fukubei
+    if [173, 174, 175, 176, 177].include?(enemy_id)
+      @immortal = true
+    end
+    # D-Trevor/Sick
+    if @enemy_id == 181
+      @hp = maxhp / 2 + $game_variables[41] * maxhp / 200
+      @stolen_from = $game_switches[442]
+    end
+    if @enemy_id == 182
+      @hp = maxhp / 2 + $game_variables[42] * maxhp / 200
+      @stolen_from = $game_switches[443]
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Get Enemy ID
+  #--------------------------------------------------------------------------
+  def id
+    return @enemy_id
+  end
+  #--------------------------------------------------------------------------
+  # * Get Name
+  #--------------------------------------------------------------------------
+  def name
+    return $data_enemies[@enemy_id].name
+  end
+  #--------------------------------------------------------------------------
+  # * Get Level
+  #--------------------------------------------------------------------------
+  def level
+    return $data_enemies[@enemy_id].eva
+  end
+  #--------------------------------------------------------------------------
+  # * Get Element
+  #--------------------------------------------------------------------------
+  def element
+    return $data_enemies[@enemy_id].exp
+  end
+  #--------------------------------------------------------------------------
+  # * Get Attack Element
+  #--------------------------------------------------------------------------
+  def attack_element
+    return $data_enemies[@enemy_id].exp
+  end
+  #--------------------------------------------------------------------------
+  # * Change HP
+  #     hp : new HP
+  #--------------------------------------------------------------------------
+  def hp=(hp)
+    super    
+    if self.id == 205 and self.hp == 0
+      # Final battle
+      for e in $game_troop.enemies        
+        e.hp = 0 if e.hp > 0
+      end
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Get Basic Maximum HP
+  #--------------------------------------------------------------------------
+  def base_maxhp
+    return $data_enemies[@enemy_id].maxhp
+  end
+  #--------------------------------------------------------------------------
+  # * Calculate full stat
+  #--------------------------------------------------------------------------
+  def calc_stat(base)
+    l = 3 * (1.035 ** (self.level + 5))
+    return (base * l / 2) / 10
+  end  
+  #--------------------------------------------------------------------------
+  # * Get MP Regen
+  #--------------------------------------------------------------------------
+  def base_mpregen
+    return $data_enemies[@enemy_id].maxsp
+  end
+  #--------------------------------------------------------------------------
+  # * Get Basic Strength
+  #--------------------------------------------------------------------------
+  def base_str
+    return calc_stat($data_enemies[@enemy_id].str)
+  end
+  #--------------------------------------------------------------------------
+  # * Get Basic Magic
+  #--------------------------------------------------------------------------
+  def base_mag
+    return calc_stat($data_enemies[@enemy_id].int)
+  end
+  #--------------------------------------------------------------------------
+  # * Get Basic PDF
+  #--------------------------------------------------------------------------
+  def base_pdf
+    return calc_stat($data_enemies[@enemy_id].pdef)
+  end
+  #--------------------------------------------------------------------------
+  # * Get Basic MDF
+  #--------------------------------------------------------------------------
+  def base_mdf
+    return calc_stat($data_enemies[@enemy_id].mdef)
+  end
+  #--------------------------------------------------------------------------
+  # * Get Basic SPD
+  #--------------------------------------------------------------------------
+  def base_spd
+    return calc_stat($data_enemies[@enemy_id].agi)
+  end
+  #--------------------------------------------------------------------------
+  # * Get Basic DEX
+  #--------------------------------------------------------------------------
+  def base_dex
+    return calc_stat($data_enemies[@enemy_id].dex)
+  end
+  #--------------------------------------------------------------------------
+  # * Get Basic ACC
+  #--------------------------------------------------------------------------
+  def base_acc
+    return calc_stat($data_enemies[@enemy_id].atk)
+  end
+  #--------------------------------------------------------------------------
+  # * Get Basic SKL
+  #--------------------------------------------------------------------------
+  def base_skl
+    return 0
+  end
+  #--------------------------------------------------------------------------
+  # * Get Basic Magic
+  #--------------------------------------------------------------------------
+  def mag_multiplier
+    return $data_enemies[@enemy_id].int
+  end
+  #--------------------------------------------------------------------------
+  # * Reset battler sprite to default
+  #--------------------------------------------------------------------------  
+  def reset_battler_name
+    @battler_name = $data_enemies[@enemy_id].battler_name
+  end
+  #--------------------------------------------------------------------------
+  # * Get Offensive Animation ID for Normal Attack
+  #--------------------------------------------------------------------------
+  def animation1_id
+    return $data_enemies[@enemy_id].animation1_id
+  end
+  #--------------------------------------------------------------------------
+  # * Get Target Animation ID for Normal Attack
+  #--------------------------------------------------------------------------
+  def animation2_id
+    return $data_enemies[@enemy_id].animation2_id
+  end
+  #--------------------------------------------------------------------------
+  # * Battler name
+  #--------------------------------------------------------------------------
+  def battle_icon
+    # Fukubei
+    if [173, 174, 175, 176, 177, 178].include?(self.id)
+      return "E_Fukubei"
+    end
+    return @battler_name
+  end
+  #--------------------------------------------------------------------------
+  # * Get State Effectiveness
+  #--------------------------------------------------------------------------
+  def state_ranks
+    return $data_enemies[@enemy_id].state_ranks
+  end
+  #--------------------------------------------------------------------------
+  # * Determine State Guard
+  #     state_id : state ID
+  #--------------------------------------------------------------------------
+  def state_guard?(state_id)
+    return false
+  end
+  #--------------------------------------------------------------------------
+  # * Get Normal Attack Element
+  #--------------------------------------------------------------------------
+  def element_set
+    return [self.element]
+  end
+  #--------------------------------------------------------------------------
+  # * Get Normal Attack State Change (+)
+  #--------------------------------------------------------------------------
+  def plus_state_set
+    return []
+  end
+  #--------------------------------------------------------------------------
+  # * Get Normal Attack State Change (-)
+  #--------------------------------------------------------------------------
+  def minus_state_set
+    return []
+  end
+  #--------------------------------------------------------------------------
+  # * Aquire Actions
+  #--------------------------------------------------------------------------
+  def actions
+    return $data_enemies[@enemy_id].actions
+  end
+  #--------------------------------------------------------------------------
+  # * Get Gold
+  #--------------------------------------------------------------------------
+  def gold
+    return $data_enemies[@enemy_id].gold
+  end
+  #--------------------------------------------------------------------------
+  # * Get Item ID
+  #--------------------------------------------------------------------------
+  def item_id
+    return $data_enemies[@enemy_id].item_id
+  end
+  #--------------------------------------------------------------------------
+  # * Get Weapon ID
+  #--------------------------------------------------------------------------
+  def weapon_id
+    return $data_enemies[@enemy_id].weapon_id
+  end
+  #--------------------------------------------------------------------------
+  # * Get Armor ID
+  #--------------------------------------------------------------------------
+  def armor_id
+    return $data_enemies[@enemy_id].armor_id
+  end
+  #--------------------------------------------------------------------------
+  # * Get Treasure Appearance Probability
+  #--------------------------------------------------------------------------
+  def treasure_prob
+    return $data_enemies[@enemy_id].treasure_prob
+  end
+  #--------------------------------------------------------------------------
+  # * Boss ?
+  #--------------------------------------------------------------------------
+  def boss?
+    if $exdata_enemies[@enemy_id] == nil
+      return false
+    end
+    return $exdata_enemies[@enemy_id].boss
+  end
+  #--------------------------------------------------------------------------
+  # * Endboss ?
+  #--------------------------------------------------------------------------
+  def endboss?
+    if $exdata_enemies[@enemy_id] == nil
+      return false
+    end
+    return $exdata_enemies[@enemy_id].endboss
+  end
+  #--------------------------------------------------------------------------
+  # * Long-range projectile sprite
+  #--------------------------------------------------------------------------
+  def projectile_sprite
+    if $exdata_enemies[@enemy_id] == nil
+      return nil
+    end
+    return $exdata_enemies[@enemy_id].projectile_sprite
+  end
+  #--------------------------------------------------------------------------
+  # * Screen x
+  #--------------------------------------------------------------------------
+  def screen_x  
+    if battler_name == "E_Wyvern_L"
+      return 190 - @battle_row * 75 - 25         
+    elsif battler_name == "E_Wyvern_R"
+      return 190 - @battle_row * 75 + 25 
+    end           
+    case @battle_column
+    when 0
+      return 205 - @battle_row * 80
+    when 1
+      return 190 - @battle_row * 75
+    when 2
+      return 175 - @battle_row * 70
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Can steal?
+  #--------------------------------------------------------------------------
+  def can_steal?
+    if @stolen_from or $exdata_enemies[@enemy_id].steal_id == -1
+      return false
+    end
+    return true
+  end
+  #--------------------------------------------------------------------------
+  # * Steal chance
+  #--------------------------------------------------------------------------
+  def steal_chance
+    return $exdata_enemies[@enemy_id].steal_chance 
+  end
+  #--------------------------------------------------------------------------
+  # * Steal item id
+  #--------------------------------------------------------------------------
+  def steal_id
+    return $exdata_enemies[@enemy_id].steal_id
+  end
+  #--------------------------------------------------------------------------
+  # * Steal item type
+  #--------------------------------------------------------------------------
+  def steal_type
+    return $exdata_enemies[@enemy_id].steal_type
+  end
+  #--------------------------------------------------------------------------
+  # * Escape
+  #--------------------------------------------------------------------------
+  def escape
+    # Set hidden flag
+    @hidden = true
+    # Clear current action
+    self.current_action.clear
+  end
+  #--------------------------------------------------------------------------
+  # * Get Weapon = LongRange
+  #--------------------------------------------------------------------------
+  def weapon_longrange?
+     return $data_enemies[@enemy_id].element_ranks[15] < 3
+  end
+  #--------------------------------------------------------------------------
+  # * Transform
+  #     enemy_id : ID of enemy to be transformed
+  #--------------------------------------------------------------------------
+  def transform(enemy_id)
+    # Change enemy ID
+    @enemy_id = enemy_id
+    @hp = maxhp
+    # Fukubei
+    if @enemy_id == 178
+      @immortal = false
+    end
+    # Change battler graphics
+    @battler_name = $data_enemies[@enemy_id].battler_name
+    @battler_hue = $data_enemies[@enemy_id].battler_hue
+    @base_battler_name = @battler_name
+    # Remake action
+    make_action
+  end
+  #--------------------------------------------------------------------------
+  # * Make Action
+  #--------------------------------------------------------------------------
+  def make_action
+    # Clear current action
+    self.current_action.clear
+    # If unable to move
+    unless self.movable?
+      # End Method
+      return
+    end
+    # Extract current effective actions
+    available_actions = []
+    rating_max = 0
+    for action in self.actions
+      # Confirm turn conditions
+      n = @battle_turn
+      a = action.condition_turn_a
+      b = action.condition_turn_b
+      if (b == 0 and n != a) or
+         (b > 0 and (n < a or n % b != a % b))   #or n < 1))
+        next
+      end
+      # Confirm HP conditions
+      if self.hp * 100.0 / self.maxhp > action.condition_hp
+        next
+      end
+      # Confirm HP conditions
+      if self.hp * 100.0 / self.maxhp > action.condition_hp
+        next
+      end
+      # Revive
+      if action.skill_id > 0
+        if [5,6].include?($data_skills[action.skill_id].scope)
+          found_hp0 = false
+          for e in $game_troop.enemies
+            if e.hp == 0
+              found_hp0 = true
+            end
+          end
+          if not found_hp0
+            next
+          end
+        end
+      end
+      # Confirm switch conditions
+      switch_id = action.condition_switch_id
+      if switch_id > 0 and $game_switches[switch_id] == false
+        next
+      end
+      # Confirm having enough MP
+      if action.kind == 1
+        if $data_skills[action.skill_id].sp_cost > mp
+          next
+        end
+        # Wyvern
+        if action.skill_id == 154 or action.skill_id == 239
+          if $game_troop.enemies[1].hp <= 0 or $game_troop.enemies[2].hp <= 0
+            next
+          end
+        end
+        if action.skill_id == 155 or action.skill_id == 240
+          if $game_troop.enemies[1].hp <= 0 and $game_troop.enemies[2].hp <= 0
+            next
+          end          
+        end
+      end
+      # Add this action to applicable conditions
+      available_actions.push(action)
+      if action.rating > rating_max
+        rating_max = action.rating
+      end
+    end
+    # Calculate total with max rating value at 3 (exclude 0 or less)
+    ratings_total = 0
+    for action in available_actions
+      if action.rating > rating_max - 3
+        ratings_total += action.rating - (rating_max - 3)
+      end
+    end
+    # If ratings total isn't 0
+    if ratings_total > 0
+      # Create random numbers
+      value = rand(ratings_total)
+      # Set things that correspond to created random numbers as current action
+      for action in available_actions
+        if action.rating > rating_max - 3
+          if value < action.rating - (rating_max - 3)
+            self.current_action.kind = action.kind
+            self.current_action.basic = action.basic
+            self.current_action.skill_id = action.skill_id
+            # Determine, if attacking, if attack is long range
+            longrange = false
+            if action.kind == 0 and action.basic == 0
+              # Basic attack
+              longrange = self.weapon_longrange?
+            elsif action.skill_id > 0
+              # Skill
+              info = SkillInfo.new($data_skills[action.skill_id])
+              longrange = info.longrange?
+            end
+            # Finally, select a target            
+            self.current_action.decide_random_target_for_enemy(longrange)
+            return
+          else
+            value -= action.rating - (rating_max - 3)
+          end
+        end
+      end
+    end
+  end
+end

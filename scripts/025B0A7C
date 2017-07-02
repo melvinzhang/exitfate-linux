@@ -1,0 +1,317 @@
+#==============================================================================
+# ** Game_Battler (part 3)
+#------------------------------------------------------------------------------
+#  This class deals with battlers. It's used as a superclass for the Game_Actor
+#  and Game_Enemy classes.
+#==============================================================================
+
+class Game_Battler
+  #--------------------------------------------------------------------------
+  # * Determine Usable Skills
+  #     skill_id : skill ID
+  #--------------------------------------------------------------------------
+  def skill_can_use?(skill_id)
+    # If there's not enough MP, the skill cannot be used.
+    skill = $data_skills[skill_id]
+    info = SkillInfo.new(skill)
+    if info.mp_cost(self) > self.mp
+      return false
+    end
+    # Unusable if incapacitated
+    if dead?
+      return false
+    end
+    # If silent, only physical skills can be used
+    info = SkillInfo.new($data_skills[skill_id])
+    if info.isMagic? and self.restriction == 1
+      return false
+    end
+    return true
+  end
+  #--------------------------------------------------------------------------
+  # * Applying Normal Attack Effects
+  #     attacker : battler
+  #--------------------------------------------------------------------------
+  def attack_effect(attacker, long_range)
+    # Clear critical flag
+    self.critical = false
+    # First hit detection
+    hit_result = (rand(100) < attacker.hit(self.b_dex, self.state?(10)))
+    # Blink
+    if self.state?(20) and (rand(100) < 25)
+      hit_result = false
+      self.damage = "Blink!"
+      self.critical = false
+    else
+      # If hit occurs
+      if hit_result == true
+        # Calculate damage
+        self.critical = (rand(100) < attacker.crit(self.b_dex))      
+        self.damage = self.pdamage(attacker.b_str(long_range), attacker.attack_element, self.critical, self.guarding?)
+        # Elemental Shield
+        if self.state?(27 + attacker.attack_element)
+          self.damage /= 2
+        end      
+        # State Removed by Shock
+        remove_states_shock
+        # Substract damage from HP
+        self.hp -= self.damage
+      else
+        self.damage = "Miss"
+        self.critical = false
+      end    
+    end
+    # Check if battler was killed, and increase kills if applicable
+    if dead?
+      if attacker.is_a?(Game_Actor) and self.is_a?(Game_Enemy)
+        attacker.increase_kills
+      end
+    end
+    # End Method
+    return true
+  end
+  #--------------------------------------------------------------------------
+  # * Apply Skill Effects outside of battle, assuming 100% hit, 75% power
+  #--------------------------------------------------------------------------
+  def skill_effect_nobattle(skill)
+    skill_info = SkillInfo.new(skill)    
+    # If skill targets hp>0 and target is dead or vice versa)
+    if skill_info.target_hp0? != self.hp0?
+      return false
+    end    
+    self.hp -= (0.75 * self.skill_mdamage(skill, self, false)).to_i
+  end
+  #--------------------------------------------------------------------------
+  # * Apply Skill Effects
+  #     user  : the one using skills (battler)
+  #     skill : skill
+  #--------------------------------------------------------------------------
+  def skill_effect(user, skill)
+    # Clear critical flag
+    self.critical = false
+    skill_info = SkillInfo.new(skill)    
+    # If skill targets hp>0 and target is dead or vice versa)
+    if skill_info.target_hp0? != self.hp0?
+      if not skill_info.no_miss?
+        self.damage = "Miss"
+      end
+      return false
+    end
+    # Set effective flag if common ID is effective
+    effective = false
+    effective |= skill.common_event_id > 0
+    # First hit detection
+    if skill_info.isMagic?    
+      hit_result = (rand(100) < skill.hit * 10)
+    else
+      hit_result = (rand(100) < (user.hit(self.b_dex, self.state?(10)) *  skill.hit / 10))
+    end      
+    effective |= hit_result
+    # Blink
+    if self.state?(20) and (rand(100) < 25) and [1,2].include?(skill.scope)
+      hit_result = false
+      self.damage = "Blink!"
+      self.critical = false
+    else    
+      if hit_result == true
+        # Calculate power
+        if skill_info.isMagic?    
+          self.damage = self.skill_mdamage(skill, user, false) #self.guarding?)
+        else
+          self.damage = self.skill_pdamage(skill, user, self.guarding?)
+        end         
+        # Aura = heal 1/6th of max hp
+        if skill_info.aura?
+          self.damage = -user.maxhp / 6
+        end
+        # Elemental Shield
+        if self.state?(27 + skill_info.element) and not skill_info.is_healing?
+          self.damage /= 2
+        end            
+        # If spread damage, account for number of targets
+        if skill_info.target_type == TARG_SPREAD
+          self.damage *= 100 - (user.current_action.num_targets - 1) * 6
+          self.damage /= 100
+        end      
+        # If direct damage
+        if skill_info.direct_damage?
+          self.damage = skill.power
+        end
+        # If physical attack has power other than 0
+        if not skill_info.isMagic?
+          remove_states_shock
+        end
+        # Substract damage from HP      
+        self.hp -= self.damage
+        if skill_info.drain?
+          user.damage = -self.damage
+          user.hp += self.damage
+        end      
+        if skill_info.raise_stats != 0
+          self.str_plus += self.str / skill_info.raise_stats
+          self.mag_plus += self.mag / skill_info.raise_stats
+          self.pdf_plus += self.pdf / skill_info.raise_stats
+          self.mdf_plus += self.mdf / skill_info.raise_stats
+          self.dex_plus += self.dex / skill_info.raise_stats
+          self.acc_plus += self.acc / skill_info.raise_stats
+          self.skl_plus += self.skl / skill_info.raise_stats
+          self.spd_plus += self.spd / skill_info.raise_stats
+        end
+        if skill_info.target_hp0?
+          # Revived characters should have their turn reset
+          # This can be achieved by doing what would've happened 
+          # had this been the battler's own turn, instead of the
+          # current battler
+          self.battle_time = user.battle_time - self.turn_wait
+        end
+        # State change
+        @state_changed = false
+        states_plus_chance(skill_info.status_effect)      
+        states_plus(skill.plus_state_set, skill_info.status_chance)
+        states_minus(skill.minus_state_set)
+      # If miss occurs
+      else
+        # Set damage to "Miss"
+        if not skill_info.no_miss?
+          self.damage = "Miss"
+        end
+      end
+    end
+    # If not in battle
+    unless $game_temp.in_battle
+      # Set damage to nil
+      self.damage = nil
+    end
+    # Check if battler was killed, and increase kills if applicable
+    if dead?
+      if user.is_a?(Game_Actor) and self.is_a?(Game_Enemy)
+        user.increase_kills        
+      end
+    end
+    # Stun user if necessary    
+    if skill_info.stun_user?
+      user.states_plus([2])
+    end    
+    # Focus
+    if skill_info.focus?
+      user.mp += [1, (user.mpregen * 8 / 10).to_i].max
+      self.damage = nil
+    end
+    # Change sprite
+    skill_info.change_sprite(self)
+    # End Method
+    return effective
+  end
+  #--------------------------------------------------------------------------
+  # * Application of Item Effects
+  #     item : item
+  #--------------------------------------------------------------------------
+  def item_effect(item)
+    # Clear critical flag
+    self.critical = false
+    # If item scope is for ally with 1 or more HP, and your own HP = 0,
+    # or item scope is for ally with 0 HP, and your own HP = 1 or more
+    if ((item.scope == 3 or item.scope == 4) and self.hp == 0) or
+       ((item.scope == 5 or item.scope == 6) and self.hp >= 1)
+      self.damage = "Miss"
+      return false
+    end
+    # Clear effective flag
+    effective = false
+    effective |= item.common_event_id > 0
+    hit_result = (rand(100) < item.hit)
+    # Set effective flag is skill is uncertain
+    effective |= item.hit < 100
+    # If hit occurs
+    if hit_result == true
+      # Calculate amount of recovery
+      recover_hp = item.recover_hp
+      recover_mp = item.recover_sp
+      # Dispersion
+      if item.variance > 0 and recover_hp.abs > 0
+        amp = [recover_hp.abs * item.variance / 100, 1].max
+        recover_hp += rand(amp+1) + rand(amp+1) - amp
+      end
+      if item.variance > 0 and recover_mp.abs > 0
+        amp = [recover_mp.abs * item.variance / 100, 1].max
+        recover_mp += rand(amp+1) + rand(amp+1) - amp
+      end
+      # Set damage value and reverse HP recovery amount
+      self.damage = -recover_hp
+      # HP and MP recovery
+      last_hp = self.hp
+      last_mp = self.mp
+      self.hp += recover_hp
+      self.mp += recover_mp
+      effective |= self.hp != last_hp
+      effective |= self.mp != last_mp
+      # State change
+      @state_changed = false
+      effective |= states_plus(item.plus_state_set)
+      effective |= states_minus(item.minus_state_set)
+      # If HP recovery rate and recovery amount are 0
+      if item.recover_hp_rate == 0 and item.recover_hp == 0
+        # Set damage to empty string
+        self.damage = ""
+        # If MP recovery rate / recovery amount are 0
+        if item.recover_sp == 0
+          # If state is unchanged
+          unless @state_changed
+            # Set damage to "Miss"
+            self.damage = "Miss"
+          end
+        end
+      end
+    # If miss occurs
+    else
+      # Set damage to "Miss"
+      self.damage = "Miss"
+    end
+    # If not in battle
+    unless $game_temp.in_battle
+      # Set damage to nil
+      self.damage = nil
+    end
+    # Check if battler was killed, and increase kills if applicable
+    if dead?
+      if user.is_a?(Game_Actor) and self.is_a?(Game_Enemy)
+        user.increase_kills
+      end
+    end
+    # End Method
+    return effective
+  end
+  #--------------------------------------------------------------------------
+  # * Application of Slip Damage Effects
+  #--------------------------------------------------------------------------
+  def slip_damage_effect
+    # Do both regen and poison at once
+    self.damage = 0
+    for state in @states
+      if $data_states[state].slip_damage
+        self.damage += self.maxhp * $data_states[state].eva / 100        
+      end
+    end
+    self.hp -= self.damage
+    return true
+  end
+  #--------------------------------------------------------------------------
+  # * Calculating Element Correction
+  #     element_set : element
+  #--------------------------------------------------------------------------
+  def elements_correct(element_set)
+    # If not an element
+    if element_set == []
+      # Return 100
+      return 100
+    end
+    # Return the weakest object among the elements given
+    # * "element_rate" method is defined by Game_Actor and Game_Enemy classes,
+    #    which inherit from this class.
+    weakest = -100
+    for i in element_set
+      weakest = [weakest, self.element_rate(i)].max
+    end
+    return weakest
+  end
+end

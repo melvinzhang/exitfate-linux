@@ -1,0 +1,163 @@
+#==============================================================================
+# ** Scene_War
+#------------------------------------------------------------------------------
+#  This class handles war battles
+#
+# Attack functions
+#==============================================================================
+
+class Scene_War
+  #--------------------------------------------------------------------------
+  # * Start Phase 3 : Attack
+  #--------------------------------------------------------------------------
+  def start_phase3
+    @phase = 3
+    @step = 1
+    @counter = false
+    @attacker = @current_unit
+    @defender = @battle_target
+    @unitinfo_window.dont_show = true
+    @battle_evaded = false
+    if @defender.abilities.include?(WA_EVASION)
+      if rand(100) < 25
+        # Unit evades battle altogether
+        @battle_evaded = true
+      end
+    end    
+  end
+  #--------------------------------------------------------------------------
+  # * Update phase 3
+  #--------------------------------------------------------------------------
+  def update_phase3
+    case @step
+    when 1
+      update_phase3_step1 # Show animation
+    when 2
+      update_phase3_step2 # Determine effect
+    when 3
+      update_phase3_step3 # Finish
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Update phase 3 Step 1: Show animation
+  #--------------------------------------------------------------------------
+  def update_phase3_step1
+    # Determine attack animation
+    if @battle_evaded
+      @defender.animation_id = 294
+      @step = 3      
+    else
+      @defender.animation_id = @attacker.attack_animation
+      @step = 2
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Update phase 3 Step 2:  Determine effect
+  #--------------------------------------------------------------------------
+  def update_phase3_step2
+    damage = calc_damage(@attacker, @defender, @counter)
+    @defender.men -= damage
+    if @defender.men == 0
+      # Unit died. Don't check for counter
+      $game_system.se_play(RPG::AudioFile.new("118-Fire02", 80, 80))
+      @defender.show_death = true      
+      # Death message
+      if @defender.deathmessage != ""
+        $game_temp.message_proc =  Proc.new {}
+        $game_temp.message_text = @defender.deathmessage
+        $game_temp.d_n = @defender.portrait.size > 0 ? @defender.portrait[0] : ""
+        $game_temp.d_p = $game_temp.dialogue_name
+        # Fix for D-Trevor/Sick
+        if $game_temp.dialogue_name[0, 2] == "D-"
+          $game_temp.dialogue_name = $game_temp.dialogue_name[2, $game_temp.dialogue_name.length - 2]
+        end
+      end
+    else
+      # If this was not a counter, check if we get a counter next
+      if not @counter
+        # Check for counter
+        if @defender.can_counter?
+          dist = (@attacker.x - @defender.x).abs + (@attacker.y - @defender.y).abs
+          if dist <= @defender.attack_range
+            # Counter-attack
+            tmp = @attacker
+            @attacker = @defender
+            @defender = tmp
+            @counter = true
+            @step = 1
+            return
+          end          
+        end
+      end
+    end
+    # Go to next phase (if not countering)
+    @step = 3
+  end
+  #--------------------------------------------------------------------------
+  # * Update phase 3 Step 3: Finish attack phase
+  #--------------------------------------------------------------------------
+  def update_phase3_step3
+    # Remove dead units
+    if @attacker.men == 0
+      $game_temp.war_casualties.push(@attacker)
+      $game_temp.war_units.delete(@attacker)
+    end
+    if @defender.men == 0
+      $game_temp.war_casualties.push(@defender)
+      $game_temp.war_units.delete(@defender)
+    end    
+    @top_sprite.refresh
+    @cursor_sprite.visible = true
+    # Regen
+    if not @battle_evaded
+      if @attacker.men > 0 and @attacker.abilities.include?(WA_REGEN)
+        @attacker.animation_id = 299
+        @attacker.men += @attacker.maxmen / 20
+      end
+      if @defender.men > 0 and @defender.abilities.include?(WA_REGEN)
+        @defender.animation_id = 299
+        @defender.men += @defender.maxmen / 20
+      end   
+    end
+    # Check for battle events
+    $game_switches[5] = true    
+    $game_map.need_refresh = true
+    update_unitinfo
+    end_turn
+  end
+  #--------------------------------------------------------------------------
+  # * Calculate damage
+  #--------------------------------------------------------------------------  
+  def calc_damage(u_atk, u_def, counter)
+    # Calulcat atk/def difference
+    diff = u_atk.attack - u_def.defence
+    diff = [diff, -5].max
+    # Adjust for all sorts of abilities
+    if counter and u_atk.abilities.include?(WA_COUNTER)
+      diff -= 2
+    end
+    if counter and u_def.abilities.include?(WA_SHIELD)
+      diff += 2
+    end
+    if counter and u_def.abilities.include?(WA_BERSERKER)
+      diff -= 2
+    end
+    if not counter and u_atk.abilities.include?(WA_BERSERKER)
+      diff -= 2
+    end    
+    if (u_atk.unit_type == UNIT_INFANTRY and u_def.abilities.include?(WA_LIGHT_FEET)) or 
+       (u_atk.unit_type == UNIT_CAVALRY and u_def.abilities.include?(WA_BLOCKADE)) or
+       (u_atk.unit_type == UNIT_SCOUT and u_def.abilities.include?(WA_SCATTER)) or
+       (u_atk.unit_type == UNIT_SORCERY and u_def.abilities.include?(WA_FORCEFIELD))
+      diff += 2
+    end    
+    # Men have a lower bound of 50 for damage calc
+    men = [50, u_atk.men].max
+    # Random effect
+    r = 95 + rand(10)
+    # Calculate result   (Men*0.5 + Men*(F*0.05)) * [0.95..1.05]
+    return (men / 2 + (men * diff) / 20) * r / 100    
+  end
+end
+
+

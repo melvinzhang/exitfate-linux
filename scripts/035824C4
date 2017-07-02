@@ -1,0 +1,335 @@
+#==============================================================================
+# ** Data_Other
+#------------------------------------------------------------------------------
+#  Contains static data that can't be set in the GUI
+#
+#  Remaining armour is added when the game begins
+#==============================================================================
+
+class Data_Armor
+  attr_accessor :hp
+  attr_accessor :mp
+  attr_accessor :acc
+  attr_accessor :dex  
+  attr_accessor :skl
+  
+  attr_accessor :female_only
+  attr_accessor :male_only
+  
+  def initialize
+    @hp = 0
+    @mp = 0
+    @acc = 0
+    @dex = 0
+    @skl = 0
+    
+    @female_only = false
+    @male_only = false
+  end
+end
+
+$exdata_armors = []
+
+# Templar Helmet
+armor = Data_Armor.new
+armor.hp = 10
+$exdata_armors[14] = armor
+
+# Silver Tiara
+armor = Data_Armor.new
+armor.female_only = true
+$exdata_armors[15] = armor
+
+# White Fez
+armor = Data_Armor.new
+armor.mp = 1
+$exdata_armors[22] = armor
+
+# Archangel's Halo
+armor = Data_Armor.new
+armor.acc = 25
+$exdata_armors[36] = armor
+
+# Crystalline Crown
+armor = Data_Armor.new
+armor.skl = 25
+$exdata_armors[37] = armor
+
+# Templar Coat
+armor = Data_Armor.new
+armor.hp = 15
+$exdata_armors[119] = armor
+
+# Zeus Mail
+armor = Data_Armor.new
+armor.hp = 250
+armor.skl = 25
+$exdata_armors[150] = armor
+
+# Lord-Sorceror's Gown
+armor = Data_Armor.new
+armor.mp = 15
+$exdata_armors[151] = armor
+
+# Mashimizu's Robe
+armor = Data_Armor.new
+armor.mp = 25
+$exdata_armors[152] = armor
+
+# Swift Shoes
+armor = Data_Armor.new
+armor.dex = 3
+$exdata_armors[205] = armor
+
+# Templar Greaves
+armor = Data_Armor.new
+armor.hp = 5
+$exdata_armors[209] = armor
+
+# Winged Boots
+armor = Data_Armor.new
+armor.dex = 5
+$exdata_armors[210] = armor
+
+# :Pointed Shoes
+armor = Data_Armor.new
+armor.acc = 10
+$exdata_armors[214] = armor
+
+# Djinni Shoes
+armor = Data_Armor.new
+armor.dex = 8
+$exdata_armors[215] = armor
+
+# Boots of Hermes
+armor = Data_Armor.new
+armor.dex = 25
+$exdata_armors[230] = armor
+
+# Goddess Robe
+armor = Data_Armor.new
+armor.hp = 40
+armor.female_only = true
+$exdata_armors[132] = armor
+
+# Ninja Gear
+armor = Data_Armor.new
+armor.dex = 8
+$exdata_armors[133] = armor
+
+# Valkyrie Dress
+armor = Data_Armor.new
+armor.hp = 80
+armor.female_only = true
+$exdata_armors[135] = armor
+
+# Imperial Boots
+armor = Data_Armor.new
+armor.mp = 2
+$exdata_armors[216] = armor
+
+# Glasses
+armor = Data_Armor.new
+armor.acc = 1
+$exdata_armors[350] = armor
+armor = Data_Armor.new
+armor.acc = 2
+$exdata_armors[351] = armor
+armor = Data_Armor.new
+armor.acc = 4
+$exdata_armors[352] = armor
+armor = Data_Armor.new
+armor.acc = 8
+$exdata_armors[353] = armor
+armor = Data_Armor.new
+armor.acc = 16
+$exdata_armors[354] = armor
+armor = Data_Armor.new
+armor.acc = 32
+$exdata_armors[355] = armor
+# Dex Items
+armor = Data_Armor.new
+armor.dex = 1
+$exdata_armors[360] = armor
+armor = Data_Armor.new
+armor.dex = 2
+$exdata_armors[361] = armor
+armor = Data_Armor.new
+armor.dex = 4
+$exdata_armors[362] = armor
+armor = Data_Armor.new
+armor.dex = 8
+$exdata_armors[363] = armor
+armor = Data_Armor.new
+armor.dex = 16
+$exdata_armors[364] = armor
+armor = Data_Armor.new
+armor.dex = 32
+$exdata_armors[365] = armor
+# Skill Item
+armor = Data_Armor.new
+armor.skl = 1
+$exdata_armors[370] = armor
+armor = Data_Armor.new
+armor.skl = 2
+$exdata_armors[371] = armor
+armor = Data_Armor.new
+armor.skl = 4
+$exdata_armors[372] = armor
+armor = Data_Armor.new
+armor.skl = 8
+$exdata_armors[373] = armor
+armor = Data_Armor.new
+armor.skl = 16
+$exdata_armors[374] = armor
+armor = Data_Armor.new
+armor.skl = 32
+$exdata_armors[375] = armor
+# HP Item
+armor = Data_Armor.new
+armor.hp = 5
+$exdata_armors[380] = armor
+armor = Data_Armor.new
+armor.hp = 10
+$exdata_armors[381] = armor
+armor = Data_Armor.new
+armor.hp = 20
+$exdata_armors[382] = armor
+armor = Data_Armor.new
+armor.hp = 40
+$exdata_armors[383] = armor
+armor = Data_Armor.new
+armor.hp = 80
+$exdata_armors[384] = armor
+armor = Data_Armor.new
+armor.hp = 160
+$exdata_armors[385] = armor
+# MP Regen Item
+armor = Data_Armor.new
+armor.mp = 1
+$exdata_armors[390] = armor
+armor = Data_Armor.new
+armor.mp = 2
+$exdata_armors[391] = armor
+armor = Data_Armor.new
+armor.mp = 4
+$exdata_armors[392] = armor
+armor = Data_Armor.new
+armor.mp = 8
+$exdata_armors[393] = armor
+armor = Data_Armor.new
+armor.mp = 16
+$exdata_armors[394] = armor
+
+# Data for battle simulation
+
+class Data_Sim
+  attr_accessor :battle_id
+  attr_accessor :name
+  attr_accessor :side1
+  attr_accessor :side2
+  attr_accessor :portraits
+  
+  def initialize(id, n, s1, s2, p)
+    @battle_id = id
+    @name = n
+    @side1 = s1
+    @side2 = s2
+    @portraits = p
+  end
+end  
+
+$data_sim = []
+
+$data_sim[1] = Data_Sim.new(1, "Jargo Port City", SIDE_KIRGARD, SIDE_ZELMONY, [])
+$data_sim[2] = Data_Sim.new(2, "Grunthall", SIDE_ZELMONY, SIDE_HIGHLAND, ["Rock", "Paris"])
+$data_sim[3] = Data_Sim.new(4, "Mayfall City I", SIDE_ELYSIUM, SIDE_KIRGARD, ["Keyser"])
+$data_sim[4] = Data_Sim.new(5, "Matrech Coast", SIDE_ELYSIUM, SIDE_KIRGARD, ["Leonius", "Trevor", "Sick"])
+$data_sim[5] = Data_Sim.new(6, "Elysium", SIDE_ELYSIUM, SIDE_ZELMONY, ["Erin", "Jasper"])
+$data_sim[6] = Data_Sim.new(7, "Mayfall City II", SIDE_ELYSIUM, SIDE_ZELMONY, ["Merrick"])
+$data_sim[7] = Data_Sim.new(8, "Matrech State Capital", SIDE_ELYSIUM, SIDE_ZELMONY, ["Erin", "Jasper"])
+$data_sim[8] = Data_Sim.new(10, "Vishnu Citadel", SIDE_ELYSIUM, SIDE_PEREIOUS, ["Pereious"])
+$data_sim[9] = Data_Sim.new(11, "Ft. Brahma", SIDE_ELYSIUM, SIDE_ALMENGA, ["Regin"])
+$data_sim[10] = Data_Sim.new(13, "St. Reinard", SIDE_ELYSIUM, SIDE_ALMENGA, ["Ash"])
+$data_sim[11] = Data_Sim.new(14, "Jormundgand", SIDE_ELYSIUM, SIDE_ALMENGA, ["Brunhild"])
+$data_sim[12] = Data_Sim.new(15, "Midgard Plains", SIDE_ELYSIUM, SIDE_DEMON, ["D-Trevor", "D-Sick"])
+$data_sim[13] = Data_Sim.new(16, "Vanaheim", SIDE_ELYSIUM, SIDE_ALMENGA, ["Gudrun", "Leonius", "Regin"])
+$data_sim[14] = Data_Sim.new(100, "Cornered!", SIDE_ELYSIUM, SIDE_ZELMONY, ["Merrick"])
+$data_sim[15] = Data_Sim.new(101, "Forest Raiders", SIDE_ELYSIUM, SIDE_ZELMONY, ["Alex", "Ljusalf", "Richard"])
+$data_sim[16] = Data_Sim.new(102, "Oischin Conquest", SIDE_ELYSIUM, SIDE_ZELMONY, ["Galius", "Marian", "Deus"])
+$data_sim[17] = Data_Sim.new(103, "Pereious' Revenge", SIDE_ELYSIUM, SIDE_PEREIOUS, ["Pereious", "Rashnu"])
+$data_sim[18] = Data_Sim.new(104, "Ninja Onslaught", SIDE_ELYSIUM, SIDE_KIRGARD, ["Gilbert", "Rorschach", "Yomiko"])
+$data_sim[19] = Data_Sim.new(105, "Knights of Matrech", SIDE_ELYSIUM, SIDE_ZELMONY, ["Erin", "Bast", "Jasper", "Merrick"])
+$data_sim[20] = Data_Sim.new(106, "Royal Defence", SIDE_ELYSIUM, SIDE_KIRGARD, ["Eander", "Keyser", "Jovian", "Leonius"])
+$data_sim[21] = Data_Sim.new(107, "Almenga Assault", SIDE_ELYSIUM, SIDE_ALMENGA, 
+                                                            ["Brunhild", "Gudrun", "Ash", "Tarlia", "Regin"])
+$data_sim[22] = Data_Sim.new(108, "Puppet Master", SIDE_ELYSIUM, SIDE_DEMON, ["D-Trevor", "D-Sick", "Ash", "Leonius"])
+$data_sim[23] = Data_Sim.new(109, "Fated Battle", SIDE_ELYSIUM, SIDE_DEMON, 
+  ["Daniel_hand", "Ljusalf", "Outsider", "Paris", "Bast", "Shiro", "Griever", "Jovian", "Keyser", 
+    "Eander", "Nashal", "Erin", "Merrick", "Marian"])
+
+# Credits
+# [Font size, Text] or [Break length]
+# Font Size: 1 = normal, 2 = header, 3 = large
+# Break length: 1 = normal, 2 = large
+
+$data_credits = []
+
+$data_credits[0] = [3, "EXIT FATE"]
+$data_credits[1] = [1, "Created with RPGMaker XP"]
+$data_credits[2] = [1, "by Enterbrain"]
+$data_credits[3] = [2]
+$data_credits[4] = [2, "Game Design"]
+$data_credits[5] = [1, "SCF"]
+$data_credits[6] = [1]
+$data_credits[7] = [2, "Programming"]
+$data_credits[8] = [1, "SCF"]
+$data_credits[9] = [1]
+$data_credits[10] = [2, "Character Design"]
+$data_credits[11] = [2, "Character Artwork"]
+$data_credits[12] = [1, "SCF"]
+$data_credits[13] = [1]
+$data_credits[14] = [2, "Worldmap Tileset"]
+$data_credits[15] = [1, "Inquisitor"]
+$data_credits[16] = [1]
+$data_credits[17] = [2, "Playtesting"]
+$data_credits[18] = [1, "James Sharp"]
+$data_credits[19] = [1, "Trevor Eaton"]
+$data_credits[20] = [1, "Samuel Ho"]
+$data_credits[21] = [1]
+$data_credits[22] = [2, "Music"]
+$data_credits[23] = [1, "In-game music taken from"]
+$data_credits[24] = [1, "Final Fantasy VI, VII, VIII, IX, Tactics"]
+$data_credits[25] = [1, "Suikoden 1, 2, 5"]
+$data_credits[26] = [1, "Chrono Trigger, Chrono Cross"]
+$data_credits[27] = [1, "Wild Arms 2, 3"]
+$data_credits[28] = [1, "Xenogears"]
+$data_credits[29] = [1, ""]
+$data_credits[30] = [1, "Teej's song"]
+$data_credits[31] = [1, "'Aesthetic Dialectic'"]
+$data_credits[32] = [1, "by Orchid"]
+$data_credits[33] = [1, ""]
+$data_credits[34] = [1, "Hand of Fate battle"]
+$data_credits[35] = [1, "'Grand Finale/Postludium'"]
+$data_credits[36] = [1, "by Therion"]
+$data_credits[37] = [1, ""]
+$data_credits[38] = [1, "Credits"]
+$data_credits[39] = [1, "'The Kiss'"]
+$data_credits[40] = [1, "by Hooverphonic"]
+$data_credits[41] = [1]
+$data_credits[42] = [2, "Thanks to"]
+$data_credits[43] = [1, "James Sharp"]
+$data_credits[44] = [1, "Sigvat Eide"]
+$data_credits[45] = [1, "Charlotte Barrow"]
+$data_credits[46] = [1, "Daniel Goldsmith"]
+$data_credits[47] = [2]
+$data_credits[48] = [3, "THE END"]
+
+
+
+
+
+
+
+
+

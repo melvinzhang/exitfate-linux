@@ -1,0 +1,227 @@
+#==============================================================================
+# ** Scene_War
+#------------------------------------------------------------------------------
+#  This class handles war battles
+#
+#  Utility functions
+#==============================================================================
+
+class Scene_War
+  #--------------------------------------------------------------------------
+  # * Generate movement grid
+  #--------------------------------------------------------------------------
+  def generate_movement_grid(unit = @current_unit)
+    # Generate empty grid
+    grid = []
+    for x in 0...$game_map.width
+      grid[x] = []
+      for y in 0...$game_map.height
+        grid[x][y] = -1
+      end      
+    end  
+    grid[unit.x][unit.y] = unit.move_dist
+    # Recursively calculate movement grid
+    recurse_grid(grid, unit.x, unit.y, unit)
+    return grid
+  end  
+  #--------------------------------------------------------------------------
+  # * Generate movement grid (Recursive)
+  #--------------------------------------------------------------------------
+  def recurse_grid (grid, x, y, unit)
+    # Check all four directions
+    targets = [[x + 1, y], [x - 1, y], [x, y - 1], [x, y + 1]]    
+    for t in targets
+      nx = t[0]
+      ny = t[1]
+      # Check if coordinates within bounds
+      if nx > 0 and nx < $game_map.width - 1 and
+         ny > 1 and ny < $game_map.height - 4        
+         # Determine movement cost to get there
+         cost = unit.move_cost($game_map.terrain_tag(nx, ny))
+         new_move = grid[x][y] - cost
+         # Can't move there if cost is -1 or cost is larger than remaining move
+         if cost > -1 and new_move >= 0
+           # If this grid square wasn't -1, continue anyway if it was a sub-optimal route
+           if grid[nx][ny] == -1 or grid[nx][ny] < new_move
+             # Make sure this square is not occuped by an enemy
+             occupied = false
+             for o_unit in $game_temp.war_units
+              if o_unit.x == nx and o_unit.y == ny and o_unit.player_side != unit.player_side
+                 occupied = true
+                 break
+              end           
+            end             
+            if not occupied
+             grid[nx][ny] = new_move
+             # Continue in this direction
+             recurse_grid(grid, nx, ny, unit)
+            end
+           end
+         end
+      end      
+    end
+  end    
+  #--------------------------------------------------------------------------
+  # * Generate total movement grid
+  # Instead of finding the possible movement locations
+  # within one turn, this determines how many turns it
+  # would take to go anywhere on the map.
+  #--------------------------------------------------------------------------
+  def generate_total_movement_grid(unit = @current_unit, dist_treshold = 999)
+    # Generate empty grid
+    grid = []
+    for x in 0...$game_map.width
+      grid[x] = []
+      for y in 0...$game_map.height
+        grid[x][y] = -1
+      end      
+    end  
+    # Recursively calculate movement grid
+    # Use a stack here since the old function was too slow
+    grid[unit.x][unit.y] = 0
+    stack = [[unit.x, unit.y, 0]]
+    size = 0
+    iterations = 0
+    while stack.size > 0
+      iterations += 1
+      size = [stack.size, size].max
+      newpos = stack.shift
+      x = newpos[0]
+      y = newpos[1]        
+      dist = newpos[2]
+      # Check all four directions
+      for t in [[x + 1, y], [x - 1, y], [x, y - 1], [x, y + 1]]    
+        nx = t[0]
+        ny = t[1]
+        # Check if coordinates within bounds
+        if nx > 0 and nx < $game_map.width - 1 and
+           ny > 1 and ny < $game_map.height - 4        
+           # Determine movement cost to get there
+           cost = unit.move_cost($game_map.terrain_tag(nx, ny))
+           new_move = grid[x][y] + cost
+           # Can't move there if cost is -1 or cost is larger than remaining move
+           if cost > -1
+             # If this grid square wasn't -1, continue anyway if it was a sub-optimal route
+             if grid[nx][ny] == -1 or grid[nx][ny] > new_move    
+               grid[nx][ny] = new_move
+               # Continue in this direction
+               if dist + 1 <= dist_treshold
+                 stack.push([nx, ny, dist + 1])
+               end
+              end
+           end
+        end      
+      end      
+    end    
+    return grid
+  end  
+  #--------------------------------------------------------------------------
+  # * Generate attack potential grid
+  #--------------------------------------------------------------------------
+  def generate_attack_potential_grid    
+    # Generate empty grid
+    atk_grid = []
+    for x in 0...$game_map.width
+      atk_grid[x] = []
+      for y in 0...$game_map.height
+        atk_grid[x][y] = []
+      end      
+    end  
+    # Build move grid
+    grid = generate_movement_grid
+    # Remove squares that are occupied
+    for unit in $game_temp.war_units
+      if unit != @current_unit
+        grid[unit.x][unit.y] = -1
+      end
+    end   
+    # Expand the grid x times, where x is the attack range
+    for x in 1...$game_map.width - 1
+      for y in 2...$game_map.height - 4        
+        if grid[x][y] > -1
+          # Possible move position. Determine all targets
+          for tx in x - @current_unit.attack_range..x+@current_unit.attack_range
+            for ty in y - @current_unit.attack_range..y+@current_unit.attack_range
+              dist = (tx - x).abs + (ty - y).abs
+              if dist <= @current_unit.attack_range and 
+                  tx >= 1 and tx < $game_map.width - 1 and
+                  ty >= 2 and ty < $game_map.height - 4        
+                  atk_grid[tx][ty].push([x, y, dist])
+              end
+            end
+          end
+        end
+      end
+    end
+    return atk_grid
+  end  
+  #--------------------------------------------------------------------------
+  # * Find a path to the target square
+  #--------------------------------------------------------------------------
+  def find_route(grid, x1, y1, x2, y2) 
+    x = x2
+    y = y2
+    route = [[x, y]]
+    while x != x1 or y != y1
+      # Find the highest value in all neighbours.
+      targets = [[x + 1, y], [x - 1, y], [x, y - 1], [x, y + 1]]    
+      highest = nil
+      for t in targets
+        nx = t[0]
+        ny = t[1]
+        if nx >= 0 and nx < $game_map.width and ny >= 0 and ny < $game_map.height
+          if highest == nil or grid[nx][ny] > grid[highest[0]][highest[1]] 
+            highest = [nx, ny]
+          end
+        end
+      end  
+      # Add this value to the front of the route
+      route.unshift(highest)
+      x = highest[0]
+      y = highest[1]
+    end
+    return route
+  end
+  #--------------------------------------------------------------------------
+  # * Check Scroll
+  #--------------------------------------------------------------------------
+  def check_scroll
+    # Make sure the current cursor position is not outside the view
+      if @cursor_y - $game_map.display_y / 128 < 5
+        $game_map.display_y = [128 * (@cursor_y - 5), 0].max
+      end
+      if @cursor_y - $game_map.display_y / 128 >  10
+        $game_map.display_y = [128 * (@cursor_y - 10), (($game_map.height - 15) * 128)].min
+      end        
+      if @cursor_x - $game_map.display_x / 128 < 3
+        $game_map.display_x = [128 * (@cursor_x - 3), 0].max
+      end      
+      if @cursor_x - $game_map.display_x / 128 >  17
+        $game_map.display_x = [128 * (@cursor_x - 17), (($game_map.width - 20) * 128)].min
+      end           
+      update_unitinfo
+    end  
+  #--------------------------------------------------------------------------
+  # * Center screen on position 
+  #--------------------------------------------------------------------------
+  def center_screen(x, y)
+    @cursor_x = x
+    @cursor_y = y
+    $game_map.display_x = [[128 * (@cursor_x -10), 0].max, (($game_map.width - 20) * 128)].min
+    $game_map.display_y = [[128 * (@cursor_y -7), 0].max, (($game_map.height - 15) * 128)].min
+    update_unitinfo
+  end
+  #--------------------------------------------------------------------------
+  # * Update Bottom Sprite (unit info)
+  #--------------------------------------------------------------------------  
+  def update_unitinfo
+    cursor_unit = nil
+    for unit in $game_temp.war_units
+      if unit.x == @cursor_x and unit.y == @cursor_y
+        cursor_unit = unit
+        break
+      end
+    end
+    @unitinfo_window.unit = cursor_unit    
+  end
+end

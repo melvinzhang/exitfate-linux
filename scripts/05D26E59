@@ -1,0 +1,175 @@
+#==============================================================================
+# ** Window_WarSetupUnit
+#------------------------------------------------------------------------------
+#  Displays unit info on war setup screen
+#==============================================================================
+
+class Window_WarSetupUnit < Window_Base  
+  attr_reader :index   # Selected index
+  attr_reader :active
+  #--------------------------------------------------------------------------
+  # * Object Initialization
+  #--------------------------------------------------------------------------
+  def initialize(id)
+    super(0, 0, 280, 130)    
+    self.contents = Bitmap.new(self.width - 32, self.height - 32)    
+    @portrait_sprite = Sprite.new
+    @portrait_sprite.bitmap = Bitmap.new(280, 100)
+    @portrait_sprite.y = -50
+    @portrait_sprite.z = self.z + 10
+    @id = id
+    @index = -1
+    @active = false
+    @opacity_counter = 0
+    self.x = 40
+    self.y = 150
+    refresh
+  end
+  #--------------------------------------------------------------------------
+  # * Dispose
+  #--------------------------------------------------------------------------
+  def dispose
+    @portrait_sprite.dispose
+    super
+  end
+  #--------------------------------------------------------------------------
+  # * Change the selected index
+  #--------------------------------------------------------------------------
+  def index=(v)
+    @index = v
+    refresh
+  end
+  #--------------------------------------------------------------------------
+  # * Change the selected index
+  #--------------------------------------------------------------------------
+  def active=(v)
+    @active = v
+    refresh
+  end
+  #--------------------------------------------------------------------------
+  # * Change the current unit
+  #--------------------------------------------------------------------------
+  def set_unit(id)
+    @id = id
+    refresh
+  end
+  #--------------------------------------------------------------------------
+  # * Visible
+  #--------------------------------------------------------------------------
+  def visible=(v)
+    @portrait_sprite.visible = v if @portrait_sprite != nil
+    super
+  end
+  #--------------------------------------------------------------------------
+  # * x
+  #--------------------------------------------------------------------------
+  def x=(v)
+    super
+    @portrait_sprite.x = v if @portrait_sprite != nil
+  end
+  #--------------------------------------------------------------------------
+  # * y
+  #--------------------------------------------------------------------------
+  def y=(v)
+    super
+    @portrait_sprite.y = v - 50 if @portrait_sprite != nil
+  end
+  #--------------------------------------------------------------------------
+  # * Update
+  #--------------------------------------------------------------------------  
+  def update    
+    if @index >= 0 and @portraits != nil
+      x = 79 + 64 * @index
+      bitmap = RPG::Cache.picture("Battle Portraits/" + @portraits[@index])
+      @portrait_sprite.bitmap.fill_rect(x, 0, 64, 64, Color.new(0, 0, 0))
+      @portrait_sprite.bitmap.blt(x, 0, bitmap, Rect.new(0, 0, 64, 64))      
+      bitmap = RPG::Cache.picture("Battle Portraits/_selected")
+      opacity = @active ? 128 + 64 * Math.sin(@opacity_counter.to_f / 10) : 200
+      @portrait_sprite.bitmap.blt(x, 0, bitmap, Rect.new(0, 0, 64, 64), opacity)
+      @opacity_counter += 1
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Refresh
+  #--------------------------------------------------------------------------
+  def refresh
+    self.contents.clear
+    # Calculate stats
+    leader = $data_warleaders[@id]
+    men = leader.men
+    attack = leader.attack
+    defence = leader.defence
+    abilities = []
+    @portraits = []
+    for i in 0..2
+      m_id = $game_party.war_units[@id][1][i]
+      if m_id > 0
+        member = $data_warmembers[m_id]
+        men += member.men
+        attack += member.attack
+        defence += member.defence
+        if member.ability > 0
+          abilities.push(member.ability)
+        end   
+        @portraits.push(member.name)     
+      else        
+        @portraits.push("_Blank")     
+      end
+    end        
+    
+    type = $game_party.war_units[@id][0]
+    if type == UNIT_INFANTRY
+      attack += 1
+      defence += 1
+    elsif type == UNIT_SORCERY
+      attack -= 1
+    end    
+    
+    if leader.rating[type] == "B"
+      attack -= 1
+      defence -= 1
+    elsif leader.rating[type] == "C"
+      attack -= 2
+      defence -= 2
+    end    
+    
+    attack = [attack, 0].max
+    defence = [defence, 0].max
+    
+    # Draw portraits  
+    @portrait_sprite.bitmap.clear
+    x = 10
+    bitmap = RPG::Cache.picture("Battle Portraits/" + leader.name)
+    @portrait_sprite.bitmap.fill_rect(x, 0, 64, 64, Color.new(0, 0, 0))
+    @portrait_sprite.bitmap.blt(x, 0, bitmap, Rect.new(0, 0, 64, 64))
+    x += 5
+    for i in 0...@portraits.size
+      x += 64
+      bitmap = RPG::Cache.picture("Battle Portraits/" + @portraits[i])
+      @portrait_sprite.bitmap.fill_rect(x, 0, 64, 64, Color.new(0, 0, 0))
+      @portrait_sprite.bitmap.blt(x, 0, bitmap, Rect.new(0, 0, 64, 64))
+    end
+    # Draw Stats 
+    typename = type == UNIT_INFANTRY ? "Infantry" : 
+                          type == UNIT_CAVALRY ? "Cavalry" : 
+                          type == UNIT_SCOUT ? "Scout" : "Sorcery"
+    bitmap = RPG::Cache.icon("Rating_" + leader.rating[type])
+    self.contents.blt(-4, -4, bitmap, Rect.new(0, 0, 32, 32))                          
+    self.contents.font.color = system_color    
+    draw_text(0, 25, 80, 25, "Men")   
+    draw_text(0, 45, 80, 25, "Atk")   
+    draw_text(0, 65, 80, 25, "Def")   
+    self.contents.font.color = normal_color
+    draw_text(30, 0, 300, 25, typename)
+    draw_text(0, 25, 80, 25, men.to_s, 2)   
+    draw_text(0, 45, 80, 25, attack.to_s, 2)   
+    draw_text(0, 65, 80, 25, defence.to_s, 2)   
+    # Special abilities
+    y = 25
+    for a in abilities
+      draw_text(100, y, 200, 25, $data_war_ability_names[a])    
+      y += 20
+    end
+    self.update
+  end
+end

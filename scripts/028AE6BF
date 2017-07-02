@@ -1,0 +1,158 @@
+#==============================================================================
+# ** Window_Status
+#------------------------------------------------------------------------------
+#  This window displays full status specs on the status screen.
+#==============================================================================
+
+class Window_Status < Window_Base
+  #--------------------------------------------------------------------------
+  # * Object Initialization
+  #     actor : actor
+  #--------------------------------------------------------------------------
+  def initialize(actor)
+    super(0, 0, 640, 480)
+    self.visible = false # This is just a placeholder for the real windows
+    @actor = actor
+    @window_equip =  Window_Base.new(195, 250, 215, 215)
+    @window_equip.set_standard_bitmap
+    @window_equip.visible = false
+    @window_stats = Window_Base.new(195, 0, 215, 240)
+    @window_stats.set_standard_bitmap
+    @window_special = Window_Base_Short.new(195, 240-8, 215, 48)
+    @window_special.set_standard_bitmap
+    @window_relations_t = Window_Base_Short.new(410, 200, 230, 48)
+    @window_relations_t.set_standard_bitmap
+    @window_relations_t.z += 1
+    @window_relations = Window_Base.new(410, 240, 230, 225)
+    @window_relations.set_standard_bitmap
+    @window_weapon_t = Window_Base_Short.new(410, 0, 230, 48)
+    @window_weapon_t.set_standard_bitmap
+    @window_weapon_t.z += 1
+    @window_weapon = Window_Base_Short.new(410, 40, 230, 130)
+    @window_weapon.set_standard_bitmap
+    refresh
+  end
+  #--------------------------------------------------------------------------
+  # * Dipose
+  #--------------------------------------------------------------------------
+  def dispose
+    @window_stats.dispose
+    @window_relations.dispose
+    @window_relations_t.dispose
+    @window_weapon.dispose
+    @window_weapon_t.dispose
+    @window_equip.dispose
+    @window_special.dispose
+    super
+  end
+  #--------------------------------------------------------------------------
+  # * Refresh
+  #--------------------------------------------------------------------------
+  def refresh
+    # Refresh individual windows
+    # STATS
+    window = @window_stats
+    window.contents.clear          
+    bitmap = RPG::Cache.icon("Element_" + @actor.element.to_s)
+    window.contents.blt(0, 4, bitmap, Rect.new(0, 0, 20, 20))
+    window.draw_text(25, 0, 150, 32, @actor.name, 0)      
+    window.contents.font.color = system_color
+    window.draw_text(0, 30, 80, 32, "LVL")
+    window.draw_text(100, 30, 80, 32, "EXP")
+    window.draw_text(0, 50, 75, 32, "HP", 0)
+    window.draw_text(0, 90, 75, 32, "MP+", 0)
+    window.contents.font.color = normal_color
+    window.draw_text(35, 30, 36, 32, @actor.level.to_s, 2)    
+    window.draw_text(135, 30, 36, 32, @actor.exp.to_s, 2)    
+    window.draw_text(0, 50, 91, 32, @actor.hp.to_s + "/", 2)
+    window.draw_text(65, 50, 66, 32, @actor.maxhp.to_s, 2)
+    window.draw_text(35, 90, 36, 32, @actor.mpregen.to_s, 2)    
+    x = 0
+    y = 110
+    for s in STAT_STR..STAT_SKL
+      window.draw_actor_parameter(@actor, x, y, s)
+      y += 20
+      if y > 170
+        y = 110
+        x += 100
+      end
+    end    
+    # EQUIPMENT
+    window = @window_equip
+    window.contents.clear
+    bitmaps = ["Helmet", "Armour", "Boots", "Accessory", "Item"]
+    rows = [0, 1, 2, 3, 6]
+    for i in 0...5
+      bitmap = RPG::Cache.icon("Slot_" + bitmaps[i])
+      window.contents.blt(4, 24*rows[i] + 2, bitmap, Rect.new(0, 0, 24, 24))
+    end    
+    @data = []
+    @data.push($data_armors[@actor.helmet_id])
+    @data.push($data_armors[@actor.armor_id])
+    @data.push($data_armors[@actor.boots_id])
+    @data.push($data_armors[@actor.acc_ids[0]])
+    @data.push($data_armors[@actor.acc_ids[1]])
+    @data.push($data_armors[@actor.acc_ids[2]])
+    @data.push($data_items[@actor.item_ids[0]])
+    @data.push($data_items[@actor.item_ids[1]])
+    @item_max = @data.size
+    y = 0
+    for item in @data
+      window.draw_item_name(item, 32, y - 4)
+      y += 24
+    end    
+    # SPECIAL
+    window = @window_special
+    window.contents.clear
+    if @actor.special_skill == 0
+      window.contents.font.color = disabled_color
+      special = "No Special"
+    else
+      window.contents.font.color = normal_color      
+      special = $data_skills[@actor.special_skill].name
+    end
+    window.draw_text(16, 8, 200, 32, special, 0)    
+    # WEAPON TITLE
+    window = @window_weapon_t
+    window.contents.clear
+    window.contents.font.color = system_color
+    window.draw_text(16, 8, @window_relations_t.width-32, 32, "Weapon", 1)
+    # WEAPON 
+    window = @window_weapon
+    window.contents.clear
+    window.contents.font.color = normal_color
+    window.draw_text(16, 8, 250, 32, @actor.weapon_name)
+    window.draw_text(49, 28, 120, 32, @actor.weapon_atk.to_s + "(",2)
+    window.draw_text(49, 48, 120, 32, @actor.weapon_hit.to_s+ "(",2)
+    window.draw_text(49, 68, 120, 32, @actor.weapon_crit.to_s+ "(",2)
+    window.draw_text(24, 28, 190, 32, @actor.weapon_bonus_atk.to_s + ")",2)
+    window.draw_text(24, 48, 190, 32, @actor.weapon_bonus_hit.to_s+ ")",2)
+    window.draw_text(24, 68, 190, 32, @actor.weapon_bonus_crit.to_s+ ")",2)
+    if @actor.weapon_longrange?
+      window.draw_text(24, 88, 125, 32, "Long Range")
+    end
+    window.contents.font.color = system_color
+    window.draw_text(24, 28, 150, 32, "WPN ATK")
+    window.draw_text(24, 48, 150, 32, "WPN HIT")
+    window.draw_text(24, 68, 150, 32, "WPN CRT")
+    # RELATIONS TITLE
+    window = @window_relations_t
+    window.contents.clear
+    window.contents.font.color = system_color
+    window.draw_text(16, 8, @window_relations_t.width-32, 32, "Relations", 1)
+    # RELATIONS
+    window = @window_relations
+    window.contents.font.size = 25
+    for i in 0..2
+      rel = @actor.relation[i]
+      target = $game_actors[rel[0]]
+      if target.joined or $game_party.actors.include?(target) or $game_party.entourage.include?(target)
+        window.draw_actor_menu_portrait(target, 0, i*64)
+        window.contents.font.color = $game_party.actors.include?(target) ? highlight_color : normal_color
+        window.draw_text(80, i*64+20, 84, 32, rel[1], 2)          
+      else
+        window.draw_unknown_menu_portrait(0, i*64)      
+      end
+    end    
+  end
+end

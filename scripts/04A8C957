@@ -1,0 +1,80 @@
+#==============================================================================
+# ** Window_BJBet
+#------------------------------------------------------------------------------
+#  Set the current bet in Blackjack
+#==============================================================================
+
+class Window_BJBet < Window_Base
+  attr_reader :bet
+  #--------------------------------------------------------------------------
+  # * Object Initialization
+  #--------------------------------------------------------------------------
+  def initialize(max_bet)
+    super(232, 200-16, 100, 64)
+    self.contents = Bitmap.new(width - 32, height - 32 + 2)
+    self.oy = 2
+    self.visible = false
+    self.active = false
+    @max_bet = max_bet
+    @min_bet = [@max_bet / 100, 1].max
+    @bet = @min_bet    
+    @increment = @min_bet
+    refresh
+  end
+  #--------------------------------------------------------------------------
+  # * Lower the current bet if the player doesn't have enough money
+  #--------------------------------------------------------------------------  
+  def check_money
+    if @bet > $game_party.gold
+      @bet = @min_bet
+      @increment = @min_bet
+      self.oy = 2
+      refresh
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Refresh
+  #--------------------------------------------------------------------------
+  def refresh
+    self.contents.clear
+    self.contents.font.color = normal_color
+    self.draw_text(0, 0, self.width - 48 + 16, 32, @bet.to_s, 2)      
+  end
+  #--------------------------------------------------------------------------
+  # * Update
+  #--------------------------------------------------------------------------
+  def update
+    if Input.repeat?(Input::UP)
+      # Raise bet
+      if @bet < @max_bet and not (@bet + @increment > $game_party.gold)
+        $game_system.se_play($data_system.cursor_se)
+        @bet += @increment
+        if @bet / @increment > 9
+          @increment *= 10
+        end
+        if @bet == @max_bet or (@bet + @increment > $game_party.gold)
+          self.oy = 0
+        else
+          self.oy = 1
+        end
+        refresh
+      end
+    end
+    if Input.repeat?(Input::DOWN)
+      # Lower bet
+      if @bet > @min_bet
+        $game_system.se_play($data_system.cursor_se)
+        if @bet == @increment
+          @increment /= 10
+        end        
+        @bet -= @increment
+        if @bet == @min_bet
+          self.oy = 2
+        else
+          self.oy = 1
+        end
+        refresh
+      end
+    end
+  end  
+end

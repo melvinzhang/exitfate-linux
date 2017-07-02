@@ -1,0 +1,179 @@
+#==============================================================================
+# ** Scene_Blacksmith
+#------------------------------------------------------------------------------
+#  This class performs blacksmith screen
+#==============================================================================
+
+class Scene_Blacksmith
+  #--------------------------------------------------------------------------
+  # * Initialize
+  #--------------------------------------------------------------------------
+  def initialize(maxlevel)
+    @maxlevel = maxlevel # maximum upgrade level
+  end  
+  #--------------------------------------------------------------------------
+  # * Main Processing
+  #--------------------------------------------------------------------------
+  def main
+    # Make title graphic
+    @sprite = Sprite.new
+    @sprite.bitmap = RPG::Cache.picture("Backgrounds/Menu" + $game_system.windowskin_id.to_s)    
+    # Make label window
+    @label_window = Window_Label.new("Blacksmith")
+    @label_window2 = Window_Label.new("Level " + @maxlevel.to_s)
+    @label_window2.y += 40
+    # Make status window
+    @status_window = []
+    for i in 0...6
+      @status_window[i] = Window_MenuStatus.new($game_party.actors[i], true, true)
+      @status_window[i].x = 465
+      @status_window[i].y = i*36
+    end
+    @entourage_window = Window_Base_Short.new(465, 6*36, 300, 40)
+    @entourage_window.contents = Bitmap.new(175, 48)      
+    @entourage_window.windowskin_suffix = "_right"
+    @entourage_window.contents.font.color = @entourage_window.system_color
+    @entourage_window.draw_text(24, 4, 200, 32, "Entourage")
+    for i in 0...2
+      @status_window[6+i] = Window_MenuStatus.new($game_party.entourage[i], true,  true)
+      @status_window[6+i].x = 465
+      @status_window[6+i].y = (i+7)*36
+    end
+    @target_index = 0
+    @status_window[0].active = true
+    @status_window[0].select           
+    refresh
+    # Make windows
+    @blacksmith_window = Window_Blacksmith.new(@status_window[0].actor, @maxlevel)
+    @help_window = Window_Help.new   
+    @blacksmith_window.help_window = @help_window
+    @blacksmith_window.visible = false
+    # Execute transition
+    Graphics.transition
+    # Main loop
+    loop do
+      # Update game screen
+      Graphics.update
+      # Update input information
+      Input.update
+      # Frame update
+      update
+      # Abort loop if screen is changed
+      if $scene != self
+        break
+      end
+    end
+    # Prepare for transition
+    Graphics.freeze
+    # Dispose of windows
+    for w in @status_window
+      w.dispose
+    end
+    @help_window.dispose
+    @label_window.dispose
+    @label_window2.dispose
+    @sprite.bitmap.dispose
+    @sprite.dispose
+    @entourage_window.dispose    
+    @blacksmith_window.dispose
+  end
+  #--------------------------------------------------------------------------
+  # * Refresh
+  #--------------------------------------------------------------------------
+  def refresh
+  end
+  #--------------------------------------------------------------------------
+  # * Frame Update
+  #--------------------------------------------------------------------------
+  def update
+    # Update windows
+    @help_window.update
+    for w in @status_window
+      w.update
+    end    
+    
+    if @blacksmith_window.active
+      @blacksmith_window.update
+      update_blacksmith
+      return
+    end    
+    update_target
+  end
+  #--------------------------------------------------------------------------
+  # * Frame Update (when blacksmith window is active)
+  #--------------------------------------------------------------------------
+  def update_blacksmith
+    # If B button was pressed
+    if Input.trigger?(Input::B)
+      @blacksmith_window.active = false
+      @blacksmith_window.visible = false
+      @blacksmith_window.index = -1
+      @blacksmith_window.reset
+      @blacksmith_window.refresh
+      @status_window[@target_index].active = false
+      return
+    end
+    # If C button was pressed
+    if Input.trigger?(Input::C)
+      if @blacksmith_window.totalcost > $game_party.gold
+        @help_window.set_text("You don't have enough money for these upgrades.")
+        $game_system.se_play($data_system.buzzer_se)
+        return
+      end
+      if @blacksmith_window.totalcost == 0
+        $game_system.se_play($data_system.buzzer_se)
+        return
+      end
+      $game_party.lose_gold(@blacksmith_window.totalcost)
+      a = @status_window[@target_index].actor
+      a.weapon_atk = @blacksmith_window.upgrade_atk
+      a.weapon_hit = @blacksmith_window.upgrade_hit
+      a.weapon_crit = @blacksmith_window.upgrade_crit
+      @blacksmith_window.reset
+      @blacksmith_window.refresh
+      $game_system.se_play($data_system.shop_se)
+      @help_window.set_text("All done!")
+      return
+    end    
+  end
+  #--------------------------------------------------------------------------
+  # * Frame Update (when target window is active)
+  #--------------------------------------------------------------------------
+  def update_target
+    if Input.repeat?(Input::DOWN)
+      $game_system.se_play($data_system.cursor_se)       
+      @status_window[@target_index].active = false
+      @status_window[@target_index].unselect
+      @target_index = (@target_index + 1) % 8
+      @status_window[@target_index].active = true
+      @status_window[@target_index].select        
+      @blacksmith_window.actor = @status_window[@target_index].actor
+    end    
+    if Input.repeat?(Input::UP)
+      $game_system.se_play($data_system.cursor_se)       
+      @status_window[@target_index].active = false
+      @status_window[@target_index].unselect        
+      @target_index = (@target_index - 1 + 8) % 8
+      @status_window[@target_index].active = true
+      @status_window[@target_index].select        
+      @blacksmith_window.actor = @status_window[@target_index].actor
+    end        
+    # If B button was pressed
+    if Input.trigger?(Input::B)
+      $game_system.se_play($data_system.cancel_se)
+      $scene = Scene_Map.new
+      return
+    end
+    # If C button was pressed
+    if Input.trigger?(Input::C)
+      if @status_window[@target_index].actor != nil
+        @blacksmith_window.active = true
+        @blacksmith_window.visible = true
+        @blacksmith_window.index = 0
+        @status_window[@target_index].active = false
+      else
+        $game_system.se_play($data_system.buzzer_se)
+      end
+    end   
+  end
+end

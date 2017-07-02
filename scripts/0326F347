@@ -1,0 +1,536 @@
+#==============================================================================
+# ** Game_Battler (part 1)
+#------------------------------------------------------------------------------
+#  This class deals with battlers. It's used as a superclass for the Game_Actor
+#  and Game_Enemy classes.
+#==============================================================================
+
+class Game_Battler
+  #--------------------------------------------------------------------------
+  # * Public Instance Variables
+  #--------------------------------------------------------------------------
+  attr_reader   :battler_hue              # battler hue
+  attr_reader   :hp                       # HP
+  attr_reader   :mp                       # MP
+  attr_reader   :states                   # states
+  attr_reader   :base_battler_name   # Never changes, used for KO/Attack etc
+  attr_accessor :str_plus 
+  attr_accessor :mag_plus  
+  attr_accessor :pdf_plus 
+  attr_accessor :mdf_plus 
+  attr_accessor :spd_plus 
+  attr_accessor :acc_plus 
+  attr_accessor :dex_plus 
+  attr_accessor :skl_plus
+  attr_accessor :battler_name       # Battler sprite
+  attr_accessor :battler_force_switch    # Force the switching of sprite even if frozen
+  attr_accessor :states_changed   # States changed, needs update
+  attr_accessor :battle_row           # battle row (0 is nearest)
+  attr_accessor :battle_column      # battle column (0 is front)
+  attr_accessor :hidden                   # hidden flag
+  attr_accessor :immortal                 # immortal flag
+  attr_accessor :damage_pop               # damage display flag
+  attr_accessor :damage                   # damage value
+  attr_accessor :critical                 # critical flag
+  attr_accessor :animation_id             # animation ID
+  attr_accessor :animation_hit            # animation hit flag
+  attr_accessor :animation_flip             # animation flip flag
+  attr_accessor :animation_target_x   # animation target position x
+  attr_accessor :animation_target_y   # animation target position y
+  attr_accessor :animation_movespeed # animation move speed  
+  attr_accessor :animation_show_attack  # show regular attack animation
+  attr_accessor :animation_element  # For element-dependent flashes
+  attr_accessor :freeze_sprite         # Don't update status/KO etc
+  attr_accessor :freeze_position        # Don't update the sprite position
+  attr_accessor :hide_status        # Hide status effect icons
+  attr_accessor :white_flash              # white flash flag
+  attr_accessor :blink                    # blink flag
+  attr_accessor :blink_target       # blink flag
+  attr_accessor :battle_time        # Used in battle to determine turn order  
+  attr_accessor :battle_turn        # Individual battle turn
+  attr_accessor :was_frozen       # Quick fix for Freeze status effect
+  attr_accessor :scanned          # was scanned
+  #--------------------------------------------------------------------------
+  # * Object Initialization
+  #--------------------------------------------------------------------------
+  def initialize
+    @battler_name = ""
+    @battler_hue = 0
+    @hp = 0
+    @mp = 0
+    @states = []
+    @states_turn = {}
+    @states_changed = false
+    @maxhp_plus = 0
+    @mpregen_plus = 0
+    @str_plus = 0
+    @mag_plus = 0    
+    @pdf_plus = 0    
+    @mdf_plus = 0
+    @spd_plus = 0
+    @acc_plus = 0
+    @dex_plus = 0
+    @skl_plus = 0
+    @hidden = false
+    @immortal = false
+    @damage_pop = false
+    @damage = nil
+    @critical = false
+    @animation_id = 0
+    @animation_hit = false
+    @animation_flip = false
+    @animation_target_x = -1
+    @animation_target_y = -1
+    @animation_show_attack = false
+    @animation_element = nil
+    @freeze_sprite = false
+    @freeze_position = false
+    @hide_status = false
+    @white_flash = false
+    @blink = false
+    @blink_target = false
+    @current_action = Game_BattleAction.new
+    @battle_row = -1
+    @battle_column = -1
+    @battle_time = 0
+    @battler_force_switch = false
+    @battle_turn = 0
+    @was_frozen = false
+  end
+  #--------------------------------------------------------------------------
+  # * Get Maximum HP
+  #--------------------------------------------------------------------------
+  def maxhp
+    n = [[base_maxhp + @maxhp_plus, 1].max, 999999].min
+    n = [[Integer(n), 1].max, 999999].min
+    return n
+  end
+  #--------------------------------------------------------------------------
+  # * Get Maximum MP
+  #--------------------------------------------------------------------------
+  def mpregen
+    n = [[base_mpregen + @mpregen_plus, 0].max, 9999].min
+    n = [[Integer(n), 0].max, 9999].min
+    return n
+  end
+  #--------------------------------------------------------------------------
+  # * Get Strength (STR)
+  #--------------------------------------------------------------------------
+  def str
+    n = [[base_str + @str_plus, 1].max, 999].min
+    n = [[Integer(n), 1].max, 999].min
+    return n
+  end
+  #--------------------------------------------------------------------------
+  # * Get Magic (MAG)
+  #--------------------------------------------------------------------------
+  def mag
+    n = [[base_mag + @mag_plus, 1].max, 999].min
+    n = [[Integer(n), 1].max, 999].min
+    return n
+  end
+  #--------------------------------------------------------------------------
+  # * Get PDef (DEF)
+  #--------------------------------------------------------------------------
+  def pdf
+    n = [[base_pdf + @pdf_plus, 1].max, 999].min
+    n = [[Integer(n), 1].max, 999].min
+    return n
+  end
+  #--------------------------------------------------------------------------
+  # * Get MDF 
+  #--------------------------------------------------------------------------
+  def mdf
+    n = [[base_mdf + @mdf_plus, 1].max, 999].min
+    n = [[Integer(n), 1].max, 999].min
+    return n
+  end
+  #--------------------------------------------------------------------------
+  # * Get Speed (SPD)
+  #--------------------------------------------------------------------------
+  def spd
+    n = [[base_spd + @spd_plus, 1].max, 999].min
+    n = [[Integer(n), 1].max, 999].min
+    return n
+  end
+  #--------------------------------------------------------------------------
+  # * Get Accuracy (ACC)
+  #--------------------------------------------------------------------------
+  def acc
+    n = [[base_acc+ @acc_plus, 1].max, 999].min
+    n = [[Integer(n), 1].max, 999].min
+    return n
+  end
+  #--------------------------------------------------------------------------
+  # * Get Dexterity (DEX)
+  #--------------------------------------------------------------------------
+  def dex
+    n = [[base_dex + @dex_plus, 1].max, 999].min
+    n = [[Integer(n), 1].max, 999].min
+    return n
+  end
+  #--------------------------------------------------------------------------
+  # * Get Skill (SKL)
+  #--------------------------------------------------------------------------
+  def skl
+    n = [[base_skl + @skl_plus, 1].max, 999].min
+    n = [[Integer(n), 1].max, 999].min
+    return n
+  end
+  #--------------------------------------------------------------------------
+  # * Get Battle MPRegen
+  #--------------------------------------------------------------------------
+  def b_mpregen
+    n = mpregen
+    n = [[Integer(n), 0].max, 999].min
+    return n
+  end
+  #--------------------------------------------------------------------------
+  # * Get Battle Strength (STR)
+  #--------------------------------------------------------------------------
+  def b_str(longrange = false)
+    n = str
+    row_factor = @battle_row == 1 ? 95 : @battle_row == 2 ? 90 : 100
+    n = n * row_factor / 100
+    # Enfeeble
+    if state?(13)
+      n = n * 75 / 100
+    end    
+    n = n * relation_effect / 100
+    n = [[Integer(n), 1].max, 999].min    
+    return n
+  end
+  #--------------------------------------------------------------------------
+  # * Get Battle Magic (MAG)
+  #--------------------------------------------------------------------------
+  def b_mag
+    n = mag
+    # Amnesia
+    if state?(3)
+      n = n * 75 / 100
+    end
+    n = n * relation_effect / 100
+    n = [[Integer(n), 1].max, 999].min
+    return n
+  end
+  #--------------------------------------------------------------------------
+  # * Get Battle PDef (DEF)
+  #--------------------------------------------------------------------------
+  def b_pdf
+    n = pdf
+    row_factor = @battle_row == 1 ? 105 : @battle_row == 2 ? 110 : 100
+    n = n * row_factor / 100
+    n = n * relation_effect / 100
+    n = [[Integer(n), 1].max, 999].min
+    return n
+  end
+  #--------------------------------------------------------------------------
+  # * Get Battle MDF 
+  #--------------------------------------------------------------------------
+  def b_mdf
+    n = mdf
+    n = n * relation_effect / 100
+    n = [[Integer(n), 1].max, 999].min
+    return n
+  end
+  #--------------------------------------------------------------------------
+  # * Get Battle Speed (SPD)
+  #--------------------------------------------------------------------------
+  def b_spd
+    n = spd
+    # Haste
+    if state?(17) 
+      n = n * 150 / 100
+    end
+    n = n * relation_effect / 100
+    n = [[Integer(n), 1].max, 999].min
+    return n
+  end
+  #--------------------------------------------------------------------------
+  # * Get Battle Accuracy (ACC)
+  #--------------------------------------------------------------------------
+  def b_acc
+    n = acc
+    # Blind or Berserk
+    if state?(7)
+      n = n * 50 / 100
+    elsif state?(8)
+      n = n * 75 / 100
+    end
+    n = n * relation_effect / 100
+    n = [[Integer(n), 1].max, 999].min
+    return n
+  end
+  #--------------------------------------------------------------------------
+  # * Get Battle Dexterity (DEX)
+  #--------------------------------------------------------------------------
+  def b_dex
+    n = dex
+    n = n * relation_effect / 100
+    n = [[Integer(n), 1].max, 999].min
+    return n
+  end
+  #--------------------------------------------------------------------------
+  # * Get Battle Skill (SKL)
+  #--------------------------------------------------------------------------
+  def b_skl
+    n = skl
+    n = n * relation_effect / 100
+    n = [[Integer(n), 1].max, 999].min
+    return n
+  end
+  #--------------------------------------------------------------------------
+  # * Relation effect (100 by default)
+  #--------------------------------------------------------------------------
+  def relation_effect
+    return 100
+  end  
+  #--------------------------------------------------------------------------
+  # * Get Hit Rate
+  #--------------------------------------------------------------------------
+  def hit(e_dex, no_dodge = false)
+    if no_dodge
+      return 100
+    end
+    n = 350 * Math.sqrt(self.b_acc) / Math.sqrt(e_dex) - 255
+    n = [[n, 100].min, 0].max
+    return Integer(n)
+  end
+  #--------------------------------------------------------------------------
+  # * Get Crit Rate
+  #--------------------------------------------------------------------------
+  def crit(e_dex)
+    n = 60 * Math.sqrt(self.b_skl) / Math.sqrt(e_dex) - 45
+    n = [[n, 100].min, 0].max
+    return Integer(n)
+  end
+  #--------------------------------------------------------------------------
+  # * pdamage
+  #--------------------------------------------------------------------------
+  def pdamage(e_str, e_elem, crit, defending, x = 100, q = 100, rand = true) 
+    # (2 * C * X * E.Str - S.Pdf) * Q * E * D * B * [0.85...1.15]
+    # X and Q are 100 for regular attacks
+    c = crit ? 125 : 100
+    e = self.element_rate(e_elem)
+    d = defending ? 50 : 100
+    r = rand ? 85 + rand(30) : 100
+    b = self.state?(19) ? 50 : 100 # Barrier
+    damage =  ((2 * x * c * e_str) / 10000 - self.b_pdf) * q / 100 * e / 100 * d / 100 * b / 100 * r / 100
+    return [0, damage].max
+  end
+  #--------------------------------------------------------------------------
+  # * pdamage from skill
+  #-------------------------------------------------------------------------- 
+  def skill_pdamage(skill, user, defending)  
+    info = SkillInfo.new(skill)        
+    return pdamage(user.b_str(info.longrange?), info.element(user), false, defending, info.x, info.q)
+  end
+  #--------------------------------------------------------------------------
+  # * mdamage from skill
+  #-------------------------------------------------------------------------- 
+  def skill_mdamage(skill, user, defending, rand = true)  
+    # (X * (0,5 * S.Mag + 0,5 * M) - E.Mdf) * Q * E * D * S * [0.85...1.15]
+    info = SkillInfo.new(skill)        
+    e = self.element_rate(info.element(user))
+    x = info.x
+    q = info.q
+    m = info.m * user.mag_multiplier / 100
+    d = defending ? 50 : 100
+    s = self.state?(18) ? 50 : 100 # Shield
+    r = rand ? 85 + rand(30) : 100
+    f = 1
+    targ_mdef = self.b_mdf
+    if (info.is_healing?)
+      # Healing
+      f = -1
+      e = 100
+      d = 100
+      s = 100
+      targ_mdef = 0
+    end
+    user_mag = user.b_mag
+    # After a certain limit (for some spells) magic damage increases more slowly
+    if info.mag_limit > 0 and user_mag > info.mag_limit
+      user_mag = info.mag_limit + (user_mag - info.mag_limit) / 3
+    end    
+    damage = (2 * x * (50 * user_mag * f + 50 * m) / 10000 - targ_mdef) * q / 100 * e / 100 * d / 100 * s / 100 * r / 100    
+    return f == 1 ? [0, damage].max : [0, damage].min
+  end
+  #--------------------------------------------------------------------------
+  # * Change HP
+  #     hp : new HP
+  #--------------------------------------------------------------------------
+  def hp=(hp)
+    @hp = [[hp, maxhp].min, 0].max
+    # add or exclude incapacitation
+    for i in 1...$data_states.size      
+      if $data_states[i].zero_hp        
+        if self.dead?
+          add_state(i, true)
+        else
+          remove_state(i, true)
+        end
+      elsif self.dead?
+        remove_state(i, true)
+      end        
+    end
+    @states_changed = true
+  end 
+  #--------------------------------------------------------------------------
+  # * Change MP
+  #     mp : new MP
+  #--------------------------------------------------------------------------
+  def mp=(mp)
+    @mp = [[mp, 999].min, 0].max
+  end
+  #--------------------------------------------------------------------------
+  # * Recover All
+  #--------------------------------------------------------------------------
+  def recover_all
+    @hp = maxhp
+    for i in @states.clone
+      remove_state(i)
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Get Element Revision Value
+  #     element_id : Element ID
+  #--------------------------------------------------------------------------
+  def element_rate(element_id)
+    # Same element: -15% damage
+    if element_id == self.element
+      return 85
+    end
+    # Opposing element: +30% damage
+    if element_id == ELEM_LIGHT
+      return 130 if self.element == ELEM_DARK
+    elsif element_id == ELEM_DARK
+      return 130 if self.element ==  ELEM_LIGHT
+    elsif element_id == ELEM_FIRE
+      return 130 if self.element == ELEM_ICE
+    elsif element_id == ELEM_ICE
+      return 130 if self.element == ELEM_FIRE
+    elsif element_id == ELEM_WATER
+      return 130 if self.element == ELEM_THUNDER
+    elsif element_id == ELEM_THUNDER
+      return 130 if self.element == ELEM_WATER
+    end
+    # Different element
+    return 100
+  end
+  #--------------------------------------------------------------------------
+  # * Get Current Action
+  #--------------------------------------------------------------------------
+  def current_action
+    return @current_action
+  end
+  #--------------------------------------------------------------------------
+  # * X-offset to use for determining the target position to move to for an attack
+  #--------------------------------------------------------------------------
+  def weapon_xoffset
+    return -25
+  end
+  #--------------------------------------------------------------------------
+  # * Determine Action Speed
+  #--------------------------------------------------------------------------
+  def turn_wait
+    #n = 2500 - 250 * (self.b_spd.to_f ** (0.3333333))
+    n = 100000 / self.b_spd
+    # Slow
+    if state?(9)
+      n = n * 150 / 100
+    end
+    # Haste
+    if state?(17)
+      n = n * 75 / 100
+    end    
+    return [n.round, 100].max
+  end
+  #--------------------------------------------------------------------------
+  # * Decide Targetable
+  #--------------------------------------------------------------------------
+  def targetable?
+    if self.is_a?(Game_Actor)
+      return true
+    else
+      return (not @hidden and (@hp > 0 or @immortal))
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Decide Incapacitation
+  #--------------------------------------------------------------------------
+  def dead?
+    return (@hp == 0 and not @immortal)
+  end
+  #--------------------------------------------------------------------------
+  # * Decide Existance
+  #--------------------------------------------------------------------------
+  def exist?
+    return (not @hidden and (@hp > 0 or @immortal))
+  end
+  #--------------------------------------------------------------------------
+  # * Decide HP 0
+  #--------------------------------------------------------------------------
+  def hp0?
+    return (not @hidden and @hp == 0)
+  end
+  #--------------------------------------------------------------------------
+  # * Decide if Command is Inputable
+  #--------------------------------------------------------------------------
+  def inputable?
+    return (not @hidden and restriction <= 1)
+  end
+  #--------------------------------------------------------------------------
+  # * Decide if Action is Possible
+  #--------------------------------------------------------------------------
+  def movable?
+    return (not @hidden and restriction < 4)
+  end
+  #--------------------------------------------------------------------------
+  # * Decide if Guarding
+  #--------------------------------------------------------------------------
+  def guarding?
+    return (@current_action.kind == 0 and @current_action.basic == 1)
+  end
+  #--------------------------------------------------------------------------
+  # * Decide if Resting
+  #--------------------------------------------------------------------------
+  def resting?
+    return (@current_action.kind == 0 and @current_action.basic == 3)
+  end
+  #--------------------------------------------------------------------------
+  # * Battler name
+  #--------------------------------------------------------------------------
+  def battle_icon
+    return @battler_name
+  end
+  #--------------------------------------------------------------------------
+  # * Returns number of frames for the attack animation (0 = none)
+  #--------------------------------------------------------------------------
+  def attack_sprite_frames
+    return 0
+  end
+  #--------------------------------------------------------------------------
+  # * Screen y
+  #--------------------------------------------------------------------------
+  def screen_y
+    if battler_name == "E_Wyvern_L"
+      return 370 - 35 * 1 - 2*@battle_row + 25         
+    elsif battler_name == "E_Wyvern_R"
+      return 370 - 35 * 1 - 2*@battle_row - 25 
+    end    
+    # Each row is 2 pixels higher so overlap looks okay
+    return 370 - 35 * @battle_column - 2*@battle_row   
+  end
+  #--------------------------------------------------------------------------
+  # * Screen z
+  #--------------------------------------------------------------------------
+  def screen_z
+    if battler_name == "E_Wyvern_L"
+      return screen_y - 50
+    elsif battler_name == "E_Wyvern_R"
+      return screen_y + 50
+    end    
+    return screen_y
+  end
+end

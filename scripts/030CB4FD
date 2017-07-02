@@ -1,0 +1,31 @@
+#==============================================================================
+# ** Sprite_Projectile
+#------------------------------------------------------------------------------
+#==============================================================================
+
+class Sprite_Projectile < RPG::Sprite
+  #--------------------------------------------------------------------------
+  # * Object Initialization
+  #     viewport : viewport
+  #     battler  : battler (Game_Battler)
+  #--------------------------------------------------------------------------
+  def initialize(viewport, x, y, z, targx, targy, speed, sprite)
+    super(viewport)
+    self.x = x
+    self.y = y
+    self.z = z
+    self.bitmap = RPG::Cache.animation("Projectiles/" + sprite, 0)
+    self.ox = self.bitmap.width / 2
+    self.oy = self.bitmap .height
+    self.move(targx, targy, speed)
+  end
+  #--------------------------------------------------------------------------
+  # * Dispose
+  #--------------------------------------------------------------------------
+  def dispose
+    if self.bitmap != nil
+      self.bitmap.dispose
+    end
+    super
+  end
+end

@@ -1,0 +1,524 @@
+#==============================================================================
+# ** Game_Party
+#------------------------------------------------------------------------------
+#  This class handles the party. It includes information on amount of gold 
+#  and items. Refer to "$game_party" for the instance of this class.
+#==============================================================================
+
+class Game_Party
+  #--------------------------------------------------------------------------
+  # * Public Instance Variables
+  #--------------------------------------------------------------------------
+  attr_reader   :actors                   # actors
+  attr_reader   :entourage            # entourage actors
+  attr_reader   :gold                     # amount of gold
+  
+  attr_reader   :battles                  # battles fought
+  attr_accessor :war_units          # For each war unit, type and the three character IDs in it
+  attr_reader :items_seen         # All items seen in stores
+  attr_reader :armor_seen       # All armour seen in stores
+  attr_reader :accessories_seen       # All accessories seen in stores
+  attr_reader :magic_seen       # All magic seen in stores
+  attr_accessor :flashback_mode   # Flashback mode, can't equip/use items etc
+  #--------------------------------------------------------------------------
+  # * Object Initialization
+  #--------------------------------------------------------------------------
+  def initialize
+    # Create actor array
+    @actors = []
+    @entourage = []
+    # Initialize amount of gold and steps
+    @gold = 0
+    # Create amount in possession hash for items, magic, and armor
+    @items = {}
+    @magic = {}
+    @armors = {}
+    @battles = 0
+    @flashback_mode = false
+    @saved_party = [] # For temporarily saving parties
+    @items_seen = []
+    @armor_seen = []
+    @accessories_seen = []
+    @magic_seen = []
+    @war_units = [] 
+    for i in 1..14
+      @war_units[i] = [$data_warleaders[i].default_type , [0, 0, 0]]
+    end
+    @war_scores = []
+    @war_scores_turns = []
+  end  
+  #--------------------------------------------------------------------------
+  # * Initial Party Setup
+  #--------------------------------------------------------------------------
+  def setup_starting_members
+    @actors = []
+    for i in $data_system.party_members
+      @actors.push($game_actors[i])
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Battle Test Party Setup
+  #--------------------------------------------------------------------------
+  def setup_battle_test_members
+    @actors = []
+    for battler in $data_system.test_battlers
+      actor = $game_actors[battler.actor_id]
+      actor.level = battler.level
+      #gain_weapon(battler.weapon_id, 1)
+      #gain_armor(battler.armor1_id, 1)
+      #gain_armor(battler.armor2_id, 1)
+      #gain_armor(battler.armor3_id, 1)
+      #gain_armor(battler.armor4_id, 1)
+      #actor.equip(0, battler.weapon_id)
+      #actor.equip(1, battler.armor1_id)
+      #actor.equip(2, battler.armor2_id)
+      #actor.equip(3, battler.armor3_id)
+      #actor.equip(4, battler.armor4_id)
+      actor.recover_all
+      @actors.push(actor)
+    end
+    @items = {}
+    for i in 1...$data_items.size
+      if $data_items[i].name != ""
+        occasion = $data_items[i].occasion
+        if occasion == 0 or occasion == 1
+          @items[i] = 99
+        end
+      end
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Refresh Party Members
+  #--------------------------------------------------------------------------
+  def refresh
+    # Actor objects split from $game_actors right after loading game data
+    # Avoid this problem by resetting the actors each time data is loaded.
+    new_actors = []
+    for i in 0...@actors.size
+      if $exdata_actors[@actors[i].id] != nil
+        new_actors.push($game_actors[@actors[i].id])
+      end
+    end
+    @actors = new_actors    
+    new_actors = []
+    for i in 0...@entourage.size
+      if $exdata_actors[@entourage[i].id] != nil
+        new_actors.push($game_actors[@entourage[i].id])
+      end
+    end
+    @entourage = new_actors    
+  end
+  #--------------------------------------------------------------------------
+  # * Getting grid of actors
+  #--------------------------------------------------------------------------
+  def actors_grid
+    grid = [[nil, nil, nil],[nil, nil, nil],[nil, nil, nil]]
+    for a in @actors
+      grid[a.battle_row][a.battle_column] = a
+    end
+    return grid
+  end
+  #--------------------------------------------------------------------------
+  # * Getting Maximum Level
+  #--------------------------------------------------------------------------
+  def max_level
+    # If 0 members are in the party
+    if @actors.size == 0
+      return 0
+    end
+    # Initialize local variable: level
+    level = 0
+    # Get maximum level of party members
+    for actor in @actors
+      if level < actor.level
+        level = actor.level
+      end
+    end
+    return level
+  end
+  #--------------------------------------------------------------------------
+  # * Add an Actor
+  #     actor_id : actor ID
+  #--------------------------------------------------------------------------
+  def add_actor(actor_id)
+    # Get actor
+    actor = $game_actors[actor_id]
+    # If the party has less than 6 members and this actor is not in the party
+    if not @actors.include?(actor)
+      if @actors.size < 6 and
+        # If this actor's place in the formation is already taken, reset it
+        for a in @actors
+          if a.battle_column == actor.battle_column and a.battle_row == actor.battle_row
+            set_default_formation(actor_id)          
+          end
+        end    
+        # Add actor
+        @actors.push(actor)
+      else 
+        # Party is full. Show screen
+        $scene = Scene_Arrange.new([actor_id])        
+      end
+    end
+    # If this is a fresh actor, place them in formation
+    if actor.battle_column == -1
+      set_default_formation(actor_id)
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Set an actor to the first empty space in the formation
+  #     actor_id : actor ID
+  #--------------------------------------------------------------------------  
+  def set_default_formation(actor_id)
+    new_actor = $game_actors[actor_id]
+    # Find the first empty space
+    field = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
+    for actor in @actors
+      field[actor.battle_column][actor.battle_row] = 1
+    end      
+    for i in 0..2
+      for j in 0..2
+        if field[j][i] == 0
+          new_actor.battle_column = j
+          new_actor.battle_row = i
+          return
+        end
+      end
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Add an Actor
+  #     actor_id : actor ID
+  #--------------------------------------------------------------------------
+  def add_entourage(actor_id)
+    # Get actor
+    actor = $game_actors[actor_id]
+    # If the party has less than 4 members and this actor is not in the party
+    if @entourage.size < 2 and not @entourage.include?(actor)
+      @entourage.push(actor)
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Remove Actor
+  #     actor_id : actor ID
+  #--------------------------------------------------------------------------
+  def remove_actor(actor_id)
+    actor = $game_actors[actor_id]
+    if @actors.include?(actor)
+      @actors.delete(actor)
+      if @actors.size == 0 and @entourage.size > 0
+        # Party is empty but entourage is not. Switch someone over
+        @actors.push(@entourage.pop)        
+      end
+    elsif @entourage.include?(actor)
+      @entourage.delete(actor)
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Remove Actor
+  #     actor_id : actor ID
+  #--------------------------------------------------------------------------
+  def remove_entourage(actor_id)
+    # Delete actor
+    @entourage.delete($game_actors[actor_id])
+  end
+  #--------------------------------------------------------------------------
+  # * Clear entire party
+  #--------------------------------------------------------------------------
+  def clear_party_and_entourage
+    @actors.clear
+    @entourage.clear
+  end
+  #--------------------------------------------------------------------------
+  # * Save entire party
+  #--------------------------------------------------------------------------  
+  def save_party(slot)
+    @saved_party[slot] = [[], []]
+    for a in @actors
+      @saved_party[slot][0].push(a.id)
+    end
+    for a in @entourage
+      @saved_party[slot][1].push(a.id)
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Load party
+  #--------------------------------------------------------------------------  
+  def load_party(slot)
+    # Clear current party
+    clear_party_and_entourage
+    # Add old characters
+    for a in @saved_party[slot][0]
+      @actors.push($game_actors[a])
+    end
+    for a in @saved_party[slot][1]
+      @entourage.push($game_actors[a])
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Add a certain item to the list of stuff seen in stores
+  #  This is used for the castle stores' inventories
+  #-------------------------------------------------------------------------- 
+  def seen_in_store(kind, id)
+    case kind
+      when 0
+        if not @items_seen.include?([0, id])
+          @items_seen.push([0, id])
+        end
+      when 1
+        if not @magic_seen.include?([1, id])
+          @magic_seen.push([1, id])
+        end
+      when 2
+        if not @armor_seen.include?([2, id])
+          @armor_seen.push([2, id])
+        end
+      when 3
+        if not @accessories_seen.include?([2, id])
+          @accessories_seen.push([2, id])
+        end
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Gain Gold (or lose)
+  #     n : amount of gold
+  #--------------------------------------------------------------------------
+  def gain_gold(n)
+    @gold = [[@gold + n, 0].max, 99999999].min
+  end
+  #--------------------------------------------------------------------------
+  # * Lose Gold
+  #     n : amount of gold
+  #--------------------------------------------------------------------------
+  def lose_gold(n)
+    # Reverse the numerical value and call it gain_gold
+    gain_gold(-n)
+  end
+  #--------------------------------------------------------------------------
+  # * Increase Steps
+  #--------------------------------------------------------------------------
+  def increase_steps
+    @steps = [@steps + 1, 9999999].min
+  end
+  #--------------------------------------------------------------------------
+  # * Increase Battles
+  #--------------------------------------------------------------------------
+  def increase_battles
+    @battles = [@battles + 1, 9999999].min
+  end
+  #--------------------------------------------------------------------------
+  # * Get Number of Items Possessed
+  #     item_id : item ID
+  #--------------------------------------------------------------------------
+  def item_number(item_id)
+    # If quantity data is in the hash, use it. If not, return 0
+    return @items.include?(item_id) ? @items[item_id] : 0
+  end
+  #--------------------------------------------------------------------------
+  # * Get Number of a spell Possessed
+  #     id :  ID
+  #--------------------------------------------------------------------------
+  def magic_number(id)
+    # If quantity data is in the hash, use it. If not, return 0
+    return @magic.include?(id) ? @magic[id] : 0
+  end
+  #--------------------------------------------------------------------------
+  # * Get Amount of Armor Possessed
+  #     armor_id : armor ID
+  #--------------------------------------------------------------------------
+  def armor_number(armor_id)
+    # If quantity data is in the hash, use it. If not, return 0
+    return @armors.include?(armor_id) ? @armors[armor_id] : 0
+  end
+  #--------------------------------------------------------------------------
+  # * Gain Items (or lose)
+  #     item_id : item ID
+  #     n       : quantity
+  #--------------------------------------------------------------------------
+  def gain_item(item_id, n)
+    # Update quantity data in the hash.
+    if item_id > 0
+      @items[item_id] = [[item_number(item_id) + n, 0].max, 99].min
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Gain Magic (or lose)
+  #     id :  ID
+  #     n         : quantity
+  #--------------------------------------------------------------------------
+  def gain_magic (id, n)
+    # Update quantity data in the hash.
+    if id > 0
+      @magic[id] = [[magic_number(id) + n, 0].max, 99].min
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Gain Armor (or lose)
+  #     armor_id : armor ID
+  #     n        : quantity
+  #--------------------------------------------------------------------------
+  def gain_armor(armor_id, n)
+    # Update quantity data in the hash.
+    if armor_id > 0
+      @armors[armor_id] = [[armor_number(armor_id) + n, 0].max, 99].min
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Lose Items
+  #     item_id : item ID
+  #     n       : quantity
+  #--------------------------------------------------------------------------
+  def lose_item(item_id, n)
+    # Reverse the numerical value and call it gain_item
+    gain_item(item_id, -n)
+  end
+  #--------------------------------------------------------------------------
+  # * Lose Armor
+  #     armor_id : armor ID
+  #     n        : quantity
+  #--------------------------------------------------------------------------
+  def lose_armor(armor_id, n)
+    # Reverse the numerical value and call it gain_armor
+    gain_armor(armor_id, -n)
+  end
+  #--------------------------------------------------------------------------
+  # * Determine if Item is Usable
+  #     item_id : item ID
+  #--------------------------------------------------------------------------
+  def item_can_use?(item_id)
+    # If item quantity is 0
+    if item_number(item_id) == 0
+      # Unusable
+      return false
+    end
+    # Get usable time
+    occasion = $data_items[item_id].occasion
+    # If in battle
+    if $game_temp.in_battle
+      # If useable time is 0 (normal) or 1 (only battle) it's usable
+      return (occasion == 0 or occasion == 1)
+    end
+    # If useable time is 0 (normal) or 2 (only menu) it's usable
+    return (occasion == 0 or occasion == 2)
+  end
+  #--------------------------------------------------------------------------
+  # * Set war battle result
+  #--------------------------------------------------------------------------
+  def set_war_score(index, score, turns)
+    if @war_scores[index] == nil or @war_scores[index] < score
+      @war_scores[index] = score
+      @war_scores_turns[index] = turns
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Get war battle result
+  #--------------------------------------------------------------------------  
+  def get_war_score(index)
+    if @war_scores[index] == nil 
+      return 0
+    else
+      return @war_scores[index]
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Get war battle result (turns taken for best score)
+  #--------------------------------------------------------------------------  
+  def get_war_score_turns(index)
+    if @war_scores[index] == nil 
+      return 0
+    else
+      return @war_scores_turns[index]
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Clear All Member Actions
+  #--------------------------------------------------------------------------
+  def clear_actions
+    # Clear All Member Actions
+    for actor in @actors
+      actor.current_action.clear
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Determine if Command is Inputable
+  #--------------------------------------------------------------------------
+  def inputable?
+    # Return true if input is possible for one person as well
+    for actor in @actors
+      if actor.inputable?
+        return true
+      end
+    end
+    return false
+  end
+  #--------------------------------------------------------------------------
+  # * Determine Everyone is Dead
+  #--------------------------------------------------------------------------
+  def all_dead?
+    # If number of party members is 0
+    if $game_party.actors.size == 0
+      return false
+    end
+    # If an actor is in the party with 0 or more HP
+    for actor in @actors
+      if actor.hp > 0
+        return false
+      end
+    end
+    # All members dead
+    return true
+  end
+  #--------------------------------------------------------------------------
+  # * Slip Damage Check (for map)
+  #--------------------------------------------------------------------------
+  def check_map_slip_damage
+    for actor in @actors
+      if actor.hp > 0 and actor.slip_damage?
+        actor.hp -= [actor.maxhp / 100, 1].max
+        if actor.hp == 0
+          $game_system.se_play($data_system.actor_collapse_se)
+        end
+        $game_screen.start_flash(Color.new(255,0,0,128), 4)
+        $game_temp.gameover = $game_party.all_dead?
+      end
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Random Selection of Target Actor
+  #     hp0 : limited to actors with 0 HP
+  #--------------------------------------------------------------------------
+  def random_target_actor(hp0 = false, longrange = false)
+    # Initialize roulette
+    roulette = []
+    grid = self.actors_grid
+    for col in 0..2 # Check each column
+      for row in 0..2 # Look from front to back
+        if grid[row][col] != nil
+          actor = grid[row][col]
+          if (not hp0 and actor.exist?) or (hp0 and actor.hp0?)
+            roulette.push(actor)
+            break if not longrange
+          end
+        end
+      end
+    end           
+    # If roulette size is 0
+    if roulette.size == 0
+      return nil
+    end
+    # Spin the roulette, choose an actor
+    return roulette[rand(roulette.size)]
+  end
+  #--------------------------------------------------------------------------
+  # * Random Selection of Target Actor (Long range)
+  #--------------------------------------------------------------------------
+  def random_target_actor_longrange
+    return random_target_actor(false, true)
+  end
+  #--------------------------------------------------------------------------
+  # * Random Selection of Target Actor (HP 0)
+  #    These skills will always be long range
+  #--------------------------------------------------------------------------
+  def random_target_actor_hp0
+    return random_target_actor(true, true)
+  end
+end

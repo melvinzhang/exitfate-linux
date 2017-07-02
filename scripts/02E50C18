@@ -1,0 +1,121 @@
+#==============================================================================
+# ** Window_Destination
+#------------------------------------------------------------------------------
+#  Shows travel destinations for Sally and Deke
+#==============================================================================
+
+class Window_Destination < Window_Selectable
+  #--------------------------------------------------------------------------
+  # * Object Initialization
+  #--------------------------------------------------------------------------
+  def initialize(mode)
+    super(40, 64, 560, 345)
+    @mode = mode
+    if @mode == 1
+      setup_ship
+    else
+      setup_teleport
+    end
+    refresh
+    self.index = 0
+  end
+  #--------------------------------------------------------------------------
+  # * Item
+  #--------------------------------------------------------------------------
+  def destination
+    return @destinations[self.index]
+  end  
+  #--------------------------------------------------------------------------
+  # * Refresh
+  #--------------------------------------------------------------------------
+  def refresh
+    if self.contents != nil
+      self.contents.dispose
+      self.contents = nil
+    end
+    @item_max = @destinations.size
+    if @item_max > 0
+      self.contents = Bitmap.new(width - 32, row_max * @row_height + 32)
+      for i in 0...@item_max
+        draw_item(i)
+      end
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Draw Item
+  #     index : item number
+  #--------------------------------------------------------------------------
+  def draw_item(index)
+    item = @destinations[index]
+    x = 4
+    y = index * @row_height - 4
+    self.draw_text(x, y, 400, 32, item[0], 0)
+  end
+  #--------------------------------------------------------------------------
+  # * Setup destinations for Sally
+  #--------------------------------------------------------------------------
+  def setup_ship
+    @destinations = []
+    @destinations.push(["Bayside Town", 53, 60, 57, 4]) if $game_switches[210] == true 
+    @destinations.push(["Jargo Port City", 381, 60, 23, 4]) if $game_switches[234] == true 
+    @destinations.push(["Ansee", 9, 44, 68, 4]) if ($game_switches[51] == true and not $game_switches[197] == true) or $game_switches[217] == true
+    @destinations.push(["Blackwater Port", 65, 19, 24, 2]) if (($game_switches[155] == false or $game_switches[173] == true) and not $game_switches[209] == true) or $game_switches[216] == true
+    @destinations.push(["Treasure Island", 125, 9, 18, 8])    
+    @destinations.push(["Midian's Island", 137, 19, 13, 4])   
+    @destinations.push(["Trarcia", 406, 40, 44, 8]) if $game_switches[243] == true and $game_switches[244] == false
+    @destinations.push(["Ashton Port", 444, 69, 33, 4])  if $game_switches[244] == true    
+    @destinations.push(["St. Reinard", 407, 48, 22, 2])  if $game_switches[257] == true    
+  end
+  #--------------------------------------------------------------------------
+  # * Setup destinations for Deke
+  #--------------------------------------------------------------------------
+  def setup_teleport
+    @destinations = []
+    @destinations.push(["Alfheim", 36, 47, 45, 8]) if $game_switches[210] == true
+    @destinations.push(["Bayside Town", 53, 37, 9, 2]) if $game_switches[210] == true 
+    @destinations.push(["Harlinton", 42, 14, 12, 8]) if $game_switches[210] == true 
+    @destinations.push(["Gaia's Heart", 350, 16, 30, 8]) if $game_switches[57] == true
+    @destinations.push(["Kelsinger Pass", 41, 11, 14, 8]) if $game_switches[210] == true    
+    @destinations.push(["Jargo Port City", 381, 36, 69, 8]) if $game_switches[234] == true 
+    @destinations.push(["Blackwater Port", 60, 14, 14, 6]) if not $game_switches[209] == true or $game_switches[216] == true 
+    @destinations.push(["Mayfall City", 66, 9, 9, 2]) if (not $game_switches[209] == true or $game_switches[226] == true)
+    @destinations.push(["Lost City of Avalon", 359, 10, 13, 8]) if $game_switches[58] == true     
+    @destinations.push(["Amen Corner", 75, 94, 56, 4]) if not $game_switches[209] == true or $game_switches[216] == true
+    @destinations.push(["Madrigal", 90, 6, 14, 6])   
+    @destinations.push(["Credence", 97, 15, 43, 8])   
+    @destinations.push(["Matrech State Capital", 103, 28, 84, 8]) if (not $game_switches[209] == true or $game_switches[241] == true)
+    @destinations.push(["Fading Dream", 321, 9, 15, 8])  if $game_switches[56] == true 
+    @destinations.push(["Western Pass", 118, 12, 15, 4])  
+    @destinations.push(["Ansee", 9, 22, 91, 8])  if ($game_switches[51] == true and not $game_switches[197] == true) or $game_switches[217] == true
+    @destinations.push(["Grunthall", 192, 42, 45, 8]) if not $game_switches[197] == true or $game_switches[217] == true
+    @destinations.push(["Bergstadt", 193, 19, 7, 2]) if not $game_switches[197] == true or $game_switches[217] == true
+    @destinations.push(["Oischin Forest", 251, 16, 7, 2])  if $game_switches[52] == true
+    @destinations.push(["Sibet Town", 259, 83, 22, 4])  if $game_switches[53] == true and (not $game_switches[209] == true or $game_switches[241] == true)
+    @destinations.push(["University City Faraday", 264, 38, 85, 8])  if $game_switches[187] == true and (not $game_switches[209] == true or $game_switches[241] == true)
+    @destinations.push(["Cento Temple", 290, 17, 29, 8])  if $game_switches[54] == true and (not $game_switches[209] == true or $game_switches[241] == true)
+    @destinations.push(["Elemental Mansion", 296, 25, 38, 8])  if $game_switches[55] == true and (not $game_switches[209] == true or $game_switches[241] == true)
+    @destinations.push(["Trarcia", 410, 5, 22, 6])  if $game_switches[243] == true    
+    @destinations.push(["Ashton Port", 444, 35, 8, 2])  if $game_switches[59] == true    
+    @destinations.push(["Vishnu Citadel", 426, 18, 27, 8])  if $game_switches[244] == true    
+    @destinations.push(["Magma Caverns", 451, 18, 37, 8])  if $game_switches[67] == true    
+    @destinations.push(["Shiva Passage", 455, 14, 22, 8])  if $game_switches[247] == true    
+    @destinations.push(["Levier", 497, 4, 59, 6])  if $game_switches[60] == true    
+    @destinations.push(["Ft. Brahma", 523, 13, 33, 6])  if $game_switches[252] == true    
+    @destinations.push(["Jinen Gama", 505, 6, 8, 6])  if $game_switches[252] == true    
+    @destinations.push(["Tal Gren", 512, 7, 22, 6])  if $game_switches[252] == true   
+    @destinations.push(["Valduz", 526, 28, 66, 8])  if $game_switches[61] == true   
+    @destinations.push(["Mt. Ea", 508, 14, 16, 8])  if $game_switches[62] == true   
+    @destinations.push(["Shadow Clan", 608, 16, 32, 8])  if $game_switches[322] == true   
+    @destinations.push(["Bandit Cave", 21, 10, 13, 8])  if $game_switches[66] == true   
+    @destinations.push(["St. Reinard", 545, 37, 66, 8])  if $game_switches[257] == true 
+    @destinations.push(["Jormundgand", 557, 15, 25, 8])  if $game_switches[63] == true or $game_switches[258] == true   
+    @destinations.push(["Muspelheim", 570, 4, 12, 6])  if $game_switches[262] == true 
+    @destinations.push(["Hall of Memories", 581, 14, 24, 8])  if $game_switches[262] == true 
+    @destinations.push(["Nocturn Keep", 582, 43, 82, 8])  if $game_switches[371] == true 
+    @destinations.push(["Nifl Woods", 601, 27, 15, 4])  if $game_switches[263] == true 
+    @destinations.push(["Niflheim", 602, 43, 26, 4])  if $game_switches[64] == true   
+    @destinations.push(["North Almenga Border", 620, 15, 25, 8])  if $game_switches[269] == true   
+    @destinations.push(["Vanaheim", 630, 20, 37, 8])  if $game_switches[275] == true   
+    @destinations.push(["Jotunheim", 635, 17, 28, 8])  if $game_switches[65] == true   
+  end
+end

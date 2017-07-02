@@ -1,0 +1,421 @@
+#==============================================================================
+# ** Scene_Map
+#------------------------------------------------------------------------------
+#  This class performs map screen processing.
+#==============================================================================
+
+class Scene_Map
+  #--------------------------------------------------------------------------
+  # * Main Processing
+  #--------------------------------------------------------------------------
+  def main
+    # Make sprite set
+    @spriteset = Spriteset_Map.new
+    # Make message windows
+    @message_window = Window_Message.new
+    @message_window_small = Window_Message_Small.new
+    # Bribe window
+    @bribe_window = Window_Bribe.new    
+    # Set location show timer to -1
+    @location_show_timer = -1
+    # Transition run
+    Graphics.transition
+    # Main loop
+    loop do
+      # Update game screen
+      Graphics.update
+      # Update input information
+      Input.update
+      # Frame update
+      update
+      # Abort loop if screen is changed
+      if $scene != self
+        break
+      end
+    end
+    # Prepare for transition
+    Graphics.freeze
+    # Dispose of sprite set
+    @spriteset.dispose
+    # Dispose of message window
+    @message_window.dispose
+    @message_window_small.dispose
+    @bribe_window.dispose
+    @location_sprite.dispose if @location_sprite != nil
+    # Reset encounter count
+    $game_player.encounter_wait == 0
+    # If switching to title screen
+    if $scene.is_a?(Scene_Title)
+      # Fade out screen
+      Graphics.transition
+      Graphics.freeze
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Frame Update
+  #--------------------------------------------------------------------------
+  def update
+    # Loop
+    loop do
+      # Update map, interpreter, and player order
+      # (this update order is important for when conditions are fulfilled 
+      # to run any event, and the player isn't provided the opportunity to
+      # move in an instant)
+      $game_map.update
+      $game_system.map_interpreter.update
+      $game_player.update
+      # Update system (timer), screen
+      $game_system.update
+      $game_screen.update
+      # Abort loop if player isn't place moving
+      unless $game_temp.player_transferring
+        break
+      end
+      # Run place move
+      transfer_player
+      # Abort loop if transition processing
+      if $game_temp.transition_processing
+        break
+      end
+    end
+    # Update sprite set
+    @spriteset.update
+    # Update message window
+    @message_window.update
+    @message_window_small.update    
+    @bribe_window.update
+    # Show location name
+    unless $game_temp.location_name == nil
+      if @location_show_timer == -1
+        if $game_temp.location_was_shown
+          # Location was already shown, so ignore it
+          # This is a quick fix for repeatiing the name when you go into menu/leave map before it finsihes
+          $game_temp.location_name = nil
+          $game_temp.location_was_shown = false
+        else
+          $game_temp.location_was_shown = true
+          @location_show_timer = 100
+          @location_sprite = Sprite.new
+          @location_sprite.bitmap = Bitmap.new(640, 40)
+          @location_sprite.x = 0
+          @location_sprite.y = 100
+          @location_sprite.bitmap.font.size = 30
+          @location_sprite.bitmap.font.bold = true
+          @location_sprite.bitmap.font.color = Color.new(0, 0, 0, 128)
+          for xo in [-1, 0, 1]
+            for yo in [-1, 0, 1]
+              @location_sprite.bitmap.draw_text(0+xo, 0+yo, 640, 40, $game_temp.location_name, 1)            
+            end
+          end
+          @location_sprite.bitmap.font.color = Color.new(255, 255, 255, 255)
+          @location_sprite.bitmap.draw_text(0, 0, 640, 40, $game_temp.location_name, 1)
+          @location_sprite.opacity = 0
+        end
+      elsif @location_show_timer == 0
+        @location_sprite.opacity -= 20
+        if @location_sprite.opacity == 0        
+          $game_temp.location_name = nil
+          @location_show_timer = -1
+          @location_sprite.dispose
+          $game_temp.location_was_shown = false
+        end
+      else
+        @location_show_timer -= 1
+        if @location_show_timer < 80          
+          @location_sprite.opacity += 20
+        end
+      end      
+    end    
+    # If game over
+    if $game_temp.gameover
+      # Switch to game over screen
+      $scene = Scene_Gameover.new
+      return
+    end
+    # If returning to title screen
+    if $game_temp.to_title
+      # Change to title screen
+      $scene = Scene_Title.new
+      return
+    end
+    # If transition processing
+    if $game_temp.transition_processing
+      # Clear transition processing flag
+      $game_temp.transition_processing = false
+      # Execute transition
+      if $game_temp.transition_name == ""
+        Graphics.transition(20)
+      else
+        Graphics.transition(40, "Graphics/Transitions/" +
+          $game_temp.transition_name)
+      end
+    end
+    # If showing message window
+    if $game_temp.message_window_showing
+      return
+    end
+    # Battle triggered
+    if @bribe_window.visible
+      if $game_player.encounter_wait > 0
+        $game_player.encounter_wait -= 1
+        if $game_player.encounter_wait == 0
+          $game_temp.battle_calling = true
+        end
+      else
+        # Encounter has been canceled
+        @bribe_window.visible = false
+        $game_player.make_encounter_count(true)
+      end
+    else
+      # If encounter list isn't empty, and encounter count is 0, and encounter step is not 999      
+      if $game_player.encounter_count == 0 and $game_map.encounter_list != [] and $game_map.encounter_step != 999
+        # If event is running or encounter is not forbidden
+        unless $game_system.map_interpreter.running? or
+               $game_system.encounter_disabled
+          # Confirm troop
+          n = rand($game_map.encounter_list.size)
+          troop_id = $game_map.encounter_list[n]
+          # If troop is valid
+          if $data_troops[troop_id] != nil
+            # Prepare for the battle
+            # Game_temp is fine because you cant' save without cancelling the encounter anyway
+            $game_temp.battle_troop_id = troop_id
+            $game_temp.battle_can_escape = true
+            $game_temp.battle_can_lose = false
+            $game_temp.battle_proc = nil          
+            @bribe_window.show(troop_id)       
+            $game_system.se_play(RPG::AudioFile.new("015-Jump01", 80, 100))
+            # If character doesn't have enough money to cancel, don't bother waiting
+            $game_player.encounter_wait = @bribe_window.amount <= $game_party.gold ? 100 : 20             
+          end
+        end
+      end
+    end
+    # If A button was pressed
+    if Input.trigger?(Input::A)
+      if $game_system.show_partyswitch_icon and 
+           $game_player.encounter_wait <= 0 and
+           not $game_system.map_interpreter.running?
+        # Shiva passage party changing
+        $game_switches[20] = true
+        $game_map.need_refresh = true
+      end
+    end
+    # If B button was pressed
+    if Input.trigger?(Input::B)
+      if $game_player.encounter_wait > 0
+          # Cancel encounter
+          if @bribe_window.amount <= $game_party.gold
+            $game_party.lose_gold(@bribe_window.amount)
+            @bribe_window.visible = false
+            $game_player.encounter_wait = 0
+            $game_player.make_encounter_count
+            $game_system.se_play(RPG::AudioFile.new("156-Support14", 80, 150))
+          end          
+      elsif not ($game_system.map_interpreter.running? or
+             $game_system.menu_disabled)
+        # Set menu calling flag or beep flag
+        $game_temp.menu_calling = true
+        $game_temp.menu_beep = true
+      end
+    end
+    # If debug mode is ON and F5 key was pressed
+    if $DEBUG and Input.trigger?(Input::F5)
+      for s in @debugsprites
+        s.dispose
+      end
+    end
+    # If debug mode is ON and F6 key was pressed
+    if $DEBUG and Input.trigger?(Input::F6)
+      @debugsprites = []
+      for x in $game_player.x - 12...$game_player.x + 12
+        for y in $game_player.y - 12...$game_player.y + 12
+          if $game_map.passable?(x, y, 2) or $game_map.passable?(x, y, 4) or $game_map.passable?(x, y, 6) or $game_map.passable?(x, y, 8)
+              c = Color.new(255, 255, 255, 32)
+          else
+              c = Color.new(255, 0, 0, 128)
+          end
+          s = Sprite.new
+          s.bitmap = Bitmap.new(32, 32)
+          s.bitmap.fill_rect(0, 0, 32, 32, c)
+          s.x = (128 * x - $game_map.display_x + 3) / 4
+          s.y = (128 * y - $game_map.display_y + 3) / 4
+          @debugsprites.push(s)
+        end               
+      end
+    end    
+    # If debug mode is ON and F7 key was pressed
+    if $DEBUG and Input.trigger?(Input::F7)
+      $game_temp.save_calling = true
+    end    
+    # If debug mode is ON and F8 key was pressed
+    if $DEBUG and Input.trigger?(Input::F8)
+      $game_variables[1] = $game_map.map_id
+      $game_variables[2] = $game_player.x
+      $game_variables[3] = $game_player.y
+      # Set transferring player flag
+      $game_temp.player_transferring = true
+      # Set player move destination
+      $game_temp.player_new_map_id = 2
+      $game_temp.player_new_x = 30
+      $game_temp.player_new_y = 44
+      $game_temp.player_new_direction = 2
+    end    
+    # If debug mode is ON and F9 key was pressed
+    if $DEBUG and Input.press?(Input::F9)
+      # Set debug calling flag
+      $game_temp.debug_calling = true
+    end
+    # If player is not moving
+    unless $game_player.moving?
+      # Run calling of each screen
+      if $game_temp.battle_calling
+        call_battle
+      elsif $game_temp.shop_calling
+        call_shop
+      elsif $game_temp.name_calling
+        call_name
+      elsif $game_temp.menu_calling
+        call_menu
+      elsif $game_temp.save_calling
+        call_save
+      elsif $game_temp.debug_calling
+        call_debug
+      end
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Battle Call
+  #--------------------------------------------------------------------------
+  def call_battle
+    # Clear battle calling flag
+    $game_temp.battle_calling = false
+    # Clear menu calling flag
+    $game_temp.menu_calling = false
+    $game_temp.menu_beep = false
+    # Make encounter count
+    $game_player.make_encounter_count
+    # Memorize map BGM and stop BGM
+    $game_temp.map_bgm = $game_system.playing_bgm
+    if $game_system.playing_bgm != nil and $game_system.playing_bgm.name != $game_system.battle_bgm.name  
+      $game_system.bgm_stop
+    end
+    # Play battle start SE
+    $game_system.se_play($data_system.battle_start_se)
+    # Play battle BGM
+    $game_system.bgm_play($game_system.battle_bgm)
+    # Straighten player position
+    $game_player.straighten
+    # Switch to battle screen
+    $scene = Scene_Battle.new
+  end
+  #--------------------------------------------------------------------------
+  # * Shop Call
+  #--------------------------------------------------------------------------
+  def call_shop
+    # Clear shop call flag
+    $game_temp.shop_calling = false
+    # Straighten player position
+    $game_player.straighten
+    # Switch to shop screen
+    $scene = Scene_Shop.new
+  end
+  #--------------------------------------------------------------------------
+  # * Name Input Call
+  #--------------------------------------------------------------------------
+  def call_name
+    # Clear name input call flag
+    $game_temp.name_calling = false
+    # Straighten player position
+    $game_player.straighten
+    # Switch to name input screen
+    $scene = Scene_Name.new
+  end
+  #--------------------------------------------------------------------------
+  # * Menu Call
+  #--------------------------------------------------------------------------
+  def call_menu
+    # Clear menu call flag
+    $game_temp.menu_calling = false
+    # If menu beep flag is set
+    if $game_temp.menu_beep
+      # Play decision SE
+      $game_system.se_play($data_system.decision_se)
+      # Clear menu beep flag
+      $game_temp.menu_beep = false
+    end
+    # Straighten player position
+    $game_player.straighten
+    # Switch to menu screen
+    $scene = Scene_Menu.new
+  end
+  #--------------------------------------------------------------------------
+  # * Save Call
+  #--------------------------------------------------------------------------
+  def call_save
+    # Straighten player position
+    $game_player.straighten
+    # Switch to save screen
+    $scene = Scene_Save.new
+  end
+  #--------------------------------------------------------------------------
+  # * Debug Call
+  #--------------------------------------------------------------------------
+  def call_debug
+    # Clear debug call flag
+    $game_temp.debug_calling = false
+    # Play decision SE
+    $game_system.se_play($data_system.decision_se)
+    # Straighten player position
+    $game_player.straighten
+    # Switch to debug screen
+    $scene = Scene_Debug.new
+  end
+  #--------------------------------------------------------------------------
+  # * Player Place Move
+  #--------------------------------------------------------------------------
+  def transfer_player
+    # Clear player place move call flag
+    $game_temp.player_transferring = false
+    # If move destination is different than current map
+    if $game_map.map_id != $game_temp.player_new_map_id
+      # Quick fix to war battle bug
+      $game_switches[176] = false
+      # Set up a new map
+      $game_map.setup($game_temp.player_new_map_id)
+    end
+    # Set up player position
+    $game_player.moveto($game_temp.player_new_x, $game_temp.player_new_y)
+    # Set player direction
+    case $game_temp.player_new_direction
+    when 2  # down
+      $game_player.turn_down
+    when 4  # left
+      $game_player.turn_left
+    when 6  # right
+      $game_player.turn_right
+    when 8  # up
+      $game_player.turn_up
+    end
+    # Straighten player position
+    $game_player.straighten
+    # Update map (run parallel process event)
+    $game_map.update
+    # Remake sprite set
+    @spriteset.dispose
+    @spriteset = Spriteset_Map.new
+    # If processing transition
+    if $game_temp.transition_processing
+      # Clear transition processing flag
+      $game_temp.transition_processing = false
+      # Execute transition
+      Graphics.transition(20)
+    end
+    # Run automatic change for BGM and BGS set on the map
+    $game_map.autoplay
+    # Frame reset
+    Graphics.frame_reset
+    # Update input information
+    Input.update
+  end
+end

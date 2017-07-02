@@ -1,0 +1,3607 @@
+#==============================================================================
+# ** Data_Troops
+#------------------------------------------------------------------------------
+#  Contains static data that can't be set in the GUI
+#
+#  Interview data, nothing more than an array of strings
+#  Lines preceeded by @ are Meiko's and shown in different colour
+#==============================================================================
+
+$data_interview = []
+
+# === Alex
+$data_interview[1] = 
+"@Today I'm speaking to one of the druids\n" + 
+"@of the Oischin Sacred circle, Alex. \n" + 
+"@I'm glad you could join us today, Alex, \n" + 
+"@and... What are you doing?\n" + 
+"\n" + 
+"These plants. They are not getting \n" + 
+"enough sunlight. You should put them\n" + 
+"closer to the window and give them \n" + 
+"more water.\n" + 
+"\n" + 
+"@Ah, well, thank you for the tip. Maybe\n" + 
+"@we can do this later, so-\n" + 
+"\n" + 
+"There are many insects here. Have you \n" + 
+"been killing all the spiders?\n" + 
+"\n" + 
+"@Uhm... I don't really like spiders, \n" + 
+"@so I'd rather have flies, thanks.\n" + 
+"@Besides, as a druid, shouldn't you be \n" + 
+"@protecting all life, even that of \n" + 
+"@insects?\n" + 
+"\n" + 
+"That's not how nature works. If nothing \n" + 
+"died, nothing could live. Druids \n" + 
+"maintain the balance between life and \n" + 
+"death within the forests.\n" + 
+"\n" + 
+"@Oh, I see...\n" + 
+"\n" + 
+"Please take my advice into \n" + 
+"consideration. This is not a healthy\n" + 
+"place to work. It's suffocating. I need \n" + 
+"some fresh air now.\n" + 
+"\n" + 
+"@W-Wait... The rest of the interview...\n" + 
+""
+
+# === Angel
+$data_interview[2] = 
+"@Today I'm interviewing Angel Windsor, \n" + 
+"@former Kirgard colonel and childhood\n" + 
+"@friend of Daniel Vinyard.\n" + 
+"@Miss Windsor, the first thing I wanted\n" + 
+"@to ask: having worked so closely with \n" + 
+"@Mr. Vinyard and Mr. Knight in the past, \n" + 
+"@it must've been tough dealing with \n" + 
+"@people with such strong personalities.\n" + 
+"\n" + 
+"I've grown used to it. I've known them\n" + 
+"for so long, it's become normal to me.\n" + 
+"They can be difficult at times, but \n" + 
+"we're still friends. \n" + 
+"\n" + 
+"@You joined the army before Daniel did.\n" + 
+"@Was it Jovian Knight who convinced you\n" + 
+"@to sign up?\n" + 
+"\n" + 
+"Yes, he talked to me about it many \n" + 
+"times. He felt very strongly about \n" + 
+"fighting Almenga, you see. To him, it \n" + 
+"was a fight that concerned everyone,\n" + 
+"one that had to be won. If it weren't\n" + 
+"for him, I don't think either Daniel\n" + 
+"or me would have joined the army.\n" + 
+"But... after the war, I do think he felt \n" + 
+"guilty about pressuring us to join.\n" + 
+"\n" + 
+"@Guilty? \n" + 
+"\n" + 
+"I think he saw it as just another of his\n" + 
+"adventures. Even though we were all \n" + 
+"adults, we didn't truly realize what it\n" + 
+"meant to fight in a war. There were \n" + 
+"times when we almost died, and I think \n" + 
+"he felt guilty about that, about putting\n" + 
+"his friends' lives in danger. We all \n" + 
+"matured a lot during that year.\n" + 
+"\n" + 
+"@I see... but there was still another\n" + 
+"@close friend of yours who didn't come\n" + 
+"@with you, wasn't there?\n" + 
+"\n" + 
+"Yes... Brunhild was the only one to stay\n" + 
+"behind. None of us even considered \n" + 
+"asking her. I was raised as a \n" + 
+"blacksmith's daughter and spent all my \n" + 
+"life around weaponry, but she was\n" + 
+"different. She hated fighting, and she\n" + 
+"always tried to break up arguments \n" + 
+"between us.\n" + 
+"When Daniel decided to leave... it was \n" + 
+"a difficult time for her. She frequently\n" + 
+"sent us letters, always asking if we \n" + 
+"were doing fine. I'm sure she was very \n" + 
+"lonely during that time. I wonder if...\n" + 
+"that was one of the reasons she changed\n" + 
+"so much. \n" + 
+"\n" + 
+"@I can see how that would be tough on\n" + 
+"@someone. Thank you for telling us about\n" + 
+"@all this.\n" + 
+""
+
+# === Avelion
+$data_interview[3] = 
+"@Today I'm meeting with Avelion, one of\n" + 
+"@the most unique members of the Elysium\n" + 
+"@army. Is it true that, despite your \n" + 
+"@normal appearance, you are actually\n" + 
+"@a real dragon?\n" + 
+"\n" + 
+"Indeed, I am a silver dragon. This is\n" + 
+"merely a temporary form that allows me\n" + 
+"to mingle with humans without \n" + 
+"attracting attention.\n" + 
+"\n" + 
+"@It's very fascinating. To us, dragons\n" + 
+"@are creatures of legend. I never\n" + 
+"@imagined they existed for real. Where\n" + 
+"@exactly do you come from?\n" + 
+"\n" + 
+"A land far, far west of here that has\n" + 
+"no name in human language. Few of your\n" + 
+"kind exist there, and we have little\n" + 
+"contact with them.\n" + 
+"\n" + 
+"@I can't help but wonder after meeting\n" + 
+"@you though... are there many more \n" + 
+"@dragons among us?\n" + 
+"\n" + 
+"During our long lives, many of us \n" + 
+"venture out from time to time, to learn\n" + 
+"from other civilizations and keep watch\n" + 
+"on the world around us. They exist even\n" + 
+"here, I'm certain, but I could not tell\n" + 
+"you how many. I have only recently \n" + 
+"arrived in order to hunt down a stray\n" + 
+"one.\n" + 
+"\n" + 
+"@You're referring to Tiamat?\n" + 
+"\n" + 
+"Red dragons are a troublesome kind. They\n" + 
+"are greedy and selfish. Most of them,\n" + 
+"however, keep to themselves. Only few,\n" + 
+"like her, actively seek to sow chaos.\n" + 
+"\n" + 
+"@Now that Tiamat has been slain, what \n" + 
+"@will you do next?\n" + 
+"\n" + 
+"I've grown curious about the limits of\n" + 
+"human strength. I never imagined that\n" + 
+"people such as you would be able to \n" + 
+"defeat a powerful dragon such as her.\n" + 
+"I will spend some time among your kind\n" + 
+"in order to better understand humans.\n" + 
+"\n" + 
+"@Well, I hope you can learn a lot from\n" + 
+"@your stay here, as I've learned a lot\n" + 
+"@from you. Thank you for your time.\n" + 
+""
+
+# === Ayara
+$data_interview[4] = 
+"@Today I'm talking to Ayara, one of the\n" + 
+"@founding members of the Elysium Army.\n" + 
+"@Welcome, Ayara. Now, even though you've\n" + 
+"@been playing a large role in the army's\n" + 
+"@recent history, we actually know very\n" + 
+"@little about your background. What\n" + 
+"@were you doing before the war began?\n" + 
+"\n" + 
+"Well, I've really just been in the royal\n" + 
+"army. I was a soldier in the third\n" + 
+"legion, serving under Colonel Vinyard.\n" + 
+"That's how I got to know him. \n" + 
+"\n" + 
+"@Why did you decide to join the army?\n" + 
+"\n" + 
+"I don't really know! It's just that...\n" + 
+"there didn't seem to be a lot of other\n" + 
+"things I could do. I'm not smart enough\n" + 
+"to go to school, and I grew up in a \n" + 
+"very small town. My father taught me to\n" + 
+"hunt, so it wasn't like I couldn't do\n" + 
+"anything. Well, one time we were at the\n" + 
+"capital when we saw an army parade, and\n" + 
+"I thought it looked really amazing.\n" + 
+"I just decided at that time that I \n" + 
+"wanted to become a part of that.\n" + 
+"\n" + 
+"@I guess things didn't really turn out\n" + 
+"@the way you were planning.\n" + 
+"\n" + 
+"You can say that! I still can't believe\n" + 
+"I'm here now. So much has already \n" + 
+"happened in such a short time. But I'm\n" + 
+"proud of it as well! We've really come \n" + 
+"a long way.\n" + 
+"\n" + 
+"@If you could go back to the time when\n" + 
+"@you decided to follow Colonel Vinyard,\n" + 
+"@would you make the same choice?\n" + 
+"\n" + 
+"Of course! Maybe I would've been safer \n" + 
+"if I hadn't come here, but it was worth \n" + 
+"it. I know I did the right thing.\n" + 
+"\n" + 
+"@I wasn't expecting anything different.\n" + 
+""
+
+# === Bartolli
+$data_interview[5] = 
+"@Today I'm interviewing Bartolli, owner\n" + 
+"@of Elysium castle's general store.\n" + 
+"@Welcome, Bartolli. Maybe you could tell\n" + 
+"@us a bit about yourself?\n" + 
+"\n" + 
+"Sure, no problem. Bartolli brand goods\n" + 
+"are the best you'll find anywhere in\n" + 
+"the country. I only supply the highest\n" + 
+"quality wares at reasonable prices.\n" + 
+"You'll get your groceries for little, \n" + 
+"and a smile for free.\n" + 
+"\n" + 
+"@I asked for an introduction, not a \n" + 
+"@sales pitch.\n" + 
+"\n" + 
+"Oh, me? Well, what can I say. I'm the\n" + 
+"owner of the Bartolli General Market,\n" + 
+"formerly in Grunthall, now at Elysium\n" + 
+"Castle. I'm a man with a sharp eye for\n" + 
+"quality who cares about his customers.\n" + 
+"\n" + 
+"@I'll have to stop you here, or else\n" + 
+"@I'd have to charge you for advertising.\n" + 
+"\n" + 
+"Don't forget to drop by, everyone!\n" + 
+""
+
+# === Bast
+$data_interview[6] = 
+"@Today I'm interviewing Bast Gunwood,\n" + 
+"@former major in the State Army and\n" + 
+"@chief strategist of the Elysium Army.\n" + 
+"@Bast, you have a very high reputation\n" + 
+"@within both Kirgard and Zelmony. Is it \n" + 
+"@true that you've never lost a battle?\n" + 
+"\n" + 
+"Nope, it's not true, and I'm not going\n" + 
+"to lie about it. Anyone who claims he's\n" + 
+"never lost a battle is either talking\n" + 
+"out of his ass or damn lucky. No one's\n" + 
+"born a military genius. The best \n" + 
+"strategists are the ones who can learn\n" + 
+"from their mistakes.\n" + 
+"\n" + 
+"@You retired from the State Army ten\n" + 
+"@years ago. What led you to resign?\n" + 
+"\n" + 
+"If you know anything about the recent\n" + 
+"state of Zelmony you'd know already, but\n" + 
+"fine. A decade ago we were involved in\n" + 
+"a border war in Highland. The Fairwind\n" + 
+"Republic tried to encroach on Cayeskan\n" + 
+"territory, the Highland army stepped\n" + 
+"in to help them, and were in turn \n" + 
+"attacked by the Fairwind army. It was\n" + 
+"a very messy war. The Matrech Guard was\n" + 
+"sent in, and I was senior advisor to the \n" + 
+"general in charge. \n" + 
+"Well, opinions in Matrech were split.\n" + 
+"The chancellor was wary of agitating \n" + 
+"a large neighbour like the republic and\n" + 
+"wanted to settle the dispute quickly.\n" + 
+"Others saw it at a chance to spread \n" + 
+"their influence and advocated anything\n" + 
+"from annexing Cayeska to actually \n" + 
+"invading Fairwind territory. By the way,\n" + 
+"one of the champions for the latter \n" + 
+"cause was none other than Governor \n" + 
+"Vosch.\n" + 
+"Anyway, I came up a plan to sweep the \n" + 
+"invading army from Cayeska from the\n" + 
+"north and take one of their key ports\n" + 
+"as a bargaining tool for a settlement.\n" + 
+"It all went wrong when politicians in \n" + 
+"Matrech started meddling with our \n" + 
+"plans. Different factions would send\n" + 
+"their people over to review our plans\n" + 
+"and try to change our minds. Officers \n" + 
+"were removed from the front and \n" + 
+"replaced with more 'agreeable' ones.\n" + 
+"As a result of all this, army unity was \n" + 
+"lost as it dissolved into cliques of\n" + 
+"like-minded people more concerned about\n" + 
+"furthering their own goals than \n" + 
+"following our overall strategy.\n" + 
+"Sure, we won the war, and in Matrech it\n" + 
+"was spun as a grand victory, but in \n" + 
+"truth, it was a disaster. My plans\n" + 
+"anticipated a two to three month \n" + 
+"campaign. In the end, it took almost\n" + 
+"two years, and ravaged the area. \n" + 
+"Highland managed okay, but it seriously\n" + 
+"strained our relations with Cayeska,\n" + 
+"a former part of the Zelmony Kingdom.\n" + 
+"\n" + 
+"@And that's when you decided to leave.\n" + 
+"\n" + 
+"Yep, that's right. Coming back to the\n" + 
+"capital and seeing all those people who\n" + 
+"were responsible for the chaos celebrate \n" + 
+"our victory as if it were their own \n" + 
+"doing, I couldn't take it any longer.\n" + 
+"I said goodbye and moved away from\n" + 
+"everything.\n" + 
+"\n" + 
+"@Until Daniel Vinyard came to see you.\n" + 
+"\n" + 
+"I hope he'll be different, like Ryan\n" + 
+"used to be before he lost his real \n" + 
+"power. So far, he hasn't disappointed \n" + 
+"me. I still have hope.\n" + 
+""
+
+# === Beau
+$data_interview[7] = 
+"@Today I'm speaking with Beau, the \n" + 
+"@attorney who defended Mr. Vinyard during \n" + 
+"@his trial.\n" + 
+"@First of all, a few questions about the \n" + 
+"@Zelmony justice system. Military and \n" + 
+"@civil cases are treated in the same way, \n" + 
+"@right?\n" + 
+"\n" + 
+"Yes, that is correct. However, the \n" + 
+"sentence may be different, as in the\n" + 
+"former case there is the possibility of \n" + 
+"demotion or discharge, but this is up to\n" + 
+"the judge.\n" + 
+"\n" + 
+"@Have you had earlier experience with \n" + 
+"@corruption within the Zelmony justice\n" + 
+"@system?\n" + 
+"\n" + 
+"Well, that's a difficult question for \n" + 
+"me to answer. Of course there have been \n" + 
+"cases where I had my doubts about some \n" + 
+"of the evidence produced by the \n" + 
+"prosecution, but of course that is not\n" + 
+"proof of corruption by itself. I simply \n" + 
+"don't have enough information.\n" + 
+"\n" + 
+"@That means the case against Mr. Vinyard \n" + 
+"@must've stood out from the rest.\n" + 
+"\n" + 
+"Yes, indeed. I believe there must've \n" + 
+"been a certain level of desperation \n" + 
+"within the prosecution, or rather, those \n" + 
+"who wished to influence the trial. As \n" + 
+"such, they felt it necessary to go to \n" + 
+"extreme lengths. Once a person has \n" + 
+"enemies within the justice system \n" + 
+"itself, it will be very hard to get \n" + 
+"an unbiased trial.   \n" + 
+"\n" + 
+"@Yes, I understand. Would you have any\n" + 
+"@suggestions on how to improve the\n" + 
+"@system?\n" + 
+"\n" + 
+"Well, there are two approaches: from the\n" + 
+"bottom up, or from the top down. Lawyers\n" + 
+"such as me could do their part by\n" + 
+"doing their work properly and reporting \n" + 
+"incidents of corruption. In this \n" + 
+"situation, however, I believe a\n" + 
+"thorough investigation from the top is\n" + 
+"necessary to probe those who would \n" + 
+"stay out of reach otherwise. This is no\n" + 
+"light matter, and would take a very \n" + 
+"dedicated commission with a clear \n" + 
+"mandate. It's probably impossible in \n" + 
+"the current political climate, but \n" + 
+"still, I have good hopes for the \n" + 
+"future.\n" + 
+"\n" + 
+"@I share your hopes, Beau. Maybe getting\n" + 
+"@all of this out in the open will \n" + 
+"@finally trigger a reaction.\n" + 
+"@Thank you for your time.\n" + 
+""
+
+# === Bruce
+$data_interview[8] = 
+"@Today I'm talking to Bruce Erickson,\n" + 
+"@a Kirgard colonel who has served under\n" + 
+"@General Keyser and General Leonius.\n" + 
+"@Colonel Erickson, you've known Daniel\n" + 
+"@Vinyard for a long time, haven't you?\n" + 
+"\n" + 
+"Yeah. Unfortunately.\n" + 
+"\n" + 
+"@Your relation with him was not very\n" + 
+"@good I see.\n" + 
+" \n" + 
+"Of course not! We served together, \n" + 
+"that's all we have in common. He's been \n" + 
+"a thorn in my side all along. If it \n" + 
+"weren't for him, -I- would've been a \n" + 
+"general now instead of Knight.\n" + 
+"\n" + 
+"@How so?\n" + 
+"\n" + 
+"During the last war, I was first in line \n" + 
+"to get promoted, but Daniel couldn't \n" + 
+"take it and thought he deserved it more.\n" + 
+"Because he tried to discredit me, I was\n" + 
+"passed over. That little incident hurt\n" + 
+"my chances for years afterwards. I was \n" + 
+"still made a colonel despite all that,\n" + 
+"so imagine if he hadn't stood in my way\n" + 
+"back then. \n" + 
+"\n" + 
+"@That's... a pretty long time to hold\n" + 
+"@a grudge.\n" + 
+""
+
+# === Carson 
+$data_interview[9] = 
+"@Today I'm meeting with Carson, private \n" + 
+"@aide to Chancellor Ryan of Zelmony and \n" + 
+"@currently a member of the Elysium army.\n" + 
+"@Carson, even though you're young, you \n" + 
+"@seem to have a pretty important \n" + 
+"@position, don't you?\n" + 
+"\n" + 
+"My official tasks include delivering \n" + 
+"messages from and to the chancellor, \n" + 
+"writing down notes and speeches, and \n" + 
+"gathering information when he's unable \n" + 
+"to. How important my work is depends \n" + 
+"completely on what the chancellor asks \n" + 
+"of me.\n" + 
+"\n" + 
+"@Still, he seems to trust you a lot. \n" + 
+"@First of all, how did you end up in your \n" + 
+"@position?\n" + 
+"\n" + 
+"I was just lucky. My father was an \n" + 
+"administrator there who had occasional \n" + 
+"contact with the chancellor. I was only \n" + 
+"twelve when he suddenly died, and since \n" + 
+"he was well-liked in Matrech, they gave \n" + 
+"me a job as messenger so I could help \n" + 
+"support my family. I have a good memory \n" + 
+"and it turned out I also have a keen ear \n" + 
+"for what people around me are talking \n" + 
+"about, so after a few years the \n" + 
+"chancellor asked me to become his aide.\n" + 
+"\n" + 
+"@When you describe your tasks,\n" + 
+"@gathering information in particular,\n" + 
+"@you sort of represent the chancellor\n" + 
+"@himself. Does that mean some people \n" + 
+"@are reluctant to talk to you?\n" + 
+"\n" + 
+"Of course. Everyone in Matrech knows who \n" + 
+"I am, and they know that everything they \n" + 
+"say to me will reach the chancellor. One \n" + 
+"of the first things you learn is how to \n" + 
+"get information out of people who're not \n" + 
+"willing to give it to you. \n" + 
+"\n" + 
+"@It probably also gives you some standing \n" + 
+"@among government officials.\n" + 
+"\n" + 
+"Yes, it's best that they don't insult \n" + 
+"me either.\n" + 
+"\n" + 
+"@When you think about it, you almost \n" + 
+"@sound like a spy for the chancellor.\n" + 
+"\n" + 
+"There are certain things I can't talk \n" + 
+"about.\n" + 
+"\n" + 
+"@One last thing. What are your \n" + 
+"@aspirations for the future? \n" + 
+"\n" + 
+"It's hard to say. The whole future of \n" + 
+"the country is uncertain at this point.\n" + 
+"For now, I'll keep studying and building\n" + 
+"a network of connections for future use.\n" + 
+"\n" + 
+"@I see. Well, good luck with that, and\n" + 
+"@thank you for your time.\n" + 
+""
+
+# === Cid
+$data_interview[10] = 
+"@Today I'm meeting with Cid, a bard and\n" + 
+"@poet. Welcome, Cid.\n" + 
+"\n" + 
+"Ah, it's a pleasure to be here.\n" + 
+"\n" + 
+"@Now, I've heard you recently wrote \n" + 
+"@something you described as your \n" + 
+"@masterpiece. Have you been performing\n" + 
+"@it yet?\n" + 
+"\n" + 
+"I have, yes. To small audiences, so far,\n" + 
+"but I'm certain as word spreads that\n" + 
+"larger crowds will soon flock to my\n" + 
+"recitals.\n" + 
+"\n" + 
+"@How have the reactions been so far?\n" + 
+"\n" + 
+"I'm sure that people were deeply moved\n" + 
+"by my wonderful music.\n" + 
+"\n" + 
+"@You're sure? Well... haven't you \n" + 
+"@actually asked anyone about it?\n" + 
+"\n" + 
+"Ask? Oh, no no. Art is an experience,\n" + 
+"a feeling. I can't just simply ask \n" + 
+"people if they thought it was good. They\n" + 
+"may not even realize on a conscious\n" + 
+"level how affected they've been.\n" + 
+" \n" + 
+"@I... see. Well, I'm glad you were able\n" + 
+"@to... enlighten us.\n" + 
+"\n" + 
+"Oh no, the pleasure was all mine.\n" + 
+"Perhaps in return you would like to \n" + 
+"hear my latest work?\n" + 
+"\n" + 
+"@Another time, maybe.\n" + 
+""
+
+# === Col
+$data_interview[11] = 
+"@Today I'm interviewing Col, a young\n" + 
+"@soldier from the Mayfall Army.\n" + 
+"@Col, you were the first Zelmonian to\n" + 
+"@join the Elysium Army. What led you to\n" + 
+"@make that transfer?\n" + 
+"\n" + 
+"I don't really know exactly. It was just\n" + 
+"a feeling. I had to escort Mr. Vinyard\n" + 
+"to Matrech so we traveled together for\n" + 
+"a while, and I was really impressed by\n" + 
+"his kindness and confidence. When I \n" + 
+"heard he was being given his own unit,\n" + 
+"I knew I had to join it.\n" + 
+"\n" + 
+"@Are you still happy with that \n" + 
+"@decision?\n" + 
+"\n" + 
+"Yes! I am! I can't imagine what all \n" + 
+"these recent events would've been like\n" + 
+"if I'd still been in the Mayfall Army,\n" + 
+"but here, even though we have to fight\n" + 
+"so hard, I still feel safe as long as\n" + 
+"we're all together.\n" + 
+"\n" + 
+"@You've been here since the beginning\n" + 
+"@and you must've seen a lot of new \n" + 
+"@people arrive. Who among the army do\n" + 
+"@you get along with the most?\n" + 
+"\n" + 
+"I like Ayara. She's really strong but\n" + 
+"also nice to everyone. I wish I could\n" + 
+"be more like her. \n" + 
+"I get along with Carson pretty well too, \n" + 
+"but... he seems much more mature, even\n" + 
+"though we're almost the same age. I \n" + 
+"don't really know what he's thinking \n" + 
+"most of the time. \n" + 
+"\n" + 
+"@I see, very interesting. Well, Col,\n" + 
+"@thank you for your time.\n" + 
+"\n" + 
+"No problem!\n" + 
+""
+
+# === Daniel
+$data_interview[12] = 
+"@Today I am speaking to none other than \n" + 
+"@the commander of the Elysium army \n" + 
+"@himself, Daniel Vinyard.\n" + 
+"@Mr. Vinyard, I'm very glad you could \n" + 
+"@spare some time for me. It's a great \n" + 
+"@honour. You must be a very busy man.\n" + 
+"\n" + 
+"I certainly don't get bored around \n" + 
+"here, but on the other hand, there are \n" + 
+"many talented people here who take care \n" + 
+"of the day-to-day operation of the army. \n" + 
+"Without them, the whole structure would \n" + 
+"fall apart instantly. Compared to that, \n" + 
+"my efforts are only modest.\n" + 
+"\n" + 
+"@But it's you who inspired all these \n" + 
+"@people to work together, isn't it? \n" + 
+"@So you could say that everyone here \n" + 
+"@is indispensable, including you.\n" + 
+"\n" + 
+"That's a good way of putting it, yes. \n" + 
+"Everyone has their own role.\n" + 
+"\n" + 
+"@A statement that seems to match your \n" + 
+"@views well...\n" + 
+"@During my preparations for this \n" + 
+"@interview, I found that few people had \n" + 
+"@any specific questions they'd like to \n" + 
+"@ask you, personal ones at least. It \n" + 
+"@looks like everyone appreciates your \n" + 
+"@openness in general.\n" + 
+"\n" + 
+"I'm glad to hear that. There were no \n" + 
+"questions that showed up frequently?\n" + 
+"\n" + 
+"@Well... One that popped up a few times\n" + 
+"@times was, \"are you single?\".\n" + 
+"\n" + 
+"Haha... I'll admit the answer to that\n" + 
+"is \"Yes\", but I don't think this is \n" + 
+"the time or place to do something about \n" + 
+"that. I guess I'm currently engaged to \n" + 
+"my work.\n" + 
+"\n" + 
+"@Well, in that case, I won't take up \n" + 
+"@any more of your valuable time. Thank\n" + 
+"@you, Mr. Vinyard.\n" + 
+"\n" + 
+"No problem.\n" + 
+""
+
+# === Darwin
+$data_interview[13] = 
+"@Today I'm meeting with Darwin, a \n" + 
+"@student from Faraday University.\n" + 
+"@Darwin, you are a scholar in the \n" + 
+"@magical arts, correct?\n" + 
+"\n" + 
+"That's the official title yes, but I\n" + 
+"prefer not to use that preposterous\n" + 
+"name. This is not some kind of art,\n" + 
+"it's a hard science, and therefore it\n" + 
+"deserves to be called magical science.\n" + 
+"\n" + 
+"@But is it really a science the way that\n" + 
+"@physics is?\n" + 
+"\n" + 
+"Of course it is. It's the study of a\n" + 
+"natural phenomenon. It's governed by\n" + 
+"laws just like everything else in the\n" + 
+"world around us. \n" + 
+"\n" + 
+"@And that's what you're doing at Faraday\n" + 
+"@University?\n" + 
+"\n" + 
+"Exactly. I'm studying the synthesis of\n" + 
+"magical objects, ones that have energy\n" + 
+"stored within it that can be released \n" + 
+"at will. I've now finished my work on \n" + 
+"processing Rainbow Ore, but there is \n" + 
+"still much more work to be done.\n" + 
+"\n" + 
+"@Well, I'm sure there's still plenty\n" + 
+"@that we don't know yet. I hope you'll\n" + 
+"@be able to explain at least some of the\n" + 
+"@mysterious that surround us.\n" + 
+""
+
+# === Deke
+$data_interview[14] = 
+"@Today I'm talking to Deke, a successful \n" + 
+"@inventor from Amen Corner.\n" + 
+"@Welcome, Deke. I'm glad you c- wait,\n" + 
+"@what is that?\n" + 
+"\n" + 
+"Zis? Ah, zis is a recording device. It\n" + 
+"vill store our converzation so it can \n" + 
+"be listened to at any time. \n" + 
+"\n" + 
+"@That sounds very useful.\n" + 
+"\n" + 
+"Very useful indeed, ja? I thought zis\n" + 
+"vould be an improvement over having to\n" + 
+"take notes by hand.\n" + 
+"\n" + 
+"@But is there supposed to be smoke \n" + 
+"@coming out of it?\n" + 
+"\n" + 
+"Pay no attention to it. Ze device is \n" + 
+"harmless.\n" + 
+"\n" + 
+"@And what about this oil that's leaking\n" + 
+"@out from the bottom?\n" + 
+"\n" + 
+"Zis is only an experimental model. My\n" + 
+"next version vill be extremely \n" + 
+"reliable.\n" + 
+"\n" + 
+"@Well, it's caught fire now. Is that\n" + 
+"@supposed to happen too?\n" + 
+"\n" + 
+"Hmm, I suppose it vill need some more\n" + 
+"testing. Very well! I vill take zis\n" + 
+"back vit me to my lab, and ve can \n" + 
+"continue zis interview at a later time.\n" + 
+"\n" + 
+"@I'm... not so sure about that plan.\n" + 
+""
+
+# === Derek
+$data_interview[15] = 
+"@Today I'm interviewing Derek, a former\n" + 
+"@Knight of the Crown who was recently\n" + 
+"@revived after having been dead for over\n" + 
+"@a hundred years.\n" + 
+"@Derek, the world must've changed a lot\n" + 
+"@since your original life. How are you\n" + 
+"@coping with that? \n" + 
+"\n" + 
+"Oh, it's really weird, mate. It's like\n" + 
+"I'm in a completely different place.\n" + 
+"\n" + 
+"@What struck you the most?\n" + 
+"\n" + 
+"Well, to give you a bit of a backstory,\n" + 
+"the last thing I can remember is \n" + 
+"fighting in a battle against Kirgard.\n" + 
+"It was the Battle of Ashton, and I can\n" + 
+"tell you it was a right hard battle. So\n" + 
+"hard that, well, I guess it cost me my\n" + 
+"life!\n" + 
+"Anyway, I heard that just five years\n" + 
+"after the battle, the whole futility\n" + 
+"of that war caused the Zelmony kingdom\n" + 
+"to collapse. I grew up in the kingdom,\n" + 
+"I served it all my life, and I died for\n" + 
+"it... and it's nothing more than a piece\n" + 
+"of history to everyone else now. That\n" + 
+"just really messed with my head.\n" + 
+"\n" + 
+"@How do you feel about being brought \n" + 
+"@back to life anyway?\n" + 
+"\n" + 
+"It's not so bad. Sure I'm in a weird \n" + 
+"place and I've lost my good looks, but\n" + 
+"hey, it beats being dead. Why not make\n" + 
+"the most of it?\n" + 
+"\n" + 
+"@An admirable point of view. Well, thank\n" + 
+"@you for speaking to me, Derek.\n" + 
+""
+
+# === Deus
+$data_interview[16] = 
+"@Today I'm speaking to Deus, a priest \n" + 
+"@from Cento Temple.\n" + 
+"@Welcome, and thank you for your time.\n" + 
+"@Now, from what I've seen and heard, \n" + 
+"@Cento Temple seems like an interesting \n" + 
+"@place. \n" + 
+"\n" + 
+"It's indeed a wonderful place. You can\n" + 
+"find people there of all kinds from all\n" + 
+"over the continent, but everyone lives\n" + 
+"together in harmony.\n" + 
+"\n" + 
+"@That certainly sounds good, but how \n" + 
+"@does that work in practice? Surely \n" + 
+"@there are arguments sometimes.\n" + 
+"\n" + 
+"We are only human, after all. But we\n" + 
+"should still try our hardest to be\n" + 
+"respectful towards each other, even if\n" + 
+"we hold different opinions. \n" + 
+"\n" + 
+"@There must've been some serious fights\n" + 
+"@too though. \n" + 
+"\n" + 
+"Occasionally... yes. Sometimes the head\n" + 
+"priest must step in and talk to both\n" + 
+"sides.\n" + 
+"\n" + 
+"@And if that fails? Come on, tell me.\n" + 
+"@Has anyone ever been thrown out of the\n" + 
+"@temple?\n" + 
+"\n" + 
+"Banishment from the temple is extremely\n" + 
+"rare. It hasn't happened once since I\n" + 
+"started living there. As I said, we put\n" + 
+"a strong emphasis on living in harmony\n" + 
+"with each other.\n" + 
+"\n" + 
+"@Aww, so no controversies at all?\n" + 
+"@I guess I won't be getting the exciting\n" + 
+"@story I was hoping for.\n" + 
+""
+
+# === Eander
+$data_interview[17] = 
+"@Today I'm interviewing General Eander,\n" + 
+"@formerly the highest-ranking officer\n" + 
+"@in the Kirgard Royal Army.\n" + 
+"@General Eander, not only are you in\n" + 
+"@charge of the strongest of the four\n" + 
+"@legions, you're also the most \n" + 
+"@experienced of all the generals, isn't \n" + 
+"@that right?\n" + 
+"\n" + 
+"If you're counting years of service as\n" + 
+"experience, then yes, I am. I first\n" + 
+"became a legion general fifteen years\n" + 
+"ago. I was already serving in that\n" + 
+"position when King Frederick III passed\n" + 
+"away and his son succeeded to the \n" + 
+"throne.\n" + 
+"\n" + 
+"@Have you fought in many battles since\n" + 
+"@then?\n" + 
+"\n" + 
+"I've indeed fought many, but most of \n" + 
+"those were during the last Kirgard-\n" + 
+"Almenga war. The first legion is rarely\n" + 
+"called upon for minor incidents. The\n" + 
+"only time we mobilized between the end\n" + 
+"of the war with Almenga and the current\n" + 
+"war was when Pereious tried to invade\n" + 
+"our country.\n" + 
+"\n" + 
+"@Yes, I've heard of this. It was only\n" + 
+"@four years ago, and it was the first\n" + 
+"@time the capital of Kirgard was under\n" + 
+"@threat in over a century. How did that\n" + 
+"@happen?\n" + 
+"\n" + 
+"It was our own fault. We underestimated\n" + 
+"them. Never before had the mountain\n" + 
+"tribes been a serious threat to us,\n" + 
+"but Pereious brought them all together\n" + 
+"and instilled them with a discipline\n" + 
+"that I'd never seen in those people \n" + 
+"before.\n" + 
+"\n" + 
+"@Did he actually have a serious chance\n" + 
+"@of winning against Kirgard?\n" + 
+"\n" + 
+"If you catch your enemy by surprise you\n" + 
+"can score quick wins, but sooner or\n" + 
+"later he'll catch up. If you can't \n" + 
+"cripple the enemy early on, you can't\n" + 
+"win, and Pereious lacked the capacity to \n" + 
+"do that. He hurt our pride, he shook our \n" + 
+"foundations, but he did not come even \n" + 
+"close to bringing down the kingdom.\n" + 
+"\n" + 
+"@Still, an impressive feat. Thank you\n" + 
+"@for your time, General.\n" + 
+""
+
+# === Erin
+$data_interview[18] = 
+"@Today I'm meeting with Erin, Captain of\n" + 
+"@the Matrech Guard and commander of the\n" + 
+"@entire State Army.\n" + 
+"@Captain, could you tell us a bit about\n" + 
+"@your career and how you attained this\n" + 
+"@position?\n" + 
+"\n" + 
+"The previous captain retired five years\n" + 
+"ago, and it's customary to select his\n" + 
+"replacement from the individual state\n" + 
+"armies' colonels. At that time, I was\n" + 
+"colonel of the Highland Army, and I was\n" + 
+"chosen to receive the promotion.\n" + 
+"\n" + 
+"@Leading the State Army must be a great\n" + 
+"@responsibility. You've remained \n" + 
+"@relatively calm during the recent \n" + 
+"@crisis in the State Union. Did you have\n" + 
+"@any experience dealing with similar\n" + 
+"@threats during your time with the \n" + 
+"@Highland Army?\n" + 
+"\n" + 
+"We don't just deal with local affairs.\n" + 
+"We've assisted the State Army many \n" + 
+"times. Aside from that, Highland has \n" + 
+"been involved in regional wars several\n" + 
+"times. There was the Triple War, ten \n" + 
+"years ago. I was not yet a colonel at \n" + 
+"the time, but I spent some time with\n" + 
+"Major Gunwood to plan our strategy.\n" + 
+"Even twenty years ago when I had only\n" + 
+"just joined the army there was already\n" + 
+"a border skirmish with Cayeska related\n" + 
+"to a civil war in Parthinia. Things are\n" + 
+"not as peaceful along the border as you\n" + 
+"might think... but it's still not \n" + 
+"comparable to what has been happening \n" + 
+"now.\n" + 
+"\n" + 
+"@What do you think the future of Zelmony\n" + 
+"@will be like?\n" + 
+"\n" + 
+"I'm a soldier. It's not my task to think\n" + 
+"about that. It's up to Ryan, to General\n" + 
+"Vinyard and to the rest of the \n" + 
+"politicians to determine what our future\n" + 
+"should look like. My duty is to then \n" + 
+"make it a reality.\n" + 
+"\n" + 
+"@I see. I hope you'll succeed in doing \n" + 
+"@that, then.\n" + 
+""
+
+# === Fitch
+$data_interview[19] = 
+"@Today... well, today I wanted to\n" + 
+"@talk to Fitch, but I just can't get \n" + 
+"@a hold of him, and he said he didn't\n" + 
+"@want to make an appointment because\n" + 
+"@he'd just forget about it. Oh, wait!\n" + 
+"@There he is! Fitch! Fitch! Hold on a\n" + 
+"@moment!\n" + 
+"\n" + 
+"Hey! What's up?\n" + 
+"\n" + 
+"@Do you have a moment? I'd like to hold\n" + 
+"@our interview now!\n" + 
+"\n" + 
+"Huh? Interview?\n" + 
+"\n" + 
+"@Yeah! Don't you remember? I've asked\n" + 
+"@you about it before!\n" + 
+"\n" + 
+"Really? I must've forgotten!\n" + 
+"An interview huh? Sounds kind of \n" + 
+"boring!\n" + 
+"\n" + 
+"@Isn't there anything you want to tell\n" + 
+"@other people about?\n" + 
+"\n" + 
+"Uhm... I like to travel a lot! \n" + 
+"\n" + 
+"@Is... that all?\n" + 
+"\n" + 
+"Oh!\n" + 
+"\n" + 
+"@...Yes?\n" + 
+"\n" + 
+"I almost forgot! I was on my way to\n" + 
+"go see the town! See you later!\n" + 
+"\n" + 
+"@I guess I can't expect much more from \n" + 
+"@this...\n" + 
+""
+
+# === Francesca
+$data_interview[20] = 
+"@Today I'm meeting with Francesca, \n" + 
+"@self-proclaimed mistress of the night.\n" + 
+"@Francesca, what do you find so \n" + 
+"@fascinating about darkness?\n" + 
+"\n" + 
+"What is there not to find fascinating?\n" + 
+"Everything looks more beautiful in the\n" + 
+"pale light of the moon. At night, the \n" + 
+"world becomes a more mysterious, more\n" + 
+"exciting place. I wrote this poem for \n" + 
+"this occasion\n" + 
+"\n" + 
+"\"oh night,\n" + 
+" blanket of darkness\n" + 
+" cover my pain\n" + 
+" this haze of betrayal\n" + 
+" love is in vain\"\n" + 
+"\n" + 
+"@That's... very, uh... interesting.\n" + 
+"\n" + 
+"Isn't it? I brought a few more with me,\n" + 
+"allow me to recite another one.\n" + 
+"\n" + 
+"@...No, let's not do that.\n" + 
+""
+
+# === Frore
+$data_interview[21] = 
+"@Today I'm speaking with Frore, a\n" + 
+"@swordsman from Almenga.\n" + 
+"@Frore, at a young age you left your\n" + 
+"@home together with a woman named Kella\n" + 
+"@and traveled to the country of Issuria.\n" + 
+"@Why did you go there?\n" + 
+"\n" + 
+"It's been a long time. The answer is,\n" + 
+"I don't know. I don't remember. Most of\n" + 
+"my past was taken away from me.\n" + 
+"\n" + 
+"@Taken away? By this Brotherhood you\n" + 
+"@were part of?\n" + 
+"\n" + 
+"Yes.\n" + 
+"\n" + 
+"@What exactly is the Brotherhood? \n" + 
+"\n" + 
+"I don't want to talk about it anymore.\n" + 
+"It's best that people here don't know\n" + 
+"of its existence.\n" + 
+"\n" + 
+"@I don't know much about who they are,\n" + 
+"@but I'm sure you left for a reason.\n" + 
+"@Wouldn't it be better to warn people\n" + 
+"@about them than to stay silent?\n" + 
+"\n" + 
+"I think I was drawn to Issuria by \n" + 
+"stories I'd heard. Incomplete knowledge\n" + 
+"is a dangerous thing, and even now I'm\n" + 
+"not sure if what I know is the truth\n" + 
+"or not.\n" + 
+"\n" + 
+"@Well, I've heard some stories too,\n" + 
+"@and it seems the Brotherhood is \n" + 
+"@somewhat of a cult, but they also have\n" + 
+"@strong political influence in Issuria\n" + 
+"@and are seen by some as the true power\n" + 
+"@behind the throne. Is that true?\n" + 
+"\n" + 
+"It may be part of the truth, it may\n" + 
+"not be. There's only one thing I'm \n" + 
+"certain of, and that's that whatever\n" + 
+"the truth is, we can only see a \n" + 
+"fraction of it. If everything were \n" + 
+"known, they would be unable to exist.\n" + 
+"\n" + 
+"@Well, I don't know if that helped me\n" + 
+"@understand the Brotherhood better, but\n" + 
+"@thank you anyway for talking to me.\n" + 
+""
+
+# === Gilbert
+$data_interview[22] = 
+"@Today I am interviewing Gilbert, former \n" + 
+"@leader of a ninja clan... or at least, \n" + 
+"@I was supposed to, but he hasn't shown\n" + 
+"@up yet.\n" + 
+"\n" + 
+"...I'm right here.\n" + 
+"\n" + 
+"@Eee!! Where... Where did you just come \n" + 
+"@from? You scared the hell out of me.\n" + 
+"\n" + 
+"Here's your first lesson for free. \n" + 
+"Always be prepared for anything. When \n" + 
+"you're surprised, it means you weren't\n" + 
+"prepared.\n" + 
+"\n" + 
+"@Y-Yes, well, I'd prefer if you didn't \n" + 
+"@sneak up on me like that next time. \n" + 
+"\n" + 
+"Consider it a warning. Imagine if I\n" + 
+"were someone who meant harm to you.\n" + 
+"\n" + 
+"@I'm... not really sure I'm that much\n" + 
+"@at risk, but thanks I guess.\n" + 
+"\n" + 
+"Good! Everything that happens in life \n" + 
+"is an opportunity to learn. \n" + 
+"\n" + 
+"@Well now, could we start on the actual\n" + 
+"@interview? I have a lot of things to...\n" + 
+"\n" + 
+"@Hello? Where... Where did you go?\n" + 
+""
+
+# === Griever
+$data_interview[23] = 
+"@Hello and welcome. Today I'm meeting \n" + 
+"@with Griever, a knight in service of\n" + 
+"@the Elysium army.\n" + 
+"@Now, I have to say you're a bit of an \n" + 
+"@enigma. I know you were living in \n" + 
+"@Blackwater for a while, but I couldn't\n" + 
+"@track you back from there. And \n" + 
+"@'Griever'... it's not your actual name,\n" + 
+"@is it?\n" + 
+"\n" + 
+"It's my name now. It's who I am.\n" + 
+"Once, I was someone with a different\n" + 
+"name, but she no longer exists, and I\n" + 
+"am no longer her.\n" + 
+"\n" + 
+"@If it's a name you took on yourself, \n" + 
+"@then why 'Griever'? Who are you grieving \n" + 
+"@for?\n" + 
+"\n" + 
+"I grieve for every man, every woman, \n" + 
+"and every child who has died in wars \n" + 
+"anywhere in the world.\n" + 
+"\n" + 
+"@This sentiment... was it caused by \n" + 
+"@something that happened to you \n" + 
+"@personally? Forgive me for asking, but \n" + 
+"@your accent, it sounds a bit Almengan.\n" + 
+"\n" + 
+"I also grieve for the old me, who was \n" + 
+"weak. She could not wash the blood off \n" + 
+"her hands only with silence.\n" + 
+"\n" + 
+"@What happened? If you are Almengan,\n" + 
+"@were you involved in the last war\n" + 
+"@against Kirgard, eight years ago?\n" + 
+"\n" + 
+"I left before the war began. That... is\n" + 
+"all I will tell you.\n" + 
+""
+
+# === Harvey
+$data_interview[24] = 
+"@Today I'm talking to Harvey, member of\n" + 
+"@the special forces of the Kirgard Royal\n" + 
+"@Army. \n" + 
+"@Welcome, Harvey. How are you doing?\n" + 
+"\n" + 
+"Doing very well, actually. In fact, I'm\n" + 
+"working hard on finalizing some new \n" + 
+"weapon developments. \n" + 
+"\n" + 
+"@Oh? What kind of weapons would \n" + 
+"@these be?\n" + 
+"\n" + 
+"Well, a lot of this is classified \n" + 
+"information. Our enemies might be \n" + 
+"reading this as well, you know. \n" + 
+"\n" + 
+"@Is there anything you can tell us about\n" + 
+"@though? Something that's not so secret.\n" + 
+"\n" + 
+"Hmmm... There's one thing we've been\n" + 
+"experimenting with. Instead of using\n" + 
+"bombs to explode with force and cause\n" + 
+"structural damage, why not use them to\n" + 
+"spread some kind of substance instead?\n" + 
+"\n" + 
+"@Some kind of substance?\n" + 
+"\n" + 
+"Say, a sleeping gas for example. If\n" + 
+"you manage to detonate such a device\n" + 
+"inside an enemy stronghold, it could\n" + 
+"incapacitate their defenses without\n" + 
+"damaging the building itself. Very\n" + 
+"promising concept if I may say so \n" + 
+"myself, but there are a lot of obstacles\n" + 
+"to be overcome first.\n" + 
+"\n" + 
+"@I see, that sounds interesting. You\n" + 
+"@mention sleeping gas, but what are the\n" + 
+"@other alternatives? Poison gas maybe?\n" + 
+"\n" + 
+"No, we considered that, but using such\n" + 
+"a weapon would set a terrible precedent. \n" + 
+"You use something like that, and your \n" + 
+"enemies will feel justified in using it \n" + 
+"against you as well. It would have \n" + 
+"horrible consequences.\n" + 
+"\n" + 
+"@Perhaps you're right. Well, good luck\n" + 
+"@on your research.\n" + 
+""
+
+# === Hawk
+$data_interview[25] = 
+"@Today I'm talking to Hawk, a farmer now\n" + 
+"@providing the Elysium army with fresh\n" + 
+"@crops.\n" + 
+"@Hello, Hawk. Could you tell us a little\n" + 
+"@about yourself? How'd you end up \n" + 
+"@becoming a farmer?\n" + 
+"\n" + 
+"Well ah reckon it must've been cuz of \n" + 
+"mah paw. He was a farmer too, so I was\n" + 
+"raised to take over from 'im after he\n" + 
+"died.\n" + 
+"\n" + 
+"@Does that mean it wasn't really \n" + 
+"@something you wanted to do yourself?\n" + 
+"\n" + 
+"Ah'm pretty darn good at it, so it ain't\n" + 
+"so bad. Ah've never never thought about\n" + 
+"what ah really want in life. \n" + 
+"\n" + 
+"@Surely there must be -something- you\n" + 
+"@like to do?\n" + 
+"\n" + 
+"Ah dunno... Ah think about language\n" + 
+"sometimes. Ya know, where'd it come \n" + 
+"from? How come all y'all talk \n" + 
+"different? \n" + 
+"\n" + 
+"@If that's something you enjoy, wouldn't \n" + 
+"@that be worth looking further into?\n" + 
+"\n" + 
+"Gosh darn, ah never gave it that much\n" + 
+"thought. Maybe I should! Thank ya, gal.\n" + 
+"\n" + 
+"@Hope it goes well!\n" + 
+""
+
+# === Ice
+$data_interview[26] = 
+"@Today I'm speaking with Ice, one of the\n" + 
+"@former members of the terrorist group \n" + 
+"@known as the 'Caretakers'.\n" + 
+"@Ice, out of all the members of the\n" + 
+"@group, we know the least about you.\n" + 
+"@What did you do before you joined the\n" + 
+"@Caretakers?\n" + 
+"\n" + 
+"I usually try to avoid public attention. \n" + 
+"I've been involved in many different \n" + 
+"projects in order to advance my \n" + 
+"knowledge of the magical arts.\n" + 
+"\n" + 
+"@So it's all about learning more? Does\n" + 
+"@it matter what the purposes of these\n" + 
+"@projects are? From what I've seen, \n" + 
+"@you're not exactly trying to use your \n" + 
+"@knowledge as a force for good.\n" + 
+"\n" + 
+"I seek a better understanding of magic,\n" + 
+"that is all. What my knowledge is used\n" + 
+"for is of little concern to me.\n" + 
+"\n" + 
+"@I see.\n" + 
+"@Now, could we talk about Tiamat? I'd \n" + 
+"@like to kn-\n" + 
+"\n" + 
+"NO! We CAN'T!\n" + 
+"\n" + 
+"@But I-\n" + 
+"\n" + 
+"I am NOT saying ANYTHING more about \n" + 
+"this!\n" + 
+"\n" + 
+"@Wai-\n" + 
+""
+
+# === Jasper
+$data_interview[27] = 
+"@Today I'm meeting with Jasper, one of\n" + 
+"@the Knights of Matrech.\n" + 
+"@Jasper, maybe you could start by \n" + 
+"@explaining exactly what the Knights of \n" + 
+"@Matrech are, and how they fit into the \n" + 
+"@Matrech Guard.\n" + 
+"\n" + 
+"Both of them originated in the Zelmony\n" + 
+"Kingdom. Matrech was the capital of the \n" + 
+"kingdom, and so the Matrech Guard were \n" + 
+"the main force, setting them apart from \n" + 
+"vassal armies. The name remained after \n" + 
+"the kingdom split up, and is now still \n" + 
+"in use for the Matrech army.\n" + 
+"Within the original Matrech Guard, \n" + 
+"the Knights of Matrech were the elite\n" + 
+"troops consisting of high nobility. \n" + 
+"Their main function was to protect the\n" + 
+"capital and the royal family.\n" + 
+"\n" + 
+"@But nowadays it's slightly different, \n" + 
+"@isn't it?\n" + 
+"\n" + 
+"Yes. Despite the name, the Knights of\n" + 
+"Matrech are now separate from the \n" + 
+"Matrech army. Together with the Captain \n" + 
+"of the Matrech Guard, they form the \n" + 
+"backbone of the State Army, and it's \n" + 
+"their task to coordinate actions between \n" + 
+"all states. \n" + 
+"\n" + 
+"@So the Matrech Guard is simply Matrech's \n" + 
+"@own army, but the Knights of Matrech \n" + 
+"@serve the State Union as a whole.\n" + 
+"\n" + 
+"Exactly. Local commanders will never be \n" + 
+"put in charge of divisions from other \n" + 
+"states, but the Knights of Matrech may\n" + 
+"be.\n" + 
+"\n" + 
+"@I see. What's your current function \n" + 
+"@within the Knights, then?\n" + 
+"\n" + 
+"I'm still a low-ranking officer. At the \n" + 
+"moment, I serve as one of the captain's\n" + 
+"personal guards. Normally, I protect her \n" + 
+"when she's on a mission, but I may also \n" + 
+"be dispatched in her place to deal with \n" + 
+"minor affairs, like with the liberation \n" + 
+"of Grunthall.\n" + 
+"\n" + 
+"@Very interesting. Thank you for your\n" + 
+"@explanation.\n" + 
+""
+
+# === Joe
+$data_interview[28] = 
+"@Today I'm talking to Joe, a young boy\n" + 
+"@from Amen Corner.\n" + 
+"@Joe, the reason you're here now is \n" + 
+"@because you tried breaking into \n" + 
+"@someone's home, isn't it?\n" + 
+"\n" + 
+"Yeah, so what? You going to tell on me\n" + 
+"or something?\n" + 
+"\n" + 
+"@I'm just interested in knowing what\n" + 
+"@happened. The man whose house you \n" + 
+"@entered is Deke, an inventor. Why did\n" + 
+"@you target him?\n" + 
+"\n" + 
+"That guy's nuts. I had my suspicions,\n" + 
+"but now I'm sure of it. He's built all\n" + 
+"kinds of weird machines, and we barely\n" + 
+"made it out alive. No wonder he never\n" + 
+"lets anyone inside.\n" + 
+"\n" + 
+"@So, did you learn your lesson?\n" + 
+"\n" + 
+"Learn a lesson? Yeah, I sure did. Don't\n" + 
+"mess with psychos. Can I go now?\n" + 
+""
+
+# === Johnny 
+$data_interview[29] = 
+"@Today I'm meeting with Johnny,\n" + 
+"@professional gambler. \n" + 
+"@Tell me, how did you get into the \n" + 
+"@gambling business?\n" + 
+"\n" + 
+"It's not a pretty story. When I was a \n" + 
+"young man, I liked to live large and\n" + 
+"party a lot. Gambling was the only way \n" + 
+"to make enough money for kids like me. \n" + 
+"\n" + 
+"@By the looks of it, you were pretty\n" + 
+"@successful.\n" + 
+"\n" + 
+"For every guy who wins big, there's \n" + 
+"someone else who lost big. If you don't \n" + 
+"get good at it fast, you'll run yourself \n" + 
+"into debts you can't pay off.\n" + 
+"But later, once I was making a decent \n" + 
+"living, I started doing it more for the\n" + 
+"thrill than the cash. \n" + 
+"\n" + 
+"@Have you ever had to cheat to survive?\n" + 
+"\n" + 
+"I did some stupid things when I was \n" + 
+"younger, but nowadays I'm all straight. \n" + 
+"Let me tell you, in this business, you \n" + 
+"get caught once and it's all over. \n" + 
+"There are swindlers who can pull it off, \n" + 
+"but it's not worth it. You lose a bet,\n" + 
+"you can try again. You're caught \n" + 
+"cheating, no one will play you again, \n" + 
+"if you don't find a noose around your \n" + 
+"neck first.\n" + 
+"But enough about me, let's talk about \n" + 
+"you. You must meet a lot of interesting\n" + 
+"people.\n" + 
+"\n" + 
+"@This interview is not about me, If\n" + 
+"@you have any questions, save it for\n" + 
+"@later\n" + 
+"\n" + 
+"All right, maybe we can get to know each \n" + 
+"other a little better in a more private \n" + 
+"setting, then. Are you doing anything \n" + 
+"tonight?\n" + 
+"\n" + 
+"@I suddenly have a -lot- of work to do.\n" + 
+""
+
+# === Jovian
+$data_interview[30] = 
+"@Today I'm meeting the Kirgard legion\n" + 
+"@general Jovian Knight, nicknamed the\n" + 
+"@Red General.\n" + 
+"@Welcome, general. Now, I've heard that \n" + 
+"@you're the youngest person ever to \n" + 
+"@become a legion general in the royal \n" + 
+"@army. \n" + 
+"\n" + 
+"That's right! But, I don't think it's\n" + 
+"that special. If General Russel hadn't\n" + 
+"died so suddenly, it might've taken\n" + 
+"me years more. But hey, it was good luck\n" + 
+"for me, and I'm not going to complain\n" + 
+"about it.\n" + 
+"\n" + 
+"@Do you feel that you're treated \n" + 
+"@differently because of your age?\n" + 
+"\n" + 
+"There's always people who'll resent you\n" + 
+"for whatever reason. If it's not age\n" + 
+"it's something else. The older colonels\n" + 
+"might be bitter about it, but the good\n" + 
+"soldiers know not to let it show.\n" + 
+"\n" + 
+"@How are your relations with the other\n" + 
+"@legion generals? \n" + 
+"\n" + 
+"Pretty good. After all, they're the ones\n" + 
+"who selected me in the first place.\n" + 
+"Eander and I have our differences, but\n" + 
+"that's what happens when you put two\n" + 
+"temperamental people together, right?\n" + 
+"What counts is that we respect each\n" + 
+"other. As for Keyser, well, he's cool\n" + 
+"towards everyone. I know he takes me\n" + 
+"seriously as a general and that's good\n" + 
+"enough for me. \n" + 
+"\n" + 
+"@You sound very positive about the\n" + 
+"@whole situation.\n" + 
+"\n" + 
+"Of course I am! Why shouldn't I be?\n" + 
+"I've come a long way in a short time.\n" + 
+"\n" + 
+"@I wish you the best, then.\n" + 
+""
+
+# === Keyser
+$data_interview[31] = 
+"@Today I'm speaking to Keyser, one of\n" + 
+"@Kirgard's legion generals and known\n" + 
+"@across the continent as a peerless \n" + 
+"@strategist.\n" + 
+"@General Keyser, your victories in \n" + 
+"@battle are well-known to everyone.\n" + 
+"@I'd like to know more about the man\n" + 
+"@behind them. For example, what do you\n" + 
+"@do in your spare time?\n" + 
+"\n" + 
+"I have a family to take care of. What\n" + 
+"little free time I have, I spend with\n" + 
+"them at home. \n" + 
+"\n" + 
+"@Is that it, though? Surely you must \n" + 
+"@have some interesting hobbies that few\n" + 
+"@people know about!\n" + 
+"\n" + 
+"Hmm... when I'm at the front and there's\n" + 
+"a lull in the fighting, I mostly spend\n" + 
+"my time reading.\n" + 
+"\n" + 
+"@Reading! That might be interesting!\n" + 
+"@What exactly do you read?\n" + 
+"\n" + 
+"History, in particular military history. \n" + 
+"\n" + 
+"@That's too conventional! There must be\n" + 
+"@something else! Do you ever play any\n" + 
+"@games?\n" + 
+"\n" + 
+"I rarely have time for it, but I enjoy\n" + 
+"a game of chess every now and then.\n" + 
+"\n" + 
+"@Chess? That's so unsurprising I hardly\n" + 
+"@even want to write it down!\n" + 
+"@I give up. I looks like General Keyser\n" + 
+"@really did dedicate his whole life to\n" + 
+"@the army.\n" + 
+""
+
+# === King
+$data_interview[32] = 
+"@Today I am interviewing Johnny's trusty\n" + 
+"@dog, King. Yes... I am interviewing a \n" + 
+"@dog this time. It's... kind of a \n" + 
+"@challenge, isn't it? \n" + 
+"@Well, hello King. How are you doing?\n" + 
+"\n" + 
+"Arf!\n" + 
+"\n" + 
+"@Uhm, so... You spent all that time in \n" + 
+"@Bayside waiting for your master to come \n" + 
+"@back. You must like him very much, don't \n" + 
+"@you?\n" + 
+"\n" + 
+"Arf! Arf! \n" + 
+"\n" + 
+"@He must be very proud of you. \n" + 
+"@Well... -Am I really talking to a dog as \n" + 
+"@if he can understand what I'm saying? \n" + 
+"@This is just too weird.\n" + 
+"@Hey, would you like a dog cookie?\n" + 
+"\n" + 
+"Arf! Arf! Arf!\n" + 
+"\n" + 
+"@There, good boy. \n" + 
+""
+
+# === Klaus
+$data_interview[33] = 
+"@Today I'm meeting with Klaus von \n" + 
+"@Lichtenheim, distinguished member of a\n" + 
+"@noble feline family.\n" + 
+"@Welcome, Sir Lichtenheim. It's very \n" + 
+"@interesting to be able to speak to you. \n" + 
+"@I was previously unaware that there was \n" + 
+"@such a thing as nobility among cats.\n" + 
+"\n" + 
+"Yes, I've certainly noticed you humans \n" + 
+"aren't the sharpest knife in the drawer.\n" + 
+"Completely oblivious to what's happening \n" + 
+"around you. My family has been among\n" + 
+"the most respected in catkind for \n" + 
+"generations.\n" + 
+"\n" + 
+"@Is it very uncommon for cats to speak?\n" + 
+"\n" + 
+"Uncommon? What a ridiculous question. \n" + 
+"Every cat can speak. It's just that most \n" + 
+"of us don't feel the urge to learn your \n" + 
+"crude human language.\n" + 
+"\n" + 
+"@I... see. \n" + 
+"@There's something else I've been \n" + 
+"@wondering about, though. What about \n" + 
+"@dogs? Are they also as intelligent as\n" + 
+"@you?\n" + 
+"\n" + 
+"Dogs? Please. That's a grave insult.\n" + 
+"They may serve some purpose as mere\n" + 
+"labourers, but they lack any sort of\n" + 
+"refinement. I'm frankly appalled you\n" + 
+"would even ask such a question. Do you\n" + 
+"wish to offend me any further or can I \n" + 
+"take my leave now?\n" + 
+"\n" + 
+"@Ah, I'm very sorry. Thank you anyway\n" + 
+"@for your time.\n" + 
+""
+
+# === Ljusalf
+$data_interview[34] = 
+"@Today I'm interviewing Ljusalf, the \n" + 
+"@elven scholar who has been with \n" + 
+"@Mr. Vinyard since the beginning of his \n" + 
+"@journey.\n" + 
+"@Welcome, Ljusalf. I'm glad to have a \n" + 
+"@chance to speak to you. Most elves shy \n" + 
+"@away from outside contact, and more \n" + 
+"@significantly, you were one of the \n" + 
+"@founding members of the Elysium army.\n" + 
+"\n" + 
+"Yes, I suppose I'm rather unique even\n" + 
+"among such diverse people as can be \n" + 
+"found here in the Elysium Army. Still, \n" + 
+"I don't feel particularly special. \n" + 
+"I just try to help in the best way \n" + 
+"I can.\n" + 
+"\n" + 
+"@But surely you -are- special. After \n" + 
+"@all, it wasn't the first time you went\n" + 
+"@out of your way to help an ambitious\n" + 
+"@human.\n" + 
+"\n" + 
+"I see... so you found out about that\n" + 
+"particular story. \n" + 
+"\n" + 
+"@Perhaps in the grand scheme of things \n" + 
+"@it was not very important, but I still \n" + 
+"@find it interesting that you've known \n" + 
+"@Ryan in the past. \n" + 
+"\n" + 
+"I didn't do very much for him at all, \n" + 
+"I'm afraid. I abandoned Ryan when he \n" + 
+"returned to Matrech, and I played no \n" + 
+"further part in his struggle.\n" + 
+"\n" + 
+"@I sense a tinge of sorrow in your tone. \n" + 
+"@Do you regret your decision to stay\n" + 
+"@behind?\n" + 
+"\n" + 
+"I certainly don't think my presence \n" + 
+"would've made much of a difference. \n" + 
+"Ryan is a wise man and a fine leader. \n" + 
+"\n" + 
+"@Still, the formation of the State Union \n" + 
+"@was a major historical event. Forgive me \n" + 
+"@for being so direct, but it seems you've \n" + 
+"@come to regret having missed the \n" + 
+"@opportunity to have been a part of that?\n" + 
+"\n" + 
+"It's a very human emotion... \n" + 
+"My brief stay among you, in relative \n" + 
+"terms, seems to have affected me more \n" + 
+"than I had expected.\n" + 
+"\n" + 
+"@Is that why you went with Mr. Vinyard? \n" + 
+"@The desire to see things to an end this\n" + 
+"@time?\n" + 
+"\n" + 
+"I had many reasons, perhaps some of them \n" + 
+"conflicting. It's difficult for me to \n" + 
+"say. My ability to understand human \n" + 
+"feelings is still limited. Perhaps it's \n" + 
+"merely curiosity.\n" + 
+"\n" + 
+"@It's not easy to view yourself \n" + 
+"@objectively. I won't go into this any \n" + 
+"@further, then. Thank you for your time.\n" + 
+""
+
+# === Luther
+$data_interview[35] = 
+"@Today I'm interviewing Luther, a \n" + 
+"@certified exorcist from Rocaine.\n" + 
+"@Welcome, father. Could you tell us \n" + 
+"@briefly about how you became a vampire \n" + 
+"@hunter?\n" + 
+"\n" + 
+"Certainly! I was raised as a priest in \n" + 
+"the Holy Empire of Rocaine from a very \n" + 
+"young age. After successfully completing \n" + 
+"my education, the church took notice of \n" + 
+"my devotion and piety, and I was given \n" + 
+"the opportunity to study exorcism. This \n" + 
+"is a great privilege, you must \n" + 
+"understand. The task bestowed on an \n" + 
+"exorcist is a difficult one, and \n" + 
+"requires the utmost strength of faith. \n" + 
+"\n" + 
+"@Did you come to be hunting this vampire \n" + 
+"@by chance, or was it something you \n" + 
+"@specialized in?\n" + 
+"\n" + 
+"That fiend? No, this was something new \n" + 
+"to me, although I had studied the \n" + 
+"subject in-depth during my training. \n" + 
+"At first, I was only sent to this land \n" + 
+"to provide a guiding light to its people \n" + 
+"and determine the level of demonic \n" + 
+"activity here. Only later did I discover \n" + 
+"this vampire's tracks and determine to \n" + 
+"purge the world of his vile presence.\n" + 
+"\n" + 
+"@So, how long did it take you to find \n" + 
+"@the vampire?\n" + 
+"\n" + 
+"Nine years! Nine long years!\n" + 
+"\n" + 
+"@That's a very long time indeed. It's \n" + 
+"@no surprise then that you were so \n" + 
+"@dedicated to this quest. \n" + 
+"\n" + 
+"Indeed, but as long as I'm carrying out\n" + 
+"my holy duty, no sacrifice is too great.\n" + 
+"\n" + 
+"@But... haven't you given up your hunt\n" + 
+"@now?\n" + 
+"\n" + 
+"Of course I haven't!\n" + 
+"That vampire... he's still retained most\n" + 
+"of his humanity. He may be relatively\n" + 
+"harmless for now, but it won't last!\n" + 
+"Some day, the true monster within him\n" + 
+"will show itself. I will be waiting for\n" + 
+"that day, and when it comes I will be\n" + 
+"ready to stop it!\n" + 
+"\n" + 
+"@Let's hope then it won't come any time\n" + 
+"@soon.\n" + 
+""
+
+# === Mai
+$data_interview[36] = 
+"@Today I'm interviewing Mai, Elysium \n" + 
+"@Castle's official magic vendor.\n" + 
+"@Mai, you've been traveling around\n" + 
+"@Zelmony to open up a store somewhere.\n" + 
+"@Where did you originally come from?\n" + 
+"\n" + 
+"I was born in Parthinia, a filthy \n" + 
+"country that lacks any sort of \n" + 
+"elegance. The less said about it the \n" + 
+"better.\n" + 
+"\n" + 
+"@If that's your homeland, how come\n" + 
+"@you're so different then?\n" + 
+"\n" + 
+"I have always been a person of \n" + 
+"outstanding class. I was raised very\n" + 
+"well by my father.\n" + 
+"\n" + 
+"@Your father? What was he like?\n" + 
+"\n" + 
+"He was a highly skilled doctor. I was\n" + 
+"there with him when he got involved in\n" + 
+"the Parthinian civil war, twenty years\n" + 
+"ago, but after that we left the country\n" + 
+"to get a top class education for me.\n" + 
+"I studied at Faraday University and\n" + 
+"learned from some of the finest minds\n" + 
+"on the continent. That's how I reached\n" + 
+"a level of sophistication that is \n" + 
+"rarely found around here.\n" + 
+"\n" + 
+"@I see... Well, I hope business in your\n" + 
+"@store will be good.\n" + 
+""
+
+# === Mandala
+$data_interview[37] = 
+"@Today I'm talking to Mandala, a treasure\n" + 
+"@hunter from Almenga.\n" + 
+"@Mandala, you were last seen trying to\n" + 
+"@find the Mad King's hidden treasure.\n" + 
+"@That's a long way from home. Do you\n" + 
+"@travel around a lot?\n" + 
+"\n" + 
+"'Course I do. There were some neat\n" + 
+"things I found close to home, but you're\n" + 
+"going to run out sooner or later. Now\n" + 
+"I wander around looking for any hints\n" + 
+"or rumours. I have sharp sense for this \n" + 
+"sorta thing. \n" + 
+"\n" + 
+"@What kind of places have you been to\n" + 
+"@then?\n" + 
+"\n" + 
+"Oh, let's see... I discovered the ruins\n" + 
+"of Valaskialf back in Almenga and found\n" + 
+"the crown of Odin. I went to Rocaine \n" + 
+"and dug up a 7th century holy relic and\n" + 
+"sold it to the church for big money.\n" + 
+"Tons of smaller finds too.\n" + 
+"\n" + 
+"@How dangerous is your work usually?\n" + 
+"@I know that the Mad King's treasure\n" + 
+"@could've cost you your life.\n" + 
+"\n" + 
+"Usually it's not so bad. Sometimes \n" + 
+"there's rival hunters, and not all of\n" + 
+"them are equally friendly. Some of 'em\n" + 
+"are little more than pirates. They'll\n" + 
+"lop off your head before you can say a\n" + 
+"word. I try to stay out of their way.\n" + 
+"\n" + 
+"@Have you ever been in a life-\n" + 
+"@threatening situation? And how'd you\n" + 
+"@survive?\n" + 
+"\n" + 
+"There was that one time, back in \n" + 
+"Almenga. I was working together for a \n" + 
+"while with a Hazan survivor looking\n" + 
+"through the remains of some of their\n" + 
+"villages. Well, one day we ran into a\n" + 
+"bunch of looters, the kind that doesn't\n" + 
+"like sharing with others. We had a \n" + 
+"guide with us, and he got killed trying\n" + 
+"to talk to them. We had to leave \n" + 
+"everything behind and run for our lives.\n" + 
+"We were just lucky they didn't chase \n" + 
+"us. Hah, the other guy with me, \n" + 
+"Stromgaard, he never wanted to work \n" + 
+"with me again after that.\n" + 
+"\n" + 
+"@Do you have any future targets now?\n" + 
+"\n" + 
+"Not really. Maybe I'll head further\n" + 
+"west after this. I'll just wander \n" + 
+"around a bit and see what catches my \n" + 
+"eye.\n" + 
+"\n" + 
+"@Well, I wish you good luck.\n" + 
+""
+
+# === Marcello
+$data_interview[38] = 
+"@Today I'm speaking to Marcello, a\n" + 
+"@rather... extraordinary member of the\n" + 
+"@Elysium army.\n" + 
+"@Mr. Marcello, what exactly -is- your\n" + 
+"@business?\n" + 
+"\n" + 
+"Trade is my business. The city of Jargo\n" + 
+"is the commercial heart of Helman \n" + 
+"Island, and I'm right in the middle of\n" + 
+"it. I buy what's available, I sell \n" + 
+"what's in demand. It's a very lucrative\n" + 
+"business.\n" + 
+"\n" + 
+"@You mentioned buying and selling. What\n" + 
+"@sort of things do you trade in?\n" + 
+"\n" + 
+"Anything that's profitable. Wine from\n" + 
+"Oischin, Issurian spices, Goji \n" + 
+"tapestries. \n" + 
+"\n" + 
+"@And everything is legit, of course.\n" + 
+"\n" + 
+"What are you insinuating?\n" + 
+"\n" + 
+"@I've heard that there's also a lot of\n" + 
+"@smuggling going on at Jargo Port City.\n" + 
+"@Of course, I don't know exactly who is\n" + 
+"@involved in that.\n" + 
+"\n" + 
+"I run a straight business, and I don't\n" + 
+"appreciate having baseless rumours \n" + 
+"spread around. I strongly suggest you\n" + 
+"stay out of matters you know nothing\n" + 
+"about. Am I clear?\n" + 
+"\n" + 
+"@Yes. Very clear.\n" + 
+""
+
+# === Marian
+$data_interview[39] = 
+"@Today I'm meeting Marian, headmistress \n" + 
+"@of Faraday University. \n" + 
+"@Thank you for sparing some time for us, \n" + 
+"@Marian.\n" + 
+"\n" + 
+"Yes, well I hope you will keep this \n" + 
+"brief. I have a lot of other business \n" + 
+"to attend to.\n" + 
+"\n" + 
+"@You seem to have a very busy job. Is \n" + 
+"@that why you left the task of \n" + 
+"@governing Oischin to Galius?\n" + 
+"\n" + 
+"It's an archaic and inefficient system.\n" + 
+"Do they think my job is not \n" + 
+"time-consuming enough as it is? Those\n" + 
+"temple priests seem to have a lot more\n" + 
+"spare time. Let them do some actual \n" + 
+"work. \n" + 
+"\n" + 
+"@You really seem very different from\n" + 
+"@your brother. \n" + 
+"\n" + 
+"I tried to educate him, but he simply\n" + 
+"has no discipline. It's not worth my\n" + 
+"time trying anymore. Let him dally\n" + 
+"around if that's what he likes so \n" + 
+"much.\n" + 
+"Now, I have to return to work. If you\n" + 
+"have more to ask, we can make another\n" + 
+"appointment as long as it's three weeks\n" + 
+"in advance.\n" + 
+""
+
+# === Meiko
+$data_interview[40] = 
+"@Today I'm meeting with Meiko, resident \n" + 
+"@wartime correspondent at Elysium castle.\n" + 
+"\n" + 
+"This is kind of awkward. Maybe I \n" + 
+"should've asked someone else to \n" + 
+"interview me.\n" + 
+"\n" + 
+"@Uhm... Okay, why don't you start by \n" + 
+"@telling us something about yourself?\n" + 
+"\n" + 
+"All right. I was born in Wellesby, which\n" + 
+"at the time was a small Bishopric, not \n" + 
+"far south of Oischin. It's a big city, \n" + 
+"not as big as Matrech, but larger than \n" + 
+"Mayfall City I guess. Anyway, when I was \n" + 
+"ten years old, the city was besieged and \n" + 
+"then annexed by the Fairwind Republic. \n" + 
+"I think that's what sparked my interest \n" + 
+"in war, and especially the reality \n" + 
+"behind it. I wanted to know why it \n" + 
+"happened, and what it meant for both \n" + 
+"sides, on every level of the population.\n" + 
+"\n" + 
+"@Maybe I should say something about \n" + 
+"@how I ended up in Zelmony?\n" + 
+"\n" + 
+"Well, I started reading a lot of \n" + 
+"history, and I got especially interested\n" + 
+"in the Kingdom of Zelmony and its modern \n" + 
+"history. I wanted to see some more of \n" + 
+"the world, so I decided to travel to \n" + 
+"Mayfall, and then on to Helman Island \n" + 
+"and Kirgard, and ask people about the \n" + 
+"recent wars between the two countries. \n" + 
+"I was hoping to write a book or \n" + 
+"something about it. I couldn't believe \n" + 
+"it when a new war broke out just as I \n" + 
+"got there!\n" + 
+"\n" + 
+"@So that's when I had to... I mean you \n" + 
+"@had to change your plans.\n" + 
+"\n" + 
+"Yes. Since I was there from the start, \n" + 
+"I knew it was my big chance. I'm hoping \n" + 
+"to collect all my eyewitness reports to \n" + 
+"inform people all over the world about \n" + 
+"what happened here.\n" + 
+"\n" + 
+"@Well, good luck with that. I think we \n" + 
+"@should end our interview here\n" + 
+""
+
+# === Merrick
+$data_interview[41] = 
+"@Today I'm talking to Merrick, colonel\n" + 
+"@of the Mayfall army.\n" + 
+"@Colonel, I've heard stories that you\n" + 
+"@haven't been on very good footing with\n" + 
+"@the State government lately. Is that\n" + 
+"@true?\n" + 
+"\n" + 
+"Oh, you think I wasn't on good footing \n" + 
+"with a bunch of complete idiots? \n" + 
+"What ever could make you think so?\n" + 
+"\n" + 
+"@So it's true, then? What exactly was\n" + 
+"@causing this friction?\n" + 
+"\n" + 
+"Mayfall is my home, it's my duty to\n" + 
+"protect it, but they? They just treat\n" + 
+"it like it was some kind of tool you\n" + 
+"can use when you need it and throw\n" + 
+"away when you're done. To them it's \n" + 
+"just a convenient buffer zone to shield \n" + 
+"Matrech from Kirgard.\n" + 
+"\n" + 
+"@Surely that's not completely true.\n" + 
+"@After all, the State Union put a lot of\n" + 
+"@effort into taking back Mayfall after\n" + 
+"@General Keyser's invasion.\n" + 
+"\n" + 
+"For their own security I'm sure. Did you\n" + 
+"forget why I'm here now? They threw away\n" + 
+"Mayfall because they wanted to get their\n" + 
+"grubby hands on Highland again. Well,\n" + 
+"screw them! I'm done with all this\n" + 
+"bullshit!\n" + 
+"\n" + 
+"@Uh, let's take a break, because I'm\n" + 
+"@getting worried about your health.\n" + 
+""
+
+# === Midian
+$data_interview[42] = 
+"@Today I'm interviewing Midian, who\n" + 
+"@left the State Army to live as a \n" + 
+"@hermit.\n" + 
+"@Midian, you used to be a magic \n" + 
+"@instructor in the army, right?\n" + 
+"\n" + 
+"Hmm, a long time ago. I bet you want to \n" + 
+"know why I left the army, don't you?\n" + 
+"\n" + 
+"@I know it was 10 years ago, so it\n" + 
+"@coincides with the Triple War between \n" + 
+"@Zelmony, Cayeska and the Fairwind \n" + 
+"@Republic. Did that have something to\n" + 
+"@do with it?\n" + 
+"\n" + 
+"Fine, I'll tell you. That whole war was\n" + 
+"a waste of time. Help Cayeska? Hmph. \n" + 
+"It was their own problem. If they \n" + 
+"wanted our help, they shouldn't have\n" + 
+"refused to join the State Union.\n" + 
+"And then those people at Matrech, with \n" + 
+"their pan-Zelmonian rhetoric. They saw \n" + 
+"the republic as an imperialist threat, \n" + 
+"but they're hardly different themselves.\n" + 
+"If they had their way, both Cayeska and\n" + 
+"parts of the republic would've been\n" + 
+"Zelmony territory by now. Well, in their\n" + 
+"dreams maybe. No one in the army worth\n" + 
+"his salt believed that was possible.\n" + 
+"\n" + 
+"@If you were an instructor in Matrech,\n" + 
+"@how did you get involved in the \n" + 
+"@conflict?\n" + 
+"\n" + 
+"They sent me out to train Cayeskan\n" + 
+"mages. Ungrateful bunch, but if it had\n" + 
+"just been that it would've been fine.\n" + 
+"They -the politicians in Matrech- \n" + 
+"crossed the line when they 'subtly'\n" + 
+"started to pressure me about my \n" + 
+"methods. They didn't just want me to\n" + 
+"train them, they wanted me to \n" + 
+"indoctrinate them about how wonderful\n" + 
+"the State Union is. Oh yes, I knew what \n" + 
+"they wanted. It was bloody obvious.\n" + 
+"Create a new army in Cayeska loyal to\n" + 
+"Zelmony so that after the war they can\n" + 
+"fight to join the State Union. I wasn't\n" + 
+"having any of that, so they tried to\n" + 
+"remove me. That's when I left. I wasn't\n" + 
+"going to waste any more of my time on\n" + 
+"those idiots.\n" + 
+"\n" + 
+"@And you'd be living on your own on that\n" + 
+"@island ever since?\n" + 
+"\n" + 
+"Yes, nice and quiet. Away from all that\n" + 
+"nonsense. Oh, I don't regret coming \n" + 
+"back, but I can't wait to return home \n" + 
+"again. I just want to spend my last \n" + 
+"days in peace.\n" + 
+""
+
+# === Mike
+$data_interview[43] = 
+"@Today I'm talking to Mike, a young\n" + 
+"@mercenary in service of the Elysium\n" + 
+"@army.\n" + 
+"@Welcome, Mike. Why don't you tell us a\n" + 
+"@bit about yourself?\n" + 
+"\n" + 
+"Heh, what do you wanna know?\n" + 
+"\n" + 
+"@I don't know... anything interesting!\n" + 
+"\n" + 
+"I'm a merc. I fight for money. What\n" + 
+"else is there?\n" + 
+"\n" + 
+"@All right then, how did you become a\n" + 
+"@mercenary in the first place?\n" + 
+"\n" + 
+"Used to be a miner. Then Outsider came\n" + 
+"along and taught us how to fight. Turned\n" + 
+"out I was good at it.\n" + 
+"\n" + 
+"@So you stayed with Outsider after that?\n" + 
+"\n" + 
+"Nope, he works alone. So do I. \n" + 
+"\n" + 
+"@Well, uhm... We're going through my\n" + 
+"@list of questions pretty quickly this\n" + 
+"@way. Anything else you like to do?\n" + 
+"\n" + 
+"Dunno. Fighting's what I do, don't have\n" + 
+"much time for anything else.\n" + 
+"\n" + 
+"@Well, that's surprising, assuming you're \n" + 
+"@always this efficient. Guess our \n" + 
+"@interview ends here, then.\n" + 
+""
+
+# === Myst
+$data_interview[44] = 
+"@Today I'm meeting with Myst, producer \n" + 
+"@of groundbreaking research work in the \n" + 
+"@field of magic.\n" + 
+"@We all know about your recent success in \n" + 
+"@reviving the dead, but what about your \n" + 
+"@life before that? What other major \n" + 
+"@discoveries have you made?\n" + 
+"\n" + 
+"Ah, I can't divulge much about my work. \n" + 
+"It would be a great disaster if anyone \n" + 
+"were to steal my research, hmm? \n" + 
+"\n" + 
+"@But your work was not all original \n" + 
+"@research, was it? If I'm not mistaken,\n" + 
+"@you're in possession of an ancient book \n" + 
+"@on necromancy.\n" + 
+"\n" + 
+"Yes, a most interesting book it was. \n" + 
+"The one you may have seen is not the \n" + 
+"original, of course. I had to \n" + 
+"painstakingly translate it from a faded\n" + 
+"copy dated hundreds of years back. It \n" + 
+"was far from a simple task, as the \n" + 
+"actual process is only vaguely alluded \n" + 
+"to.\n" + 
+"\n" + 
+"@Anyway, resurrecting the dead must have \n" + 
+"@been your life's work.\n" + 
+"\n" + 
+"Not at all, young lady. I have so much \n" + 
+"more work ahead of me. No, with this \n" + 
+"success my real work has only just begun!\n" + 
+"\n" + 
+"@So you already have a new project\n" + 
+"@in mind?\n" + 
+"\n" + 
+"Oh, most certainly! It will be so \n" + 
+"magnificent that mere necromancy will\n" + 
+"pale in comparison! \n" + 
+"\n" + 
+"@Can you give us a small peek?\n" + 
+"\n" + 
+"I won't say much, except that it's \n" + 
+"closely related to my current research.\n" + 
+"However, the impact if I succeed will \n" + 
+"be many times higher.\n" + 
+"\n" + 
+"@Well, I think we'll all be waiting with\n" + 
+"@bated breath. Good luck with your\n" + 
+"@project, whatever it might be!\n" + 
+""
+
+# === Naja
+$data_interview[45] = 
+"@Today I'm talking to Naja, a water\n" + 
+"@elemental from Mayfall Forest.\n" + 
+"@An elemental traveling by itself, that's\n" + 
+"@pretty uncommon, isn't it?\n" + 
+"\n" + 
+"Yes, but our situation is uncommon to\n" + 
+"begin with. Right now, there is nothing\n" + 
+"for me at the lake. I'm the only one\n" + 
+"who survived the mist incident... I just\n" + 
+"hope I can make up for it.\n" + 
+"\n" + 
+"@But I've heard that the other \n" + 
+"@elementals will be reborn from the lake\n" + 
+"@eventually.\n" + 
+"\n" + 
+"Yes, that's right. We are all one with\n" + 
+"the lake. We're a part of it for our\n" + 
+"entire lives.\n" + 
+"\n" + 
+"@That's interesting. Does that mean that\n" + 
+"@the water elementals together are \n" + 
+"@essentially a single living entity?\n" + 
+"\n" + 
+"The ones connected to that lake, yes.\n" + 
+"We are individual beings, but we are\n" + 
+"also one and the same. That's why we can\n" + 
+"be endlessly reborn as long as the lake\n" + 
+"exists.\n" + 
+"\n" + 
+"@Fascinating. That must mean you're \n" + 
+"@actually quite old.\n" + 
+"\n" + 
+"I've lived at the lake for hundreds of\n" + 
+"years, but it took thousands of years\n" + 
+"for the lake to become infused with \n" + 
+"enough elemental energy.\n" + 
+"\n" + 
+"@Much older than you'd expect, I see.\n" + 
+"@I guess life at the lake must be very\n" + 
+"@different from what we're used to.\n" + 
+"@Thanks for telling me all this!\n" + 
+""
+
+# === Nashal
+$data_interview[46] = 
+"@Today I'm interviewing General Nashal \n" + 
+"@from Gojistan.\n" + 
+"@Welcome, general. For a start, could\n" + 
+"@you tell us a little about your \n" + 
+"@country?\n" + 
+"\n" + 
+"Gojistan is a country north-east of \n" + 
+"Kirgard, across the ocean. It's larger \n" + 
+"than Zelmony, but the east is mainly \n" + 
+"steppe and sparsely populated. We're \n" + 
+"located on the eastern shores of the \n" + 
+"Kubal Sea, an internal sea with the \n" + 
+"Kingdom of Issuria to the north, the \n" + 
+"Holy Empire of Rocaine to the south, \n" + 
+"and the Archduchy of Valcany to the \n" + 
+"west.\n" + 
+"\n" + 
+"@I've heard that the situation between\n" + 
+"@Issuria and Rocaine is similar to that \n" + 
+"@between Kirgard and Zelmony -there've\n" + 
+"@been many wars between the two. Does \n" + 
+"@this affect your country badly, being\n" + 
+"@in the middle?\n" + 
+"\n" + 
+"Often, yes. Both countries have invaded \n" + 
+"us in the past. At the moment there is\n" + 
+"an uneasy peace, but no one knows how \n" + 
+"long it will last. The khan is \n" + 
+"maintaining a neutral position as not\n" + 
+"to offend either country.\n" + 
+"\n" + 
+"@And yet, you've clearly chosen a side \n" + 
+"@in this conflict.\n" + 
+"\n" + 
+"This was also the khan's decision. \n" + 
+"Gojistan and its neighbours have never \n" + 
+"had much contact with this continent. \n" + 
+"With the dawn of a new age for these\n" + 
+"lands, it's also an opportunity for us.\n" + 
+"Neither Kirgard nor Zelmony are allied\n" + 
+"to our enemies, so we're hoping to\n" + 
+"strengthen our position by improving\n" + 
+"our relations with your people. I think\n" + 
+"we could learn a lot from each other.\n" + 
+"\n" + 
+"@I certainly hope I'll get the chance\n" + 
+"@to visit your country some day. I'd \n" + 
+"@love to see it.\n" + 
+""
+
+# === Nikolai
+$data_interview[47] = 
+"@Today I'm speaking to Nikolai, a \n" + 
+"@traveling blacksmith now working for\n" + 
+"@the Elysium Army.\n" + 
+"@Nikolai, you were found near Bergstadt.\n" + 
+"@Do you remember at all what happened?\n" + 
+"\n" + 
+"Only a little... I know I was traveling\n" + 
+"through the mountains by myself, and \n" + 
+"that suddenly I saw two... it must've\n" + 
+"been mountain lions I suppose. I forgot\n" + 
+"what happened next, but I must've fought\n" + 
+"them off myself and collapsed from my\n" + 
+"injuries.\n" + 
+"\n" + 
+"@So you lost your memories in the \n" + 
+"@process, but things have now been \n" + 
+"@starting to come back to you. How is \n" + 
+"@that going?\n" + 
+"\n" + 
+"I'm getting better, but I still forget\n" + 
+"things from time to time. It's very\n" + 
+"difficult, but I'm convinced I'll some\n" + 
+"day get over it completely.\n" + 
+"\n" + 
+"@That's good to hear, at least. Well\n" + 
+"@then, I had just a few more questions\n" + 
+"@to ask...\n" + 
+"\n" + 
+"...Excuse me, who are you again?\n" + 
+"\n" + 
+"@...but maybe you should go see a doctor\n" + 
+"@instead.\n" + 
+""
+
+# === Nomad
+$data_interview[48] = 
+"@Today I'm meeting Nomad, an adventurer\n" + 
+"@and treasure hunter...\n" + 
+"\n" + 
+"Uhm, I prefer the term 'archaeologist'.\n" + 
+"\n" + 
+"@Well... it all depends on what your \n" + 
+"@actual goal is, doesn't it? Are you \n" + 
+"@actually trying to improve our \n" + 
+"@knowledge of the past?\n" + 
+"\n" + 
+"That's right. That's why I'm looking for \n" + 
+"forgotten cities and lost civilizations. \n" + 
+"The treasure hunting part, well, that's \n" + 
+"just a way of paying for the whole \n" + 
+"business. I'm not as uneducated as you \n" + 
+"might think.\n" + 
+"\n" + 
+"@Actually, I wasn't thinking that at \n" + 
+"@all. After all, I know you studied \n" + 
+"@history at Faraday University together \n" + 
+"@with your sister.\n" + 
+"\n" + 
+"You've done your homework, huh? Yeah, \n" + 
+"it's true, but I left the university \n" + 
+"not long afterwards. I've been mostly \n" + 
+"wandering around for over twenty years \n" + 
+"now.\n" + 
+"\n" + 
+"@If you've been doing it for so long, \n" + 
+"@you must've been successful. Have you \n" + 
+"@found a lot of interesting things?\n" + 
+"\n" + 
+"You bet! Avalon was one of my primary \n" + 
+"targets, but I've also uncovered cities \n" + 
+"in places as far as Parthinia. Usually, \n" + 
+"once I've found something, I just let \n" + 
+"my sis know about it and let her people \n" + 
+"take care of the rest.\n" + 
+"\n" + 
+"@Now that you mention it, let me ask \n" + 
+"@something about your sister. How come \n" + 
+"@you parted ways when you had the same\n" + 
+"@interests?\n" + 
+"\n" + 
+"Same interests? Hah, I don't think \n" + 
+"she'd agree with that statement. We've \n" + 
+"always had a different outlook on \n" + 
+"things. I like to follow my instincts \n" + 
+"and dig around for leads, she prefers \n" + 
+"doing intensive research. I mean, just \n" + 
+"look how we ended up. I've traveled \n" + 
+"all over, and she's too busy with her \n" + 
+"work as headmistress to even leave \n" + 
+"Faraday.\n" + 
+"\n" + 
+"@Just one more thing. Your name. How \n" + 
+"@did you end up being called Nomad?\n" + 
+"\n" + 
+"To tell you the truth, I think my real\n" + 
+"name is kind of embarrassing. It just \n" + 
+"doesn't suit me. So, when a few people\n" + 
+"started calling me 'the Nomad', it\n" + 
+"just stuck.\n" + 
+"\n" + 
+"@Do you want to tell us your real name?\n" + 
+"\n" + 
+"Not really.\n" + 
+"\n" + 
+"@Oh.\n" + 
+""
+
+# === Orlando
+$data_interview[49] = 
+"@Today I'm talking to Orlando, a former\n" + 
+"@swindler now trying to start a new\n" + 
+"@life.\n" + 
+"@Now, Orlando, I'd like to know a few\n" + 
+"@things about your activities together\n" + 
+"@with Deus. Where were you two \n" + 
+"@originally from?\n" + 
+"\n" + 
+"I don't really like talking about it\n" + 
+"anymore, but all right. We started out\n" + 
+"in Seagate, capital of the Fairwind \n" + 
+"Republic. It's a big city, so it was\n" + 
+"easy to work in.\n" + 
+"\n" + 
+"@Any particular clever plans you managed\n" + 
+"@to pull off?\n" + 
+"\n" + 
+"I don't wanna mention anything about\n" + 
+"that. There's still people out there\n" + 
+"looking for me, and I don't want them\n" + 
+"breathing down my neck again.\n" + 
+"\n" + 
+"@I can understand that. So are you \n" + 
+"@trying to go straight now?\n" + 
+"\n" + 
+"I guess so. There were times we made a\n" + 
+"lot of money, but did I ever really get\n" + 
+"the chance to enjoy it? Not really.\n" + 
+"We were always worrying about getting\n" + 
+"caught, not so much by the army as by\n" + 
+"less forgiving people. It's no surprise\n" + 
+"that when Deus found a place like the\n" + 
+"temple, a place where he could live \n" + 
+"safely, without fear, he left everything\n" + 
+"else behind. Maybe I can find something\n" + 
+"similar here.\n" + 
+"\n" + 
+"@I wish you all the best, then.\n" + 
+""
+
+# === Outsider
+$data_interview[50] = 
+"@Today I'm meeting with Outsider, the \n" + 
+"@mercenary captain currently in service \n" + 
+"@with Elysium.\n" + 
+"@So, I call you a mercenary captain, but\n" + 
+"@you don't actually have anyone working\n" + 
+"@under you, do you?\n" + 
+"\n" + 
+"Nope, I work alone. Some people prefer\n" + 
+"calling me a 'strategy consultant', or \n" + 
+"something like that. They hire me to \n" + 
+"train their own men and lead them in\n" + 
+"battle.\n" + 
+"\n" + 
+"@Isn't that a little strange? Didn't \n" + 
+"@you use to lead an actual mercenary\n" + 
+"@army?\n" + 
+"\n" + 
+"At first, yeah. You see, I used to be a \n" + 
+"sergeant in the State Army, but I had \n" + 
+"enough of being told what to do, so I \n" + 
+"left, and a bunch of my men followed me. \n" + 
+"It worked well for a while, but it's a \n" + 
+"lot of people to feed and take care of, \n" + 
+"and I couldn't always keep them \n" + 
+"together. It's much easier this way. \n" + 
+"My rates are lower, it's less stressful, \n" + 
+"and I still make a better living.\n" + 
+"\n" + 
+"@Speaking of feeding, I heard some \n" + 
+"@rumours that in your spare time, you \n" + 
+"@enjoy cooking. Is that true?\n" + 
+"\n" + 
+"Surprised? A man fights twice as hard if\n" + 
+"he's had a good meal. I couldn't rely on \n" + 
+"cooks everywhere I went, so I taught \n" + 
+"myself how to properly prepare food. \n" + 
+"It's a good way to relax. \n" + 
+"\n" + 
+"@One more thing. What about this other \n" + 
+"@mercenary, Mike? What's your relation \n" + 
+"@to him?\n" + 
+"\n" + 
+"Mike... He's one of the kids I trained. \n" + 
+"It was a job in Highland two years ago. \n" + 
+"A local businessman hired me to teach \n" + 
+"the mine workers to defend themselves, \n" + 
+"against robbers and such. Mike was just \n" + 
+"one of the workers there, but he picked \n" + 
+"things up from me at amazing speed. He's\n" + 
+"a natural. Afterwards, he wanted to come \n" + 
+"with me, but I didn't want to drag \n" + 
+"anyone else along with me anymore. Well, \n" + 
+"the kid insisted, so in the end we \n" + 
+"became partners instead. We work \n" + 
+"together or separately, but we'll never \n" + 
+"work against each other.\n" + 
+"\n" + 
+"@I see. Very interesting. Thank you for\n" + 
+"@your time, Outsider.\n" + 
+""
+
+# === Paris
+$data_interview[51] = 
+"@Today I'm talking to Paris, a soldier\n" + 
+"@who temporarily fought for the Highland \n" + 
+"@rebel army.\n" + 
+"@Paris, you fought with Rock for a while,\n" + 
+"@but you're not from Highland, right?\n" + 
+"\n" + 
+"That's right. I'm from Cayeska.\n" + 
+"\n" + 
+"@I assume you used to serve in the \n" + 
+"@Cayeskan army, then. How did you end\n" + 
+"@up with the rebel army?\n" + 
+"\n" + 
+"Long story. I wasn't happy in Cayeska,\n" + 
+"so I left the army and live more or\n" + 
+"less as a mercenary. I fought for \n" + 
+"whoever kept me fed. That's not to say\n" + 
+"I have no principles, though. Attacking\n" + 
+"civilians is a big no. I tried to stick\n" + 
+"mostly to jobs as a bodyguard or\n" + 
+"protecting caravans. I ended up in \n" + 
+"Highland that way a while back, and we\n" + 
+"got into some trouble with the border\n" + 
+"guard there. Wouldn't let us through\n" + 
+"without compensation, if you catch my \n" + 
+"drift. Long story short, after we got \n" + 
+"out of that mess I got in touch with \n" + 
+"Rock and decided I'd help him clean up\n" + 
+"the place. \n" + 
+"\n" + 
+"@So you were never a 'real' member of\n" + 
+"@the rebellion? Why'd he trust you, then?\n" + 
+"\n" + 
+"He needed my help to take Grunthall.\n" + 
+"There weren't a lot of real ex-army \n" + 
+"officers in his little band. I guess it\n" + 
+"was just his intuition. \n" + 
+"\n" + 
+"@You're serving in the Elysium army now,\n" + 
+"@but what are your plans for the future?\n" + 
+"\n" + 
+"Who knows. I'll stay here as long as I'm\n" + 
+"feeling good about it. Why leave when\n" + 
+"you haven't found anything better yet?\n" + 
+"\n" + 
+"@Makes sense. Good luck, then.\n" + 
+""
+
+# === Petra
+$data_interview[52] = 
+"@Today I'm speaking to Petra, a powerful\n" + 
+"@warrior from Helman Island.\n" + 
+"@Welcome, Petra. I understand you're\n" + 
+"@not just here to fight a war, are you?\n" + 
+"\n" + 
+"That's right. I'm fighting for a far\n" + 
+"more important cause. I'm fighting to\n" + 
+"empower women all over the world.\n" + 
+"\n" + 
+"@What exactly is it that you're trying\n" + 
+"@to accomplish?\n" + 
+"\n" + 
+"I'm going to end the male oppression\n" + 
+"that we've been forced to endure for\n" + 
+"thousands of years. I will liberate\n" + 
+"womankind and break the shackles that\n" + 
+"men have bound it with for all this\n" + 
+"time.\n" + 
+"\n" + 
+"@And... are you sure that your methods\n" + 
+"@are the best way of accomplishing\n" + 
+"@that?\n" + 
+"\n" + 
+"\n" + 
+"What? Are you questioning me? Are you\n" + 
+"on -their- side? I knew it. The media \n" + 
+"is biased. \n" + 
+"\n" + 
+"\n" + 
+"@No no, I'm just trying to get a \n" + 
+"@clear pi-\n" + 
+"\n" + 
+"\n" + 
+"Listen, if you're not with us, you're \n" + 
+"against us. We have a moral duty to \n" + 
+"spread the power of feminism to the\n" + 
+"uncultured masses, whether they want it\n" + 
+"or not. Or are you anti-woman by any\n" + 
+"chance? Is that it? You hate women?\n" + 
+"Get out of my face, you traitor.\n" + 
+"\n" + 
+"\n" + 
+"@Uhm...\n" + 
+""
+
+# === Reod
+$data_interview[53] = 
+"@Today I'm interviewing Reod, a \n" + 
+"@rather troublesome mage.\n" + 
+"@Now, from a brief investigation of your \n" + 
+"@recent past, it seems you've made a lot \n" + 
+"@of enemies. Apparently, 'Reod' is just \n" + 
+"@one of many different names you've been \n" + 
+"@using over the years.\n" + 
+"\n" + 
+"Well, hehe... I guess that's true. I \n" + 
+"don't really like to stay in one place \n" + 
+"for long.\n" + 
+"\n" + 
+"@You've been arrested before for theft \n" + 
+"@and fraud in St. Reinard, Trarcia, \n" + 
+"@Blackwater and Harlinton, and in \n" + 
+"@addition to that there are several \n" + 
+"@loansharks looking out for you.\n" + 
+"\n" + 
+"You... You didn't tell them I'm here, \n" + 
+"right? They think I'm dead, you see. \n" + 
+"Well, most of them do. I... I really \n" + 
+"don't want to get into even more \n" + 
+"trouble.\n" + 
+"\n" + 
+"@Don't worry. I've only been gathering \n" + 
+"@information, not handing it out. \n" + 
+"@Now, how did you manage to get yourself \n" + 
+"@into this situation? What are you \n" + 
+"@spending all this money on?\n" + 
+"\n" + 
+"Well... t-to tell you the truth, it's... \n" + 
+"it's not really for me. I have a little \n" + 
+"brother back home. I don't want to tell \n" + 
+"you where, but... he's sick, and he \n" + 
+"needs expensive medicine. I... don't \n" + 
+"really care if I have to live like \n" + 
+"this, as long as he's well.\n" + 
+"\n" + 
+"@I see... This does match the story \n" + 
+"@you've told a few other people in the \n" + 
+"@past. Except that you told them it was \n" + 
+"@your sister. And your mother.\n" + 
+"\n" + 
+"I... I did...?\n" + 
+"\n" + 
+"@Yes, you did. Maybe we should end the \n" + 
+"@interview here.\n" + 
+"\n" + 
+"O... Okay.\n" + 
+"\n" + 
+"@And give me back my pencils.\n" + 
+""
+
+# === Richard
+$data_interview[54] = 
+"@Today I'm talking to Richard, a ranger\n" + 
+"@who takes care of Mayfall forest.\n" + 
+"@Richard, you're paid for doing this\n" + 
+"@job by the Mayfall state government,\n" + 
+"@right? What exactly is your official\n" + 
+"@task? Surely you don't get something\n" + 
+"@like the mist problem often.\n" + 
+"\n" + 
+"No, I'm glad I don't! Usually it's the\n" + 
+"basic stuff, keeping track of animal\n" + 
+"populations and ensuring the roads are\n" + 
+"clear for travellers. A lot of business\n" + 
+"between Mayfall and Matrech goes through\n" + 
+"my part of the woods.\n" + 
+"\n" + 
+"@I noticed the forest hasn't the safest\n" + 
+"@place to travel through lately. Is that\n" + 
+"@also due to the mist issue?\n" + 
+"\n" + 
+"Unfortunately yeah. The mist monsters\n" + 
+"were a real danger, so I was focusing\n" + 
+"all my attention on keeping them away\n" + 
+"from the paths. Most caravans have\n" + 
+"bodyguards with them anyway, so the \n" + 
+"lesser beasts aren't as much of a \n" + 
+"problem. I've got a lot of work waiting\n" + 
+"for me when I get back though. It's \n" + 
+"almost as if this is a vacation for \n" + 
+"me, haha.\n" + 
+"\n" + 
+"@Hope it doesn't end to soon, then!\n" + 
+""
+
+# === Rock
+$data_interview[55] = 
+"@Today I'm talking to Rock, formerly \n" + 
+"@leader of the Highland rebel army and\n" + 
+"@now leader of the Highland Republic.\n" + 
+"@Now, you've become pretty famous \n" + 
+"@lately, but we don't know much about\n" + 
+"@your earlier life. How did you get\n" + 
+"@involved in the Highland rebellion?\n" + 
+"\n" + 
+"I used to be a lieutenant in the \n" + 
+"Highland Army. I was one of the many\n" + 
+"people who couldn't see what was right\n" + 
+"in front of them. For years, I believed\n" + 
+"the same thing as the people in Matrech\n" + 
+"did, that everything's fine, just a few\n" + 
+"isolated incidents. The man who changed\n" + 
+"me was Joshua's father. He was a \n" + 
+"businessman, so he suffered directly\n" + 
+"from the corruption. He opened my eyes\n" + 
+"and showed me what was really going on\n" + 
+"around me. And for that, he was \n" + 
+"murdered.\n" + 
+"\n" + 
+"@I heard about this story. You tried to\n" + 
+"@expose a corrupt army captain. I see\n" + 
+"@why you'd leave the army after that,\n" + 
+"@but did you join the rebellion right\n" + 
+"@after that?\n" + 
+"\n" + 
+"Joshua told me about a friend of his\n" + 
+"father's. You gotta know that at the \n" + 
+"time, the rebel army was nothing. An\n" + 
+"uprising a year earlier was crushed\n" + 
+"mercilessly and not much of it was left.\n" + 
+"But this friend was one of the ex-\n" + 
+"soldiers who took part in that \n" + 
+"uprising, and I went to find him looking\n" + 
+"for help. We'd tried playing by the \n" + 
+"rules, but the rules were only there to\n" + 
+"keep the same people in power. At that\n" + 
+"point, I just wanted revenge. Well, I \n" + 
+"found the guy, a bunch locals joined up \n" + 
+"with us, and that's how it all got \n" + 
+"started. He died fighting for control \n" + 
+"of the town, but we won in the end, and \n" + 
+"from then on, I was in charge of the \n" + 
+"main resistance army.\n" + 
+"\n" + 
+"@So the whole rebel army in its current\n" + 
+"@form was your own work?\n" + 
+"\n" + 
+"Pretty much. Over the years we merged\n" + 
+"with some other more or less successful\n" + 
+"rebel organisations, but we were the \n" + 
+"first ones to pose a real threat to the\n" + 
+"Highland government.\n" + 
+"\n" + 
+"@Just one final question: what was your\n" + 
+"@relation to Erin back then?\n" + 
+"\n" + 
+"Back then? We joined the army roughly\n" + 
+"at the same time, so we served together\n" + 
+"for a while, until she got promoted.\n" + 
+"I tried talking to her after the whole\n" + 
+"mess with Joshua's father, but she \n" + 
+"wouldn't listen. I knew from the start\n" + 
+"that she had no strong feelings about\n" + 
+"Highland. As soon as she got the\n" + 
+"opportunity she left to Matrech, and\n" + 
+"even as Captain of the Matrech Guard \n" + 
+"she didn't ever do a damn thing about \n" + 
+"our situation.\n" + 
+"\n" + 
+"@Well, let's hope things will work out\n" + 
+"@now that Highland's getting a fresh\n" + 
+"@start.\n" + 
+""
+
+# === Rorschach
+$data_interview[56] = 
+"@Today I'm talking to Rorschach, a\n" + 
+"@ninja on a quest to avenge his sister.\n" + 
+"@So, your sister was a soldier in the\n" + 
+"@Kirgard Royal Army, wasn't she? How\n" + 
+"@did you end up joining a ninja clan\n" + 
+"@instead?\n" + 
+"\n" + 
+"We were orphans. Joining the army was\n" + 
+"the only option we had, but even though\n" + 
+"my sister tried to discipline me, I\n" + 
+"dropped out after a few weeks. I spent\n" + 
+"most of my childhood on the streets, \n" + 
+"stealing to survive. Everything changed\n" + 
+"when I heard about the Sun clan. Why did\n" + 
+"I decide I wanted to join them? I don't\n" + 
+"know. My life was meaningless at the \n" + 
+"time, and the stories I heard about them\n" + 
+"sounded amazing. And so, I set out to \n" + 
+"find them.\n" + 
+"\n" + 
+"@But surely they wouldn't take you in\n" + 
+"@so easily?\n" + 
+"\n" + 
+"No, but there was one thing that worked\n" + 
+"in my advantage: I found them. The \n" + 
+"location of their village is a closely\n" + 
+"guarded secret, but I managed to find\n" + 
+"them without any outside help.\n" + 
+"\n" + 
+"@That's certainly impressive. How was\n" + 
+"@the training for you?\n" + 
+"\n" + 
+"It was tough. I'd never worked so hard\n" + 
+"in my life, and they didn't go easy on\n" + 
+"me. I had to work my way up from the\n" + 
+"bottom. But still, they accepted me.\n" + 
+"Once again, I had a family.\n" + 
+"\n" + 
+"@But you still left them when you heard\n" + 
+"@about your sister's death.\n" + 
+"\n" + 
+"We no longer had much contact after I\n" + 
+"left the army, but still... she was my\n" + 
+"only remaining true family. I couldn't\n" + 
+"forgive them for killing her in such an\n" + 
+"honourless way.\n" + 
+"\n" + 
+"@Yes, it's a very sad story. I wish you\n" + 
+"@all the best.\n" + 
+""
+
+# === Royston
+$data_interview[57] = 
+"@Today I'm speaking with Royston, the\n" + 
+"@actual heir to Elysium Castle. Welcome, \n" + 
+"@Mr. Royston. I'm glad you could be with\n" + 
+"@us today.\n" + 
+"\n" + 
+"Oh, it's a pleasure to be here. I'm \n" + 
+"always happy to chat. Look, I brought \n" + 
+"some cake with me. This interview should\n" + 
+"have the feeling of having tea with an \n" + 
+"old friend, don't you think?\n" + 
+"\n" + 
+"@That's very nice of you. Oh, it's \n" + 
+"@chocolate cake? That's my favourite!\n" + 
+"@How did you know?\n" + 
+"\n" + 
+"Ah, I have good intuition for that sort\n" + 
+"of thing. Please, have as much as you'd\n" + 
+"like.\n" + 
+"\n" + 
+"@Oh, don't say that or I'll eat all \n" + 
+"@of it!\n" + 
+"\n" + 
+"No, no, that's fine. I'd be happy to \n" + 
+"give it to you. It's my greatest \n" + 
+"delight to see young people such as you\n" + 
+"smile in times like these. I feel it's\n" + 
+"my duty to lift people's spirits when\n" + 
+"they most need it.\n" + 
+"\n" + 
+"@And I greatly appreciate it, because\n" + 
+"@it tastes very good.\n" + 
+"\n" + 
+"@... I wonder if I'm forgetting \n" + 
+"@something here.\n" + 
+""
+
+# === Ryan
+$data_interview[58] = 
+"@Today I'm meeting with Charles Ryan,\n" + 
+"@founder of the Zelmony State Union and\n" + 
+"@former chancellor.\n" + 
+"@Welcome, Mr. Ryan. It's great honour\n" + 
+"@to have you here. Now, as I'm sure you\n" + 
+"@can imagine I have an endless list of\n" + 
+"@questions to ask you, but I'll try to\n" + 
+"@keep this short.\n" + 
+"@First of all, I'm interested in your\n" + 
+"@rise to power. Is it true you were\n" + 
+"@once arrested for disturbing public\n" + 
+"@order?\n" + 
+"\n" + 
+"Yes, it's true. My dreams of a unified\n" + 
+"Zelmony were not shared by those in \n" + 
+"power at the time. As I grew frustrated\n" + 
+"with their shortsightedness, I instead\n" + 
+"traveled around the country and tried\n" + 
+"to appeal to the people instead.\n" + 
+"\n" + 
+"@And this was not appreciated by the\n" + 
+"@government?\n" + 
+"\n" + 
+"At first they saw me as a mere nuisance.\n" + 
+"I was only a captain in the army and I\n" + 
+"had few connections. But my journey \n" + 
+"turned out to be more successful than\n" + 
+"anyone had expected, and I gained more \n" + 
+"and more followers among the people, in \n" + 
+"all levels of society. Many of them felt \n" + 
+"insecure and had little faith in their \n" + 
+"leaders. However, the overwhelming \n" + 
+"support I was enjoying at the time made\n" + 
+"me overconfident, and I returned to\n" + 
+"Matrech to make my case again, under\n" + 
+"the assumption that they could no \n" + 
+"longer ignore me. I was right about \n" + 
+"that, of course, but I was not expecting\n" + 
+"such a negative reaction.\n" + 
+"\n" + 
+"@You were advocating a different kind of\n" + 
+"@government at the time, but were you\n" + 
+"@actively seeking power yourself?\n" + 
+"\n" + 
+"I can't deny that I was hoping to be\n" + 
+"given a position of influence, but I was\n" + 
+"careful about what I said in public.\n" + 
+"Moreover, I was never expecting to\n" + 
+"actually become chancellor myself.\n" + 
+"\n" + 
+"@Anyway, this is where you were \n" + 
+"@arrested, right?\n" + 
+"\n" + 
+"Yes. After giving a speech to a large\n" + 
+"crowd on the streets of Matrech, the\n" + 
+"governor immediately ordered my arrest.\n" + 
+"I was shocked, to be honest. With the\n" + 
+"benefit of hindsight I can say that it\n" + 
+"should have been obvious, but I was\n" + 
+"young, and I had come to believe that\n" + 
+"if I explained my views properly, \n" + 
+"everyone would accept them.\n" + 
+"\n" + 
+"@But in the end, this event was what\n" + 
+"@triggered a revolution.\n" + 
+"\n" + 
+"From my point of view, it all happened\n" + 
+"very quickly. From my cell, I heard \n" + 
+"little about what was going on outside,\n" + 
+"until one day I was told that the\n" + 
+"governor of Matrech had stepped down \n" + 
+"after a large uprising and that the\n" + 
+"people had demanded me to be freed. \n" + 
+"\n" + 
+"@That must've been an incredible moment.\n" + 
+"\n" + 
+"Yes... After fighting on my own for so\n" + 
+"long against what seemed unsurmountable \n" + 
+"obstacles, to see such strong support \n" + 
+"for my dreams, to see all my work \n" + 
+"redeemed... That is a moment I will\n" + 
+"never forget.\n" + 
+"\n" + 
+"@I think it's very intriguing, and an\n" + 
+"@important event in history to be sure.\n" + 
+"@However, I can't help but notice a lot \n" + 
+"@of similarities with the present \n" + 
+"@situation. A largely complacent \n" + 
+"@government, harbouring a strong sense\n" + 
+"@of distrust for its neighbours...\n" + 
+"\n" + 
+"Sadly, that it what the State Union had\n" + 
+"come to in the end. Due to the nature of\n" + 
+"the new country, control over Zelmony\n" + 
+"has slowly slipped away from me. I am\n" + 
+"to blame for letting it come this far\n" + 
+"as well. I should have stepped down in\n" + 
+"favour of a younger, more driven \n" + 
+"chancellor long ago. It was too late for\n" + 
+"me, but I sincerely hope that Daniel\n" + 
+"Vinyard can do for both our countries\n" + 
+"what I tried to do for Zelmony.\n" + 
+"\n" + 
+"@I'm certain we're all hoping for the\n" + 
+"@same thing. Thank you very much for \n" + 
+"@your time, Ryan.\n" + 
+""
+
+# === Sally
+$data_interview[59] = 
+"@Today I'm talking to Sally, a young\n" + 
+"@sailor from Blackwater. \n" + 
+"@Sally, despite your young age you're\n" + 
+"@already an experienced sailor. For how\n" + 
+"@long have you been sailing?\n" + 
+"\n" + 
+"How long? All me life! Me father was a\n" + 
+"sailor, so was me grandfather and me\n" + 
+"great-grandfather. I've spent more time\n" + 
+"out on the sea than on dry land.\n" + 
+"\n" + 
+"@But you still have most of your life\n" + 
+"@ahead of you. Do you want to continue\n" + 
+"@living the way you do now, or do you\n" + 
+"@have any other dreams?\n" + 
+"\n" + 
+"I'm gonna be sailing fer the rest of me\n" + 
+"life, that's fer sure. I ain't made for\n" + 
+"living on the land. But yeah, there be\n" + 
+"some things I wanna do. Ye see, I do a\n" + 
+"bit of tradin' here and there, but I'm\n" + 
+"still young. Folks don't take me\n" + 
+"seriously enough. When I'm a bit older,\n" + 
+"I'm gonna get me a bigger ship, find me\n" + 
+"a real crew, and look fer some serious\n" + 
+"business.\n" + 
+"\n" + 
+"@Sounds ambitious. So you're not going\n" + 
+"@to be a pirate like your great-\n" + 
+"@grand father?\n" + 
+"\n" + 
+"Naw. He got rich, sure, but a few years\n" + 
+"later they caught and hanged him. I\n" + 
+"ain't gonna end up like that.\n" + 
+"\n" + 
+"@Well, I wish you the best of luck then.\n" + 
+"@Hope you'll get to fulfill your dreams!\n" + 
+""
+
+# === Sef
+$data_interview[60] = 
+"@Today I'm interviewing Sef, a young \n" + 
+"@knight from Trarcia.\n" + 
+"@Hello, Sef. Now that you're a part of\n" + 
+"@the Elysium army, that must mean your\n" + 
+"@dream has come true.\n" + 
+"\n" + 
+"Aye, 'tis a great honour to be allowed\n" + 
+"to take part in this historical \n" + 
+"struggle. I never dareth dream I could \n" + 
+"become a knight at such young an age.\n" + 
+"\n" + 
+"@Now that you're a knight, though, do\n" + 
+"@you have even higher goals to strive\n" + 
+"@for?\n" + 
+"\n" + 
+"I feel there is a calling for me to\n" + 
+"become a paladin, for which I must train\n" + 
+"in the Holy Empire of Rocaine. Perchance\n" + 
+"once my task here is done I will travel\n" + 
+"there and seek to attain this.\n" + 
+"\n" + 
+"@Ah. I wish you good luck with that, \n" + 
+"@then.\n" + 
+""
+
+# === Shadfork 
+$data_interview[61] = 
+"@Today I'm meeting with Shadfork, one of\n" + 
+"@the Elysium army's heavyweights.\n" + 
+"@Mr. Shadfork, you're known as the\n" + 
+"@toughest of all the warrior monks at\n" + 
+"@Cento Temple. What is your secret?\n" + 
+" \n" + 
+"Size! That's the secret! There's no\n" + 
+"problem that can't be overcome through\n" + 
+"sheer size!\n" + 
+"\n" + 
+"@Is that really true? What about speed\n" + 
+"@for example? Can't you overcome a\n" + 
+"@difference in size by being faster?\n" + 
+"\n" + 
+"I'm willing to put that to the test!\n" + 
+"In fact, I already did! That's why I \n" + 
+"challenged a man named Tong Wu, who's \n" + 
+"supposed to have the fastest fists in \n" + 
+"the world. Some day he'll come to the\n" + 
+"temple and we can have a true match to\n" + 
+"determine who's stronger!\n" + 
+"\n" + 
+"@But you believe you're going to win\n" + 
+"@the match?\n" + 
+"\n" + 
+"Of course! I'm strong because I'm huge!\n" + 
+"And if I lose, it's because I wasn't\n" + 
+"huge enough!\n" + 
+"\n" + 
+"@Well, I wish you good luck.\n" + 
+""
+
+# === Shin
+$data_interview[62] = 
+"@Today... Today, I...\n" + 
+"@I'm sorry. I just... I was supposed\n" + 
+"@to be interviewing Shin, but... I just\n" + 
+"@can't do it. I can't. I tried, and...\n" + 
+"@he just stood there the whole time, not\n" + 
+"@saying anything, not a word... just \n" + 
+"@staring at me, just him and me alone.\n" + 
+"@I couldn't take it. I'm... I'm really\n" + 
+"@sorry. I don't know who or what he is, \n" + 
+"@but I couldn't feel any signs of life \n" + 
+"@from him, just... a coldness. Like \n" + 
+"@death.\n" + 
+"\n" + 
+""
+
+# === Shiro
+$data_interview[63] = 
+"@Today I'm speaking with Shiro, mayor\n" + 
+"@of Blackwater and formerly a renowned\n" + 
+"@warrior who fought for the State Union.\n" + 
+"@Welcome, Shiro. Your name is well-known\n" + 
+"@here in Zelmony. You're considered a\n" + 
+"@war hero and a legendary warrior, but\n" + 
+"@you never actually held a high rank in\n" + 
+"@the State Army, did you?\n" + 
+"\n" + 
+"No, I didn't, but I can assure you that\n" + 
+"those stories are very much exaggerated.\n" + 
+"As happens often in war, fictional role\n" + 
+"models were created around people such\n" + 
+"as me to boost morale.\n" + 
+"\n" + 
+"@How about this story, then? During the\n" + 
+"@Triple War, it's said that you \n" + 
+"@single-handedly saved a captured \n" + 
+"@squadron from republican forces despite\n" + 
+"@being faced by a hundred armed soldiers.\n" + 
+"\n" + 
+"Oh no, that's not true at all. There\n" + 
+"were only twenty, thirty at most.\n" + 
+"\n" + 
+"@Oh, but the rest of it is true, then?\n" + 
+"@What about the story that Major Gunwood\n" + 
+"@had you infiltrate the republican \n" + 
+"@command post in an occupied Cayeskan \n" + 
+"@city and you assassinated their general \n" + 
+"@and walked out in plain sight while \n" + 
+"@his men were too afraid to stop you?\n" + 
+"\n" + 
+"Is that how it's being told now? Yes,\n" + 
+"I did assassinate that general and I\n" + 
+"did leave through the front door, but \n" + 
+"the reason I wasn't stopped was simply\n" + 
+"because no one had realized what had\n" + 
+"happened yet. \n" + 
+"\n" + 
+"@I see... so I guess there's still quite\n" + 
+"@a grain of truth in all these stories.\n" + 
+"@Your modesty is admirable, Shiro. Thank \n" + 
+"@you for your time.\n" + 
+""
+
+# === Sormaus
+$data_interview[64] = 
+"@Today I'm talking to Sormaus, a man of\n" + 
+"@few words. Mr. Sormaus, you are some \n" + 
+"@sort of martial artist, aren't you?\n" + 
+"\n" + 
+"Yes.\n" + 
+"\n" + 
+"@Can you tell us exactly what your \n" + 
+"@style is?\n" + 
+"\n" + 
+"No.\n" + 
+"\n" + 
+"@Uhm... do you mean you don't want to \n" + 
+"@tell us, or you -want- to tell us but \n" + 
+"@you can't really describe it yourself?\n" + 
+"\n" + 
+"Yes.\n" + 
+"\n" + 
+"@...Yes to what? The first option?\n" + 
+"\n" + 
+"No.\n" + 
+"\n" + 
+"@So, uh... you don't really know how \n" + 
+"@to describe your style?\n" + 
+"\n" + 
+"Yes.\n" + 
+"\n" + 
+"@Okay, if that's how you want to play\n" + 
+"@it... Is your style native to these \n" + 
+"@parts?\n" + 
+"\n" + 
+"No.\n" + 
+"\n" + 
+"@So it's from another country?\n" + 
+"\n" + 
+"No.\n" + 
+"\n" + 
+"@So your style is not from around here, \n" + 
+"@and it's not from another country \n" + 
+"@either? Where -is- it from, then?\n" + 
+"@Wait... did you make it up yourself?\n" + 
+"\n" + 
+"Yes.\n" + 
+"\n" + 
+"@I uh... \n" + 
+"@Well, Mr. Sormaus, thank you for your \n" + 
+"@time, but we'll have to end our\n" + 
+"@interview here.\n" + 
+"\n" + 
+"Yes.\n" + 
+""
+
+# === Soth
+$data_interview[65] = 
+"@Today I'm interviewing Soth, a young\n" + 
+"@knight from Trarcia.\n" + 
+"@Soth, you and Sef have been friends all \n" + 
+"@your lives, right?\n" + 
+"\n" + 
+"Yeah, we grew up together, and Sef's \n" + 
+"always been my best friend. \n" + 
+"Even when we were young, we always\n" + 
+"wanted to become knights, so we always\n" + 
+"trained together. I still can't believe\n" + 
+"what I've done to him...\n" + 
+"\n" + 
+"@Could you tell me how you found this \n" + 
+"@man called Shin?\n" + 
+"\n" + 
+"I... didn't really find him. It's more \n" + 
+"like he found me. I don't know how, \n" + 
+"he... he never told me much.\n" + 
+"\n" + 
+"@He never told you who he was or why\n" + 
+"@he approached you?\n" + 
+"\n" + 
+"All he said was he could give me the\n" + 
+"power that I'd been dreaming of, that\n" + 
+"he was going to train me to use that\n" + 
+"power.\n" + 
+"\n" + 
+"@And you trusted him?\n" + 
+"\n" + 
+"He was strong himself. Really strong.\n" + 
+"I don't know... It seemed like I just\n" + 
+"couldn't say no to him. Something within\n" + 
+"me made it impossible. I never realized\n" + 
+"how strong my desire to attain that \n" + 
+"power was. Before I knew it, I'd \n" + 
+"betrayed my closest friend over it.\n" + 
+"I couldn't resist it, I tried to kill\n" + 
+"him, and yet... he still forgave me.\n" + 
+"I've let everyone down terribly. I'll do \n" + 
+"anything I can to make up for it.\n" + 
+"\n" + 
+"@Well, I hope you'll be able to find \n" + 
+"@redemption some day.\n" + 
+""
+
+# === Stromgaard
+$data_interview[66] = 
+"@Today I'm speaking to Stromgaard, \n" + 
+"@an adventurer. \n" + 
+"@Adventurer, that's a vague description, \n" + 
+"@isn't it? I understand you travel a lot, \n" + 
+"@but what is it that you really do?\n" + 
+"\n" + 
+"It's a good question. Mostly, I just \n" + 
+"wander around until I've found an \n" + 
+"interesting place I haven't seen before\n" + 
+"yet, and stay there for a while, like \n" + 
+"I'm doing now. Sometimes, when I get a \n" + 
+"good lead, I like chasing after lost \n" + 
+"treasures, but usually I don't really \n" + 
+"have a particular goal in mind.\n" + 
+"\n" + 
+"@How did this get started? What made you\n" + 
+"@decide to go out and see the world?\n" + 
+"\n" + 
+"Well, I guess it's in my blood. I come \n" + 
+"from the Hazan tribe. They're nomads who \n" + 
+"used to live on the northern Almengan \n" + 
+"plains. From an early age I learned how\n" + 
+"to take care of myself and survive in \n" + 
+"the wild.\n" + 
+"\n" + 
+"@The Hazan? Oh, I've heard of them. \n" + 
+"@Weren't they nearly wiped out during a \n" + 
+"@war with Almenga, about a decade ago?\n" + 
+"\n" + 
+"It was eight years ago, but yeah. The \n" + 
+"imperial army destroyed most of our \n" + 
+"settlements, and many of us died. I\n" + 
+"don't think many of our people still \n" + 
+"live a nomadic life nowadays. Most of \n" + 
+"them now live as second-class citizens\n" + 
+"in Almengan cities. It's one reason I \n" + 
+"decided to spend my life traveling. \n" + 
+"I was already abroad at the time the \n" + 
+"war broke out, but after that, I had \n" + 
+"no reason to go back anymore.\n" + 
+"\n" + 
+"@I see... I'm sorry to hear about that. \n" + 
+"@I should do more research on this war. \n" + 
+"@Anyway, thank you for your time. \n" + 
+""
+
+# === Tarlia
+$data_interview[67] = 
+"@Today I'm meeting with Tarlia, a former\n" + 
+"@general of the Almenga Imperial Army.\n" + 
+"@Tarlia, you led a revolt of the captive\n" + 
+"@Kirgard soldiers in St. Reinard and\n" + 
+"@helped bring an end to General Ash's \n" + 
+"@occupation. Now I know about your\n" + 
+"@disagreements with Ash, but was there\n" + 
+"@more than that to your decision to\n" + 
+"@defect? \n" + 
+"\n" + 
+"Well, I'd been having my doubts about\n" + 
+"Ash ever since he was put forward to \n" + 
+"lead the attack on St. Reinard, and not\n" + 
+"just about Ash himself but also the\n" + 
+"emperor's decision to select him. It's\n" + 
+"something I've had multiple discussions\n" + 
+"about with General Gudrun. She couldn't\n" + 
+"explain it either.\n" + 
+"\n" + 
+"@General Gudrun used to be supreme \n" + 
+"@commander of the imperial army, so isn't\n" + 
+"@strange if even she didn't know exactly\n" + 
+"@what was going on?\n" + 
+"\n" + 
+"It's strange, yes. That's partly why\n" + 
+"I arrived at my decision to aid the \n" + 
+"Elysium army. It's a great shame that I\n" + 
+"must take up arms against my homeland,\n" + 
+"but there's no honour in giving your\n" + 
+"life for a cause like that.\n" + 
+"\n" + 
+"@Do you still hope to return to your\n" + 
+"@country once the war is over?\n" + 
+"\n" + 
+"Yes, I do. The Almenga nation still has\n" + 
+"a future, even if the emperor may no\n" + 
+"longer be a part of it.\n" + 
+"\n" + 
+"@Let's hope everything will turn out\n" + 
+"@well for you.\n" + 
+""
+
+# === Teej
+$data_interview[68] = 
+"@Today I'm speaking with our very own \n" + 
+"@army musician, Teej. Welcome, Teej.\n" + 
+"\n" + 
+"Hey, it's great to be here. Uh, this \n" + 
+"first song is called 'Life is Pain'...\n" + 
+"\n" + 
+"@Hold on a minute, this is an interview, \n" + 
+"@not a live performance. \n" + 
+"\n" + 
+"...Huh? But this song, it's the voice \n" + 
+"of my soul. This is me, you see? You\n" + 
+"listen to the lyrics, that's like... an \n" + 
+"interview too, or something.\n" + 
+"\n" + 
+"@I'm sure it is, but for this interview\n" + 
+"@I'd like to talk to you normally. \n" + 
+"@Besides, I can't even make out the \n" + 
+"@words you sing.\n" + 
+"\n" + 
+"Wha-? That's not cool, okay? You're\n" + 
+"breaking my heart, girl.\n" + 
+"\n" + 
+"@You misunderstand me. I'm sure your \n" + 
+"@music is great, but I want to talk to\n" + 
+"@you here.\n" + 
+"\n" + 
+"No, I'm outta here. You just don't \n" + 
+"understand me. \n" + 
+"\n" + 
+"...Nobody does.\n" + 
+""
+
+# === Tiffany
+$data_interview[69] = 
+"@Today I'm meeting with Tiffany, a\n" + 
+"@dancer who accompanied the musician\n" + 
+"@Teej.\n" + 
+"@Hello Tiffany. Could you tell us how\n" + 
+"@you came to be traveling with Teej?\n" + 
+"\n" + 
+"Oh, well, we've known each other for,\n" + 
+"like, most of our lives. We were living\n" + 
+"in the same town, and oh my god it was\n" + 
+"sooo boring! So when Teej left to \n" + 
+"tour the world, I went with him.\n" + 
+"\n" + 
+"@But do you actually perform together?\n" + 
+"@Your styles don't seem very... \n" + 
+"@compatible.\n" + 
+"\n" + 
+"Oh you mean his music? Yeah it's so\n" + 
+"awful. I keep telling him to play \n" + 
+"something more popular, but he just,\n" + 
+"like, tells me he's playing it for \n" + 
+"himself, not for other people. As if\n" + 
+"you can make a living like that!\n" + 
+"But I kinda feel sorry for him. He's a\n" + 
+"nice guy, he just needs someone to\n" + 
+"push him on.\n" + 
+"\n" + 
+"@You briefly left Teej to go to Faraday\n" + 
+"@University. What did you study there?\n" + 
+"\n" + 
+"It's so embarassing, I don't even really\n" + 
+"want to talk about it. Well, like, I\n" + 
+"really just went there so I could learn,\n" + 
+"well, anything. I just wanted to look\n" + 
+"smart I guess, but it was, like, so \n" + 
+"hard. From now on, I'm just going to \n" + 
+"stick with what I do best. \n" + 
+"\n" + 
+"@At least it was a useful experience!\n" + 
+""
+
+# === Tong Wu
+$data_interview[70] = 
+"@Today I'm speaking to Tong Wu, a\n" + 
+"@martial artist from overseas.\n" + 
+"@Nice to meet you, Tong Wu. Could you \n" + 
+"@tell us where you come from?\n" + 
+"\n" + 
+"I come from Valcany, where I have \n" + 
+"studied for many years under a master\n" + 
+"warrior from even further north.\n" + 
+"\n" + 
+"@And you came here because a monk from\n" + 
+"@Cento Temple challenged you?\n" + 
+"\n" + 
+"Indeed! He had heard of my reputation,\n" + 
+"and he mocked my reliance of speed over\n" + 
+"strength. He is a fool and I will soon\n" + 
+"show him the error of his ways.\n" + 
+"\n" + 
+"@So you believe your philosophy is the\n" + 
+"@right one?\n" + 
+"\n" + 
+"Of course it is! A mere brute like him\n" + 
+"is no match for me. It would be a \n" + 
+"surprise if he even came close to\n" + 
+"hitting me!\n" + 
+"\n" + 
+"@Well, I guess we'll just have to look\n" + 
+"@forward to your match, then?\n" + 
+"\n" + 
+"The outcome was never in doubt. I will \n" + 
+"win, because I'm faster than him. And if \n" + 
+"I lose, it will be because I wasn't fast \n" + 
+"enough.\n" + 
+""
+
+# === Vanrushal
+$data_interview[71] = 
+"@Today I'm talking to Vanrushal, an\n" + 
+"@actual vampire.\n" + 
+"@Now, I know the first two questions on \n" + 
+"@everyone's minds are: how did you become\n" + 
+"@a vampire, and how old are you really?\n" + 
+"\n" + 
+"Haha, if you were hoping for me to tell\n" + 
+"you I'm hundreds of years old, I'll have \n" + 
+"to disappoint you. I was twenty-five \n" + 
+"years old when I had my, uh... \n" + 
+"transformation, and that's about \n" + 
+"thirteen years ago now.\n" + 
+"As for how it happened, well... my\n" + 
+"mistress was looking for a suitable\n" + 
+"companion, and she got me instead, \n" + 
+"sort of by accident. That crazy witch\n" + 
+"wanted something to be with forever,\n" + 
+"but I didn't really like the sound of\n" + 
+"that. It's too bad I had to kill her,\n" + 
+"but it worked out pretty well for me.\n" + 
+"\n" + 
+"@This priest from Rocaine has been \n" + 
+"@chasing you for a long time. Has this\n" + 
+"@made life very difficult?\n" + 
+"\n" + 
+"Difficult? Haha, hardly. I just threw a \n" + 
+"few false leads around and watched him \n" + 
+"run all over the place in vain to find \n" + 
+"me. It was fun for a while.\n" + 
+"\n" + 
+"@I'll have to see what he thinks of \n" + 
+"@that...\n" + 
+""
+
+# === Venkal
+$data_interview[72] = 
+"@Today I'm talking to Venkal, an artist\n" + 
+"@from Faraday.\n" + 
+"@Welcome, Venkal. Could you tell us a\n" + 
+"@bit about yourself?\n" + 
+"\n" + 
+"What? What do you want me to talk about?\n" + 
+"You think people give a crap about who\n" + 
+"I am?\n" + 
+"\n" + 
+"@Well, it's an interview after all...\n" + 
+"@Don't you think people would like to\n" + 
+"@hear about the man behind the \n" + 
+"@paintings?\n" + 
+"\n" + 
+"Hmph, bullshit. If anyone cared, they'd\n" + 
+"come and see me. I've yet to see anyone\n" + 
+"visiting me to ask about my life story.\n" + 
+"\n" + 
+"@Maybe they're just having some \n" + 
+"@reservations about talking to you in\n" + 
+"@person. Excuse me for saying so, but\n" + 
+"@you're not a very easily approachable\n" + 
+"@person. Maybe if you were a little more\n" + 
+"@open towards other people, they'd act\n" + 
+"@differently towards you as well.\n" + 
+"\n" + 
+"Hah, open? Yeah, I've tried to be \n" + 
+"'open'. Lot of good that did me. Look, \n" + 
+"I didn't come here to get lectured by a \n" + 
+"schoolgirl. Did you want anything else\n" + 
+"from me or can I go now?\n" + 
+"\n" + 
+"@Uhm... I guess we can just call it \n" + 
+"@a day.\n" + 
+""
+
+# === Wilona
+$data_interview[73] = 
+"@Today I am speaking to our resident \n" + 
+"@statistician, Wilona. Thank you for \n" + 
+"@sparing some time for us.\n" + 
+"\n" + 
+"Yes, I have reserved 31 minutes and 18 \n" + 
+"seconds for this interview.\n" + 
+"\n" + 
+"@You certainly like numbers. Where did \n" + 
+"@this all start? What sparked your \n" + 
+"@interest in statistics?\n" + 
+"\n" + 
+"That would be 26 years, 12 days and 7 \n" + 
+"hours ago, when I was a young child. \n" + 
+"I was at a market, waiting while my\n" + 
+"mother was speaking to a friend. It took\n" + 
+"so long, I started counting the rice in\n" + 
+"a bag she had just bought.\n" + 
+"\n" + 
+"@You counted all the rice?\n" + 
+"\n" + 
+"Yes, there were 35,230 grains in total. \n" + 
+"After that, I started counting \n" + 
+"everything around me, and suddenly the \n" + 
+"most wonderful patterns jumped out. \n" + 
+"Once you begin seeing the world in \n" + 
+"numbers, it becomes obvious that \n" + 
+"everything is related to everything \n" + 
+"else. For example, this is the 106th \n" + 
+"word I've said to you so far in this \n" + 
+"interview, out of the 4312 I say on an \n" + 
+"average day. If we're now halfway \n" + 
+"through the interview, that means that \n" + 
+"it amounts to 4.9% of my daily speech. \n" + 
+"If we had this conversation every day \n" + 
+"over the span of a year, then I would\n" + 
+"have said a total of 77,380 words to\n" + 
+"you.\n" + 
+"\n" + 
+"@I see. That's... very interesting.\n" + 
+"\n" + 
+"If you're interested, please come see \n" + 
+"me some time. There are so many other \n" + 
+"amazing things I could tell you about. \n" + 
+"\n" + 
+"@Thank you for the offer, but I'm not \n" + 
+"@sure if it would help improve my \n" + 
+"@reporting...\n" + 
+""
+
+# === Yan Angwa
+$data_interview[74] = 
+"@Today I'm talking to Yan Angwa, the\n" + 
+"@unapproachable black-robed mystic.\n" + 
+"@Yan Angwa, now that we finally have a\n" + 
+"@chance to speak, can you tell us a \n" + 
+"@little about yourself?\n" + 
+"\n" + 
+"You've been stalking me since you first\n" + 
+"arrived here. Stop it. I have nothing \n" + 
+"to say to you.\n" + 
+"\n" + 
+"@Come on, don't be so stiff. Everyone's\n" + 
+"@dying to know the real person behind\n" + 
+"@the cold exterior.\n" + 
+"\n" + 
+"I'm not here to please you people.\n" + 
+"\n" + 
+"@Yan Angwa... it's not your real name,\n" + 
+"@is it? I've heard that it's only a\n" + 
+"@title given to clerics in a distant\n" + 
+"@country.\n" + 
+"\n" + 
+". . . .\n" + 
+"\n" + 
+"@You don't have anything to say to that?\n" + 
+"\n" + 
+"No.\n" + 
+"\n" + 
+"@What about someone called Juran? What \n" + 
+"@can you tell me about him?\n" + 
+"\n" + 
+"This conversation is over. Get out of\n" + 
+"here.\n" + 
+""
+
+# === Yomiko
+$data_interview[75] = 
+"@Today I'm speaking with Yomiko, one of \n" + 
+"@the last remaining members of the Sun \n" + 
+"@Clan. \n" + 
+"@Yomiko, I know your village was heavily \n" + 
+"@damaged in the raid by the Shadow Clan, \n" + 
+"@but what exactly is its present \n" + 
+"@condition? Are there any people left \n" + 
+"@there?\n" + 
+"\n" + 
+"Oh, yes. Most of our strongest fighters \n" + 
+"were killed, but there were still enough\n" + 
+"people to rebuild part of the village. \n" + 
+"We weren't strong enough to save Master, \n" + 
+"though...\n" + 
+"\n" + 
+"@I'm curious, where is this village \n" + 
+"@located? I've not been able to find out\n" + 
+"@anything about it.\n" + 
+"\n" + 
+"I can't tell you. It's a secret.\n" + 
+"\n" + 
+"@I see, that's a shame. \n" + 
+"@You mentioned that the village is being \n" + 
+"@rebuilt. How is that going? It must be \n" + 
+"@difficult finding the right tools and \n" + 
+"@materials when you're living in a forest\n" + 
+"@far away from the city.\n" + 
+"\n" + 
+"We make most of our tools ourselves, so \n" + 
+"it's not a problem. There's a lot of \n" + 
+"skilled craftsmen among us.\n" + 
+"\n" + 
+"@I see, very interesting. So the village\n" + 
+"@is indeed in a forest, far away from \n" + 
+"@the city.\n" + 
+"\n" + 
+"W-What? I didn't say that! I was just \n" + 
+"answering the question! It could be \n" + 
+"anywhere!\n" + 
+"\n" + 
+"@Okay, different question. Since the \n" + 
+"@location of your village is a secret, \n" + 
+"@did the Almenga invasion cause any \n" + 
+"@trouble for you? \n" + 
+"\n" + 
+"Huh? Well, it was hard for the people \n" + 
+"around us, but we're self-sufficient. \n" + 
+"A few times we had to take out groups \n" + 
+"of soldiers that were coming too close, \n" + 
+"but that's no problem for us.\n" + 
+"\n" + 
+"@I'm also looking for any accounts of \n" + 
+"@the battle for the bridges over the \n" + 
+"@Fafnir river, including Ft. Brahma. Did \n" + 
+"@the imperial army surprise the defenders \n" + 
+"@and take it with ease, or was there a \n" + 
+"@fierce battle there? Were you already \n" + 
+"@aware of the invasion at that point?\n" + 
+"\n" + 
+"I don't know... When we first found out \n" + 
+"about it, the bridges were already\n" + 
+"taken.\n" + 
+"\n" + 
+"@Very interesting. That means the \n" + 
+"@village must be north of the river, \n" + 
+"@then?\n" + 
+"\n" + 
+"Stop it! I'm not talking to you anymore! \n" + 
+"If Master finds out about this, I'm in\n" + 
+"big trouble!\n" + 
+"\n" + 
+"@I'll take that as a yes.	\n" + 
+""
+

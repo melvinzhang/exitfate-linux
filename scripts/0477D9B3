@@ -1,0 +1,112 @@
+#==============================================================================
+# ** Window_NameInput
+#------------------------------------------------------------------------------
+#  This window is used to select text characters on the input name screen.
+#==============================================================================
+
+class Window_NameInput < Window_Base
+  CHARACTER_TABLE =
+  [
+    "1","2","3",
+    "4","5","6",
+    "7","8","9",
+    "0" , "", "OK",
+  ]
+  #--------------------------------------------------------------------------
+  # * Object Initialization
+  #--------------------------------------------------------------------------
+  def initialize
+    super(0, 128, 640, 352)
+    self.contents = Bitmap.new(width - 32, height - 32)
+    @index = 0
+    refresh
+    update_cursor_rect
+  end
+  #--------------------------------------------------------------------------
+  # * Text Character Acquisition
+  #--------------------------------------------------------------------------
+  def character
+    return CHARACTER_TABLE[@index]
+  end
+  #--------------------------------------------------------------------------
+  # * Refresh
+  #--------------------------------------------------------------------------
+  def refresh
+    self.contents.clear
+    for i in 0...12
+      x = 260 + i % 3 * 32
+      y = i / 3 * 32
+      self.draw_text(x, y, 32, 32, CHARACTER_TABLE[i], 1)
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Cursor Rectangle Update
+  #--------------------------------------------------------------------------
+  def update_cursor_rect
+    # If cursor is positioned on anything other than [OK]
+      x = 260 + @index % 3 * 32 
+      y = @index / 3 * 32
+      self.cursor_rect.set(x, y, 32, 32)
+    end
+  #--------------------------------------------------------------------------
+  # * Frame Update
+  #--------------------------------------------------------------------------
+  def update
+    super
+    # If right directional button is pushed
+    if Input.repeat?(Input::RIGHT)
+      # If directional button pressed down is not a repeat, or
+      # cursor is not positioned on the right edge
+      if Input.trigger?(Input::RIGHT) or @index < 11
+        # Move cursor to right
+        $game_system.se_play($data_system.cursor_se)
+        if @index < 11
+          @index += 1
+        else
+          @index = 0
+        end
+      end
+    end
+    # If left directional button is pushed
+    if Input.repeat?(Input::LEFT)
+      # If directional button pressed down is not a repeat, or
+      # cursor is not positioned on the left edge
+      if Input.trigger?(Input::LEFT) or @index > 0
+        # Move cursor to left
+        $game_system.se_play($data_system.cursor_se)
+        if @index > 0
+          @index -= 1
+        else
+          @index = 11
+        end
+      end
+    end
+    # If down directional button is pushed
+    if Input.repeat?(Input::DOWN)
+      if Input.trigger?(Input::DOWN) or @index < 9
+        # Move cursor down
+        $game_system.se_play($data_system.cursor_se)
+        if @index < 9
+          @index += 3
+        else
+          @index += 3 - 12
+        end
+      end
+    end
+    # If up directional button is pushed
+    if Input.repeat?(Input::UP)
+      # If directional button pressed down is not a repeat, or
+      # cursor is not positioned on the upper edge
+      if Input.trigger?(Input::UP) or @index > 2
+        # Move cursor up
+        $game_system.se_play($data_system.cursor_se)
+        if @index > 2
+          @index -= 3
+        else
+          @index -= 3 - 12
+        end
+      end
+    end
+    update_cursor_rect
+  end
+end

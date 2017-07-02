@@ -1,0 +1,3328 @@
+#==============================================================================
+# ** Data_Actors
+#------------------------------------------------------------------------------
+#  Contains static actor data that can't be set in the GUI
+#  1-based array, to match Actor ids
+#==============================================================================
+
+class Data_Actor  
+  attr_accessor :name
+  attr_accessor :init_level
+  attr_accessor :element  # Light, Dark, Red, White, Blue, Yellow (1-6)
+  attr_accessor :no_armour # Can't equip armour, helmet or boots
+  attr_accessor :join_msg
+  
+  attr_accessor :base_hp
+  attr_accessor :base_mp
+  attr_accessor :base_str
+  attr_accessor :base_mag
+  attr_accessor :base_pdf
+  attr_accessor :base_mdf
+  attr_accessor :base_acc
+  attr_accessor :base_dex
+  attr_accessor :base_skl
+  attr_accessor :base_spd  
+  
+  attr_accessor :helmet
+  attr_accessor :armor
+  attr_accessor :boots
+  attr_accessor :acc1
+  attr_accessor :acc2
+  attr_accessor :acc3
+  attr_accessor :item1
+  attr_accessor :item2
+  attr_accessor :item3
+  
+  attr_accessor :relation # 3 x 2 array, 3* [id, relation level]
+  
+  attr_accessor :weapon_name
+  attr_accessor :weapon_longrange 
+  attr_accessor :weapon_atk # Starting level
+  attr_accessor :weapon_hit # Starting level
+  attr_accessor :weapon_crit # Starting level
+  attr_accessor :attack_frames # Number of attack frames
+  attr_accessor :attack_xoffset # X-Offset for attack animation
+  
+  attr_accessor :special # Special skill 
+  
+end
+
+$exdata_actors = []
+#--------------------------------------------------------------------------
+# Alex
+#--------------------------------------------------------------------------
+actor = Data_Actor.new
+actor.name = "Alex"
+actor.init_level = 30
+actor.element = 5
+actor.no_armour = false
+actor.join_msg = "It's a good day to go outside."
+actor.base_hp = 126
+actor.base_mp = 110
+actor.base_str = 91
+actor.base_mag = 101
+actor.base_pdf = 110
+actor.base_mdf = 126
+actor.base_acc = 105
+actor.base_dex = 98
+actor.base_skl = 93
+actor.base_spd = 96
+
+actor.weapon_name = "Oakwood"
+actor.weapon_longrange = false
+actor.weapon_atk = 5
+actor.weapon_hit = 6
+actor.weapon_crit = 5
+actor.attack_xoffset = 50
+actor.helmet = 8
+actor.armor = 108
+actor.boots = 201
+actor.acc1 = 311
+actor.acc2 = 320
+actor.acc3 = 330
+actor.item1 = 4
+actor.item2 = 0
+actor.item3 = 0
+actor.relation = [[32, "B"], # King
+                  [33, "B"], # Klaus
+                  [54, "B"]] # Richard
+
+actor.special = 0
+
+$exdata_actors[1] = actor
+#--------------------------------------------------------------------------
+# Angel
+#--------------------------------------------------------------------------
+actor = Data_Actor.new
+actor.name = "Angel"
+actor.init_level = 1
+actor.element = 4
+actor.no_armour = false
+actor.join_msg = "I'll help you, Daniel."
+actor.base_hp = 116
+actor.base_mp = 96
+actor.base_str = 105
+actor.base_mag = 101
+actor.base_pdf = 89
+actor.base_mdf = 107
+actor.base_acc = 140
+actor.base_dex = 100
+actor.base_skl = 131
+actor.base_spd = 100
+
+actor.weapon_name = "Silver Lance"
+actor.weapon_longrange = false
+actor.weapon_atk = 1
+actor.weapon_hit = 1
+actor.weapon_crit = 1
+actor.attack_xoffset = 50
+actor.helmet = 3
+actor.armor = 101
+actor.boots = 201
+actor.acc1 = 330
+actor.acc2 = 0
+actor.acc3 = 0
+actor.item1 = 0
+actor.item2 = 0
+actor.item3 = 0
+actor.relation = [[30, "A"], # Jovian
+                  [12, "B"], # Daniel
+                  [4, "C"]] # Ayara
+
+actor.special = 9
+
+$exdata_actors[2] = actor
+#--------------------------------------------------------------------------
+# Avelion
+#--------------------------------------------------------------------------
+actor = Data_Actor.new
+actor.name = "Avelion"
+actor.init_level = 60
+actor.element = 1
+actor.no_armour = false
+actor.join_msg = "Hmm... Show me what you humans are capable of."
+actor.base_hp = 141
+actor.base_mp = 105
+actor.base_str = 93
+actor.base_mag = 93
+actor.base_pdf = 86
+actor.base_mdf = 155
+actor.base_acc = 110
+actor.base_dex = 110
+actor.base_skl = 104
+actor.base_spd = 96
+
+actor.weapon_name = "Shinryuu"
+actor.weapon_longrange = false
+actor.weapon_atk = 10
+actor.weapon_hit = 11
+actor.weapon_crit = 9
+actor.attack_xoffset = 50
+actor.helmet = 21
+actor.armor = 125
+actor.boots = 213
+actor.acc1 = 383
+actor.acc2 = 312
+actor.acc3 = 0
+actor.item1 = 0
+actor.item2 = 0
+actor.item3 = 0
+actor.relation = [[16, "B"], # Deus
+                  [60, "C"], # Sef
+                  [35, "C"]] # Luther
+
+actor.special = 8
+
+$exdata_actors[3] = actor
+#--------------------------------------------------------------------------
+# Ayara
+#--------------------------------------------------------------------------
+actor = Data_Actor.new
+actor.name = "Ayara"
+actor.init_level = 5
+actor.element = 4
+actor.no_armour = false
+actor.join_msg = "Yes sir! I'm at your command!"
+actor.base_hp = 129
+actor.base_mp = 70
+actor.base_str = 124
+actor.base_mag = 90
+actor.base_pdf = 140
+actor.base_mdf = 71
+actor.base_acc = 94
+actor.base_dex = 97
+actor.base_skl = 120
+actor.base_spd = 87
+
+actor.weapon_name = "Hatchet"
+actor.weapon_longrange = false
+actor.weapon_atk = 2
+actor.weapon_hit = 1
+actor.weapon_crit = 2
+actor.attack_xoffset = 50
+actor.helmet = 3
+actor.armor = 101
+actor.boots = 202
+actor.acc1 = 300
+actor.acc2 = 0
+actor.acc3 = 0
+actor.item1 = 18
+actor.item2 = 4
+actor.item3 = 0
+actor.relation = [[12, "A"], # Daniel
+                  [2, "C"], # Angel
+                  [56, "C"]] # Rorschach
+
+actor.special = 7
+
+$exdata_actors[4] = actor
+#--------------------------------------------------------------------------
+# Bartolli
+#--------------------------------------------------------------------------
+actor = Data_Actor.new
+actor.name = "Bartolli"
+actor.init_level = 14
+actor.element = 1
+actor.no_armour = false
+actor.join_msg = "Sure, I'm cool with that."
+actor.base_hp = 117
+actor.base_mp = 103
+actor.base_str = 90
+actor.base_mag = 87
+actor.base_pdf = 102
+actor.base_mdf = 100
+actor.base_acc = 100
+actor.base_dex = 97
+actor.base_skl = 93
+actor.base_spd = 101
+
+actor.weapon_name = "Club"
+actor.weapon_longrange = false
+actor.weapon_atk = 1
+actor.weapon_hit = 1
+actor.weapon_crit = 1
+actor.attack_xoffset = 50
+actor.helmet = 0
+actor.armor = 104
+actor.boots = 201
+actor.acc1 = 0
+actor.acc2 = 0
+actor.acc3 = 0
+actor.item1 = 5
+actor.item2 = 11
+actor.item3 = 0
+actor.relation = [[25, "B"], # Hawk
+                  [47, "C"], # Nikolai
+                  [68, "C"]] # Teej
+
+actor.special = 0
+
+$exdata_actors[5] = actor
+#--------------------------------------------------------------------------
+# Bast
+#--------------------------------------------------------------------------
+actor = Data_Actor.new
+actor.name = "Bast"
+actor.init_level = 25
+actor.element = 3
+actor.no_armour = false
+actor.join_msg = "Watch and learn, boy."
+actor.base_hp = 132
+actor.base_mp = 64
+actor.base_str = 139
+actor.base_mag = 74
+actor.base_pdf = 156
+actor.base_mdf = 64
+actor.base_acc = 100
+actor.base_dex = 86
+actor.base_skl = 116
+actor.base_spd = 95
+
+actor.weapon_name = "Bastard Sword"
+actor.weapon_longrange = false
+actor.weapon_atk = 6
+actor.weapon_hit = 4
+actor.weapon_crit = 5
+actor.attack_xoffset = 75
+actor.helmet = 10
+actor.armor = 106
+actor.boots = 203
+actor.acc1 = 331
+actor.acc2 = 371
+actor.acc3 = 0
+actor.item1 = 5
+actor.item2 = 0
+actor.item3 = 0
+actor.relation = [[63, "A"], # Shiro
+                  [8, "B"], # Bruce
+                  [31, "C"]] # Keyser
+
+actor.special = 0
+
+$exdata_actors[6] = actor
+#--------------------------------------------------------------------------
+# Beau
+#--------------------------------------------------------------------------
+actor = Data_Actor.new
+actor.name = "Beau"
+actor.init_level = 10
+actor.element = 5
+actor.no_armour = false
+actor.join_msg = "At your service."
+actor.base_hp = 86
+actor.base_mp = 117
+actor.base_str = 85
+actor.base_mag = 139
+actor.base_pdf = 86
+actor.base_mdf = 136
+actor.base_acc = 70
+actor.base_dex = 100
+actor.base_skl = 75
+actor.base_spd = 114
+
+actor.weapon_name = "Book of Law"
+actor.weapon_longrange = false
+actor.weapon_atk = 0
+actor.weapon_hit = 0
+actor.weapon_crit = 0
+actor.attack_xoffset = 50
+actor.helmet = 0
+actor.armor = 113
+actor.boots = 203
+actor.acc1 = 321
+actor.acc2 = 0
+actor.acc3 = 0
+actor.item1 = 0
+actor.item2 = 0
+actor.item3 = 0
+actor.relation = [[73, "B"], # Wilona
+                  [9, "B"], # Carson
+                  [63, "C"]] # Shiro
+
+actor.special = 0
+
+$exdata_actors[7] = actor
+#--------------------------------------------------------------------------
+# Bruce
+#--------------------------------------------------------------------------
+actor = Data_Actor.new
+actor.name = "Bruce"
+actor.init_level = 62
+actor.element = 3
+actor.no_armour = false
+actor.join_msg = "Yeah! Let's get 'em!"
+actor.base_hp = 114
+actor.base_mp = 83
+actor.base_str = 141
+actor.base_mag = 92
+actor.base_pdf = 141
+actor.base_mdf = 82
+actor.base_acc = 100
+actor.base_dex = 97
+actor.base_skl = 111
+actor.base_spd = 105
+
+actor.weapon_name = "Excalibur"
+actor.weapon_longrange = false
+actor.weapon_atk = 11
+actor.weapon_hit = 9
+actor.weapon_crit = 10
+actor.attack_xoffset = 50
+actor.helmet = 0
+actor.armor = 121
+actor.boots = 207
+actor.acc1 = 332
+actor.acc2 = 331
+actor.acc3 = 0
+actor.item1 = 0
+actor.item2 = 0
+actor.item3 = 0
+actor.relation = [[31, "B"], # Keyser
+                  [24, "B"], # Harvey
+                  [6, "C"]] # Bast
+
+actor.special = 7
+
+$exdata_actors[8] = actor
+#--------------------------------------------------------------------------
+# Carson
+#--------------------------------------------------------------------------
+actor = Data_Actor.new
+actor.name = "Carson"
+actor.init_level = 16
+actor.element = 4
+actor.no_armour = false
+actor.join_msg = "I'm on the mission."
+actor.base_hp = 100
+actor.base_mp = 90
+actor.base_str = 116
+actor.base_mag = 96
+actor.base_pdf = 71
+actor.base_mdf = 95
+actor.base_acc = 112
+actor.base_dex = 123
+actor.base_skl = 118
+actor.base_spd = 121
+
+actor.weapon_name = "Sai"
+actor.weapon_longrange = false
+actor.weapon_atk = 3
+actor.weapon_hit = 3
+actor.weapon_crit = 3
+actor.attack_xoffset = 50
+actor.helmet = 4
+actor.armor = 106
+actor.boots = 201
+actor.acc1 = 370
+actor.acc2 = 0
+actor.acc3 = 0
+actor.item1 = 0
+actor.item2 = 0
+actor.item3 = 0
+actor.relation = [[58, "A"], # Ryan
+                  [7, "B"], # Beau
+                  [11, "C"]] # Col
+
+actor.special = 0
+
+$exdata_actors[9] = actor
+#--------------------------------------------------------------------------
+# Cid
+#--------------------------------------------------------------------------
+actor = Data_Actor.new
+actor.name = "Cid"
+actor.init_level = 1
+actor.element = 4
+actor.no_armour = false
+actor.join_msg = "Uhm... Do I really have to?"
+actor.base_hp = 87
+actor.base_mp = 113
+actor.base_str = 68
+actor.base_mag = 125
+actor.base_pdf = 105
+actor.base_mdf = 118
+actor.base_acc = 78
+actor.base_dex = 103
+actor.base_skl = 88
+actor.base_spd = 110
+
+actor.weapon_name = "Lorelai"
+actor.weapon_longrange = true
+actor.weapon_atk = 0
+actor.weapon_hit = 0
+actor.weapon_crit = 0
+actor.attack_xoffset = 50
+actor.helmet = 2
+actor.armor = 103
+actor.boots = 0
+actor.acc1 = 310
+actor.acc2 = 320
+actor.acc3 = 0
+actor.item1 = 17
+actor.item2 = 23
+actor.item3 = 0
+actor.relation = [[68, "B"], # Teej
+                  [69, "C"], # Tiffany
+                  [72, "C"]] # Venkal
+
+actor.special = 0
+
+$exdata_actors[10] = actor
+#--------------------------------------------------------------------------
+# Col
+#--------------------------------------------------------------------------
+actor = Data_Actor.new
+actor.name = "Col"
+actor.init_level = 4
+actor.element = 3
+actor.no_armour = false
+actor.join_msg = "I'm ready!"
+actor.base_hp = 85
+actor.base_mp = 94
+actor.base_str = 104
+actor.base_mag = 102
+actor.base_pdf = 88
+actor.base_mdf = 70
+actor.base_acc = 130
+actor.base_dex = 122
+actor.base_skl = 129
+actor.base_spd = 122
+
+actor.weapon_name = "Crossbow"
+actor.weapon_longrange = true
+actor.weapon_atk = 1
+actor.weapon_hit = 3
+actor.weapon_crit = 2
+actor.attack_xoffset = 50
+actor.helmet = 4
+actor.armor = 104
+actor.boots = 201
+actor.acc1 = 370
+actor.acc2 = 0
+actor.acc3 = 0
+actor.item1 = 15
+actor.item2 = 15
+actor.item3 = 0
+actor.relation = [[28, "B"], # Joe
+                  [59, "C"], # Sally
+                  [9, "C"]] # Carson
+
+actor.special = 4
+
+$exdata_actors[11] = actor
+#--------------------------------------------------------------------------
+# Daniel
+#--------------------------------------------------------------------------
+actor = Data_Actor.new
+actor.name = "Daniel"
+actor.init_level = 1
+actor.element = 1
+actor.no_armour = false
+actor.join_msg = "-"
+actor.base_hp = 118
+actor.base_mp = 114
+actor.base_str = 95
+actor.base_mag = 118
+actor.base_pdf = 92
+actor.base_mdf = 148
+actor.base_acc = 130
+actor.base_dex = 110
+actor.base_skl = 90
+actor.base_spd = 103
+
+actor.weapon_name = "Seraphim"
+actor.weapon_longrange = false
+actor.weapon_atk = 0
+actor.weapon_hit = 1
+actor.weapon_crit = 0
+actor.attack_xoffset = 50
+actor.helmet = 3
+actor.armor = 101
+actor.boots = 201
+actor.acc1 = 300
+actor.acc2 = 320
+actor.acc3 = 0
+actor.item1 = 4
+actor.item2 = 0
+actor.item3 = 0
+actor.relation = [[30, "A"], # Jovian
+                  [2, "B"], # Angel
+                  [34, "C"]] # Ljusalf
+
+actor.special = 0
+
+$exdata_actors[12] = actor
+#--------------------------------------------------------------------------
+# Darwin
+#--------------------------------------------------------------------------
+actor = Data_Actor.new
+actor.name = "Darwin"
+actor.init_level = 45
+actor.element = 5
+actor.no_armour = false
+actor.join_msg = "But of course."
+actor.base_hp = 92
+actor.base_mp = 115
+actor.base_str = 83
+actor.base_mag = 154
+actor.base_pdf = 100
+actor.base_mdf = 144
+actor.base_acc = 88
+actor.base_dex = 100
+actor.base_skl = 63
+actor.base_spd = 101
+
+actor.weapon_name = "Encyclopedia"
+actor.weapon_longrange = false
+actor.weapon_atk = 5
+actor.weapon_hit = 4
+actor.weapon_crit = 5
+actor.attack_xoffset = 50
+actor.helmet = 10
+actor.armor = 117
+actor.boots = 0
+actor.acc1 = 312
+actor.acc2 = 0
+actor.acc3 = 0
+actor.item1 = 34
+actor.item2 = 0
+actor.item3 = 0
+actor.relation = [[39, "A"], # Marian
+                  [73, "B"], # Wilona
+                  [14, "C"]] # Deke
+
+actor.special = 4
+
+$exdata_actors[13] = actor
+#--------------------------------------------------------------------------
+# Deke
+#--------------------------------------------------------------------------
+actor = Data_Actor.new
+actor.name = "Deke"
+actor.init_level = 15
+actor.element = 2
+actor.no_armour = false
+actor.join_msg = "Ha ha ha! Excellent!"
+actor.base_hp = 82
+actor.base_mp = 103
+actor.base_str = 153
+actor.base_mag = 112
+actor.base_pdf = 74
+actor.base_mdf = 83
+actor.base_acc = 90
+actor.base_dex = 107
+actor.base_skl = 88
+actor.base_spd = 104
+
+actor.weapon_name = "Plasma Gun"
+actor.weapon_longrange = true
+actor.weapon_atk = 0
+actor.weapon_hit = 0
+actor.weapon_crit = 0
+actor.attack_xoffset = 50
+actor.helmet = 0
+actor.armor = 102
+actor.boots = 0
+actor.acc1 = 390
+actor.acc2 = 0
+actor.acc3 = 0
+actor.item1 = 21
+actor.item2 = 0
+actor.item3 = 0
+actor.relation = [[13, "C"], # Darwin
+                  [24, "C"], # Harvey
+                  [28, "F"]] # Joe
+
+actor.special = 6
+
+$exdata_actors[14] = actor
+#--------------------------------------------------------------------------
+# Derek
+#--------------------------------------------------------------------------
+actor = Data_Actor.new
+actor.name = "Derek"
+actor.init_level = 25
+actor.element = 2
+actor.no_armour = false
+actor.join_msg = "Sure thing, mate!"
+actor.base_hp = 140
+actor.base_mp = 80
+actor.base_str = 134
+actor.base_mag = 62
+actor.base_pdf = 131
+actor.base_mdf = 156
+actor.base_acc = 91
+actor.base_dex = 80
+actor.base_skl = 105
+actor.base_spd = 81
+
+actor.weapon_name = "Scavenger"
+actor.weapon_longrange = false
+actor.weapon_atk = 5
+actor.weapon_hit = 4
+actor.weapon_crit = 4
+actor.attack_xoffset = 50
+actor.helmet = 9
+actor.armor = 107
+actor.boots = 204
+actor.acc1 = 0
+actor.acc2 = 0
+actor.acc3 = 0
+actor.item1 = 0
+actor.item2 = 0
+actor.item3 = 0
+actor.relation = [[62, "B"], # Shin
+                  [25, "C"], # Hawk
+                  [44, "F"]] # Myst
+
+actor.special = 10
+
+$exdata_actors[15] = actor
+#--------------------------------------------------------------------------
+# Deus
+#--------------------------------------------------------------------------
+actor = Data_Actor.new
+actor.name = "Deus"
+actor.init_level = 30
+actor.element = 1
+actor.no_armour = false
+actor.join_msg = "Certainly."
+actor.base_hp = 112
+actor.base_mp = 115
+actor.base_str = 76
+actor.base_mag = 147
+actor.base_pdf = 95
+actor.base_mdf = 156
+actor.base_acc = 100
+actor.base_dex = 101
+actor.base_skl = 91
+actor.base_spd = 96
+
+actor.weapon_name = "Faith"
+actor.weapon_longrange = false
+actor.weapon_atk = 3
+actor.weapon_hit = 4
+actor.weapon_crit = 3
+actor.attack_xoffset = 50
+actor.helmet = 10
+actor.armor = 108
+actor.boots = 203
+actor.acc1 = 312
+actor.acc2 = 390
+actor.acc3 = 0
+actor.item1 = 30
+actor.item2 = 0
+actor.item3 = 0
+actor.relation = [[3, "B"], # Avelion
+                  [35, "B"], # Luther
+                  [49, "C"]] # Orlando
+
+actor.special = 8
+
+$exdata_actors[16] = actor
+#--------------------------------------------------------------------------
+# Eander
+#--------------------------------------------------------------------------
+actor = Data_Actor.new
+actor.name = "Eander"
+actor.init_level = 43
+actor.element = 6
+actor.no_armour = false
+actor.join_msg = "That's the spirit!"
+actor.base_hp = 131
+actor.base_mp = 91
+actor.base_str = 112
+actor.base_mag = 93
+actor.base_pdf = 115
+actor.base_mdf = 109
+actor.base_acc = 113
+actor.base_dex = 95
+actor.base_skl = 118
+actor.base_spd = 95
+
+actor.weapon_name = "Thor"
+actor.weapon_longrange = false
+actor.weapon_atk = 8
+actor.weapon_hit = 8
+actor.weapon_crit = 9
+actor.attack_xoffset = 80
+actor.helmet = 11
+actor.armor = 115
+actor.boots = 208
+actor.acc1 = 382
+actor.acc2 = 0
+actor.acc3 = 0
+actor.item1 = 0
+actor.item2 = 0
+actor.item3 = 0
+actor.relation = [[30, "B"], # Jovian
+                  [31, "B"], # Keyser
+                  [8, "C"]] # Bruce
+
+actor.special = 0
+
+$exdata_actors[17] = actor
+#--------------------------------------------------------------------------
+# Erin
+#--------------------------------------------------------------------------
+actor = Data_Actor.new
+actor.name = "Erin"
+actor.init_level = 46
+actor.element = 3
+actor.no_armour = false
+actor.join_msg = "Yes, sir!"
+actor.base_hp = 115
+actor.base_mp = 73
+actor.base_str = 120
+actor.base_mag = 100
+actor.base_pdf = 139
+actor.base_mdf = 90
+actor.base_acc = 110
+actor.base_dex = 95
+actor.base_skl = 139
+actor.base_spd = 96
+
+actor.weapon_name = "McLeod"
+actor.weapon_longrange = false
+actor.weapon_atk = 9
+actor.weapon_hit = 8
+actor.weapon_crit = 8
+actor.attack_xoffset = 50
+actor.helmet = 11
+actor.armor = 118
+actor.boots = 208
+actor.acc1 = 372
+actor.acc2 = 332
+actor.acc3 = 0
+actor.item1 = 5
+actor.item2 = 0
+actor.item3 = 0
+actor.relation = [[58, "A"], # Ryan
+                  [27, "B"], # Jasper
+                  [55, "F"]] # Rock
+
+actor.special = 0
+
+$exdata_actors[18] = actor
+#--------------------------------------------------------------------------
+# Fitch
+#--------------------------------------------------------------------------
+actor = Data_Actor.new
+actor.name = "Fitch"
+actor.init_level = 2
+actor.element = 3
+actor.no_armour = false
+actor.join_msg = "Yay! Let's go!"
+actor.base_hp = 91
+actor.base_mp = 92
+actor.base_str = 90
+actor.base_mag = 84
+actor.base_pdf = 105
+actor.base_mdf = 109
+actor.base_acc = 92
+actor.base_dex = 114
+actor.base_skl = 88
+actor.base_spd = 127
+
+actor.weapon_name = "Slingshot"
+actor.weapon_longrange = true
+actor.weapon_atk = 0
+actor.weapon_hit = 0
+actor.weapon_crit = 0
+actor.attack_xoffset = 50
+actor.helmet = 0
+actor.armor = 102
+actor.boots = 0
+actor.acc1 = 340
+actor.acc2 = 0
+actor.acc3 = 0
+actor.item1 = 4
+actor.item2 = 0
+actor.item3 = 0
+actor.relation = [[34, "A"], # Ljusalf
+                  [45, "C"], # Naja
+                  [59, "C"]] # Sally
+
+actor.special = 0
+
+$exdata_actors[19] = actor
+#--------------------------------------------------------------------------
+# Francesca
+#--------------------------------------------------------------------------
+actor = Data_Actor.new
+actor.name = "Francesca"
+actor.init_level = 7
+actor.element = 2
+actor.no_armour = false
+actor.join_msg = "The darkness beckons me."
+actor.base_hp = 93
+actor.base_mp = 109
+actor.base_str = 96
+actor.base_mag = 110
+actor.base_pdf = 87
+actor.base_mdf = 78
+actor.base_acc = 139
+actor.base_dex = 110
+actor.base_skl = 103
+actor.base_spd = 105
+
+actor.weapon_name = "Tragedy"
+actor.weapon_longrange = false
+actor.weapon_atk = 2
+actor.weapon_hit = 3
+actor.weapon_crit = 2
+actor.attack_xoffset = 75
+actor.helmet = 4
+actor.armor = 104
+actor.boots = 201
+actor.acc1 = 360
+actor.acc2 = 360
+actor.acc3 = 370
+actor.item1 = 21
+actor.item2 = 0
+actor.item3 = 0
+actor.relation = [[62, "A"], # Shin
+                  [71, "B"], # Vanrushal
+                  [65, "B"]] # Soth
+
+actor.special = 0
+
+$exdata_actors[20] = actor
+#--------------------------------------------------------------------------
+# Frore
+#--------------------------------------------------------------------------
+actor = Data_Actor.new
+actor.name = "Frore"
+actor.init_level = 72
+actor.element = 4
+actor.no_armour = false
+actor.join_msg = "I'll lend you my strength."
+actor.base_hp = 124
+actor.base_mp = 89
+actor.base_str = 117
+actor.base_mag = 80
+actor.base_pdf = 162
+actor.base_mdf = 90
+actor.base_acc = 122
+actor.base_dex = 100
+actor.base_skl = 141
+actor.base_spd = 101
+
+actor.weapon_name = "Kella"
+actor.weapon_longrange = false
+actor.weapon_atk = 13
+actor.weapon_hit = 12
+actor.weapon_crit = 12
+actor.attack_xoffset = 50
+actor.helmet = 21
+actor.armor = 125
+actor.boots = 213
+actor.acc1 = 304
+actor.acc2 = 332
+actor.acc3 = 0
+actor.item1 = 5
+actor.item2 = 5
+actor.item3 = 0
+actor.relation = [[27, "B"], # Jasper
+                  [43, "B"], # Mike
+                  [26, "C"]] # Ice
+
+actor.special = 0
+
+$exdata_actors[21] = actor
+#--------------------------------------------------------------------------
+# Gilbert
+#--------------------------------------------------------------------------
+actor = Data_Actor.new
+actor.name = "Gilbert"
+actor.init_level = 70
+actor.element = 2
+actor.no_armour = false
+actor.join_msg = "I'm gone."
+actor.base_hp = 101
+actor.base_mp = 83
+actor.base_str = 114
+actor.base_mag = 75
+actor.base_pdf = 100
+actor.base_mdf = 62
+actor.base_acc = 113
+actor.base_dex = 115
+actor.base_skl = 150
+actor.base_spd = 126
+
+actor.weapon_name = "Kodachi"
+actor.weapon_longrange = false
+actor.weapon_atk = 12
+actor.weapon_hit = 13
+actor.weapon_crit = 13
+actor.attack_xoffset = 50
+actor.helmet = 17
+actor.armor = 126
+actor.boots = 207
+actor.acc1 = 343
+actor.acc2 = 372
+actor.acc3 = 372
+actor.item1 = 0
+actor.item2 = 0
+actor.item3 = 0
+actor.relation = [[56, "B"], # Rorschach
+                  [75, "B"], # Yomiko
+                  [70, "C"]] # Tong Wu
+
+actor.special = 0
+
+$exdata_actors[22] = actor
+#--------------------------------------------------------------------------
+# Griever
+#--------------------------------------------------------------------------
+actor = Data_Actor.new
+actor.name = "Griever"
+actor.init_level = 25
+actor.element = 6
+actor.no_armour = false
+actor.join_msg = "If that's your decision."
+actor.base_hp = 119
+actor.base_mp = 77
+actor.base_str = 118
+actor.base_mag = 93
+actor.base_pdf = 157
+actor.base_mdf = 131
+actor.base_acc = 116
+actor.base_dex = 96
+actor.base_skl = 106
+actor.base_spd = 100
+
+actor.weapon_name = "Dragonlance"
+actor.weapon_longrange = false
+actor.weapon_atk = 6
+actor.weapon_hit = 5
+actor.weapon_crit = 6
+actor.attack_xoffset = 80
+actor.helmet = 11
+actor.armor = 107
+actor.boots = 204
+actor.acc1 = 301
+actor.acc2 = 331
+actor.acc3 = 0
+actor.item1 = 4
+actor.item2 = 0
+actor.item3 = 0
+actor.relation = [[33, "A"], # Klaus
+                  [67, "B"], # Tarlia
+                  [52, "C"]] # Petra
+
+actor.special = 9
+
+$exdata_actors[23] = actor
+#--------------------------------------------------------------------------
+# Harvey
+#--------------------------------------------------------------------------
+actor = Data_Actor.new
+actor.name = "Harvey"
+actor.init_level = 48
+actor.element = 3
+actor.no_armour = false
+actor.join_msg = "Need something blown up?"
+actor.base_hp = 132
+actor.base_mp = 83
+actor.base_str = 105
+actor.base_mag = 89
+actor.base_pdf = 144
+actor.base_mdf = 156
+actor.base_acc = 126
+actor.base_dex = 83
+actor.base_skl = 113
+actor.base_spd = 88
+
+actor.weapon_name = "Grenade"
+actor.weapon_longrange = true
+actor.weapon_atk = 9
+actor.weapon_hit = 9
+actor.weapon_crit = 7
+actor.attack_xoffset = 50
+actor.helmet = 10
+actor.armor = 116
+actor.boots = 207
+actor.acc1 = 382
+actor.acc2 = 381
+actor.acc3 = 301
+actor.item1 = 32
+actor.item2 = 11
+actor.item3 = 0
+actor.relation = [[14, "B"], # Deke
+                  [47, "C"], # Nikolai
+                  [17, "C"]] # Eander
+
+actor.special = 5
+
+$exdata_actors[24] = actor
+#--------------------------------------------------------------------------
+# Hawk
+#--------------------------------------------------------------------------
+actor = Data_Actor.new
+actor.name = "Hawk"
+actor.init_level = 21
+actor.element = 6
+actor.no_armour = false
+actor.join_msg = "Yeee-haw!"
+actor.base_hp = 124
+actor.base_mp = 82
+actor.base_str = 112
+actor.base_mag = 82
+actor.base_pdf = 118
+actor.base_mdf = 62
+actor.base_acc = 86
+actor.base_dex = 59
+actor.base_skl = 75
+actor.base_spd = 90
+
+actor.weapon_name = "Harvester"
+actor.weapon_longrange = false
+actor.weapon_atk = 4
+actor.weapon_hit = 2
+actor.weapon_crit = 3
+actor.attack_xoffset = 50
+actor.helmet = 0
+actor.armor = 106
+actor.boots = 203
+actor.acc1 = 300
+actor.acc2 = 381
+actor.acc3 = 0
+actor.item1 = 5
+actor.item2 = 4
+actor.item3 = 0
+actor.relation = [[5, "B"], # Bartolli
+                  [15, "C"], # Derek
+                  [64, "C"]] # Sormaus
+
+actor.special = 0
+
+$exdata_actors[25] = actor
+#--------------------------------------------------------------------------
+# Ice
+#--------------------------------------------------------------------------
+actor = Data_Actor.new
+actor.name = "Ice"
+actor.init_level = 59
+actor.element = 4
+actor.no_armour = false
+actor.join_msg = "Excellent choice."
+actor.base_hp = 90
+actor.base_mp = 107
+actor.base_str = 99
+actor.base_mag = 145
+actor.base_pdf = 86
+actor.base_mdf = 157
+actor.base_acc = 126
+actor.base_dex = 102
+actor.base_skl = 94
+actor.base_spd = 101
+
+actor.weapon_name = "Rapier"
+actor.weapon_longrange = false
+actor.weapon_atk = 9
+actor.weapon_hit = 11
+actor.weapon_crit = 9
+actor.attack_xoffset = 75
+actor.helmet = 17
+actor.armor = 123
+actor.boots = 207
+actor.acc1 = 322
+actor.acc2 = 352
+actor.acc3 = 0
+actor.item1 = 33
+actor.item2 = 0
+actor.item3 = 0
+actor.relation = [[49, "C"], # Orlando
+                  [21, "C"], # Frore
+                  [3, "F"]] # Avelion
+
+actor.special = 0
+
+$exdata_actors[26] = actor
+#--------------------------------------------------------------------------
+# Jasper
+#--------------------------------------------------------------------------
+actor = Data_Actor.new
+actor.name = "Jasper"
+actor.init_level = 14
+actor.element = 5
+actor.no_armour = false
+actor.join_msg = "For the pride of the Knights of Matrech."
+actor.base_hp = 101
+actor.base_mp = 80
+actor.base_str = 108
+actor.base_mag = 86
+actor.base_pdf = 92
+actor.base_mdf = 64
+actor.base_acc = 144
+actor.base_dex = 110
+actor.base_skl = 131
+actor.base_spd = 109
+
+actor.weapon_name = "Durendal"
+actor.weapon_longrange = false
+actor.weapon_atk = 4
+actor.weapon_hit = 4
+actor.weapon_crit = 4
+actor.attack_xoffset = 100
+actor.helmet = 4
+actor.armor = 105
+actor.boots = 202
+actor.acc1 = 300
+actor.acc2 = 330
+actor.acc3 = 340
+actor.item1 = 4
+actor.item2 = 4
+actor.item3 = 0
+actor.relation = [[18, "A"], # Erin
+                  [4, "B"], # Ayara
+                  [41, "C"]] # Merrick
+
+actor.special = 0
+
+$exdata_actors[27] = actor
+#--------------------------------------------------------------------------
+# Joe
+#--------------------------------------------------------------------------
+actor = Data_Actor.new
+actor.name = "Joe"
+actor.init_level = 8
+actor.element = 6
+actor.no_armour = false
+actor.join_msg = "What? Do I look like a soldier to you?"
+actor.base_hp = 94
+actor.base_mp = 81
+actor.base_str = 100
+actor.base_mag = 97
+actor.base_pdf = 104
+actor.base_mdf = 88
+actor.base_acc = 112
+actor.base_dex = 130
+actor.base_skl = 93
+actor.base_spd = 118
+
+actor.weapon_name = "Dirk"
+actor.weapon_longrange = false
+actor.weapon_atk = 2
+actor.weapon_hit = 2
+actor.weapon_crit = 3
+actor.attack_xoffset = 50
+actor.helmet = 4
+actor.armor = 102
+actor.boots = 201
+actor.acc1 = 340
+actor.acc2 = 370
+actor.acc3 = 0
+actor.item1 = 10
+actor.item2 = 0
+actor.item3 = 0
+actor.relation = [[11, "B"], # Col
+                  [53, "C"], # Reod
+                  [14, "F"]] # Deke
+
+actor.special = 3
+
+$exdata_actors[28] = actor
+#--------------------------------------------------------------------------
+# Johnny
+#--------------------------------------------------------------------------
+actor = Data_Actor.new
+actor.name = "Johnny"
+actor.init_level = 15
+actor.element = 4
+actor.no_armour = false
+actor.join_msg = "Count me in."
+actor.base_hp = 100
+actor.base_mp = 98
+actor.base_str = 92
+actor.base_mag = 113
+actor.base_pdf = 86
+actor.base_mdf = 82
+actor.base_acc = 120
+actor.base_dex = 99
+actor.base_skl = 128
+actor.base_spd = 106
+
+actor.weapon_name = "Ace Deck"
+actor.weapon_longrange = true
+actor.weapon_atk = 2
+actor.weapon_hit = 2
+actor.weapon_crit = 1
+actor.attack_xoffset = 50
+actor.helmet = 0
+actor.armor = 102
+actor.boots = 0
+actor.acc1 = 360
+actor.acc2 = 0
+actor.acc3 = 0
+actor.item1 = 0
+actor.item2 = 0
+actor.item3 = 0
+actor.relation = [[32, "A"], # King
+                  [69, "B"], # Tiffany
+                  [36, "C"]] # Mai
+
+actor.special = 0
+
+$exdata_actors[29] = actor
+#--------------------------------------------------------------------------
+# Jovian
+#--------------------------------------------------------------------------
+actor = Data_Actor.new
+actor.name = "Jovian"
+actor.init_level = 1
+actor.element = 3
+actor.no_armour = false
+actor.join_msg = "You can always count on me, Daniel."
+actor.base_hp = 121
+actor.base_mp = 90
+actor.base_str = 126
+actor.base_mag = 76
+actor.base_pdf = 156
+actor.base_mdf = 86
+actor.base_acc = 100
+actor.base_dex = 98
+actor.base_skl = 126
+actor.base_spd = 90
+
+actor.weapon_name = "Firebrand"
+actor.weapon_longrange = false
+actor.weapon_atk = 1
+actor.weapon_hit = 1
+actor.weapon_crit = 1
+actor.attack_xoffset = 50
+actor.helmet = 3
+actor.armor = 101
+actor.boots = 201
+actor.acc1 = 360
+actor.acc2 = 370
+actor.acc3 = 0
+actor.item1 = 0
+actor.item2 = 0
+actor.item3 = 0
+actor.relation = [[2, "A"], # Angel
+                  [12, "A"], # Daniel
+                  [17, "B"]] # Eander
+
+actor.special = 0
+
+$exdata_actors[30] = actor
+#--------------------------------------------------------------------------
+# Keyser
+#--------------------------------------------------------------------------
+actor = Data_Actor.new
+actor.name = "Keyser"
+actor.init_level = 31
+actor.element = 5
+actor.no_armour = false
+actor.join_msg = "You've made a wise choice."
+actor.base_hp = 123
+actor.base_mp = 91
+actor.base_str = 110
+actor.base_mag = 108
+actor.base_pdf = 171
+actor.base_mdf = 79
+actor.base_acc = 94
+actor.base_dex = 87
+actor.base_skl = 90
+actor.base_spd = 91
+
+actor.weapon_name = "Trident"
+actor.weapon_longrange = false
+actor.weapon_atk = 6
+actor.weapon_hit = 5
+actor.weapon_crit = 5
+actor.attack_xoffset = 100
+actor.helmet = 11
+actor.armor = 112
+actor.boots = 204
+actor.acc1 = 301
+actor.acc2 = 301
+actor.acc3 = 0
+actor.item1 = 0
+actor.item2 = 0
+actor.item3 = 0
+actor.relation = [[17, "B"], # Eander
+                  [30, "C"], # Jovian
+                  [6, "C"]] # Bast
+
+actor.special = 9
+
+$exdata_actors[31] = actor
+#--------------------------------------------------------------------------
+# King
+#--------------------------------------------------------------------------
+actor = Data_Actor.new
+actor.name = "King"
+actor.init_level = 33
+actor.element = 1
+actor.no_armour = true
+actor.join_msg = "Arf!"
+actor.base_hp = 86
+actor.base_mp = 82
+actor.base_str = 105
+actor.base_mag = 57
+actor.base_pdf = 91
+actor.base_mdf = 99
+actor.base_acc = 104
+actor.base_dex = 148
+actor.base_skl = 138
+actor.base_spd = 120
+
+actor.weapon_name = "Sharp Teeth"
+actor.weapon_longrange = false
+actor.weapon_atk = 6
+actor.weapon_hit = 5
+actor.weapon_crit = 7
+actor.attack_xoffset = 50
+actor.helmet = 0
+actor.armor = 0
+actor.boots = 0
+actor.acc1 = 0
+actor.acc2 = 0
+actor.acc3 = 0
+actor.item1 = 0
+actor.item2 = 0
+actor.item3 = 0
+actor.relation = [[1, "A"], # Alex
+                  [29, "A"], # Johnny
+                  [33, "B"]] # Klaus
+
+actor.special = 0
+
+$exdata_actors[32] = actor
+#--------------------------------------------------------------------------
+# Klaus
+#--------------------------------------------------------------------------
+actor = Data_Actor.new
+actor.name = "Klaus"
+actor.init_level = 16
+actor.element = 1
+actor.no_armour = true
+actor.join_msg = "I'll honour you with my presence."
+actor.base_hp = 80
+actor.base_mp = 100
+actor.base_str = 119
+actor.base_mag = 73
+actor.base_pdf = 66
+actor.base_mdf = 60
+actor.base_acc = 113
+actor.base_dex = 146
+actor.base_skl = 131
+actor.base_spd = 141
+
+actor.weapon_name = "Paws"
+actor.weapon_longrange = false
+actor.weapon_atk = 3
+actor.weapon_hit = 2
+actor.weapon_crit = 4
+actor.attack_xoffset = 50
+actor.helmet = 0
+actor.armor = 0
+actor.boots = 0
+actor.acc1 = 0
+actor.acc2 = 0
+actor.acc3 = 0
+actor.item1 = 0
+actor.item2 = 0
+actor.item3 = 0
+actor.relation = [[1, "A"], # Alex
+                  [23, "A"], # Griever
+                  [32, "B"]] # King
+
+actor.special = 0
+
+$exdata_actors[33] = actor
+#--------------------------------------------------------------------------
+# Ljusalf
+#--------------------------------------------------------------------------
+actor = Data_Actor.new
+actor.name = "Ljusalf"
+actor.init_level = 4
+actor.element = 5
+actor.no_armour = false
+actor.join_msg = "I hope I can be of help."
+actor.base_hp = 88
+actor.base_mp = 116
+actor.base_str = 80
+actor.base_mag = 140
+actor.base_pdf = 86
+actor.base_mdf = 120
+actor.base_acc = 88
+actor.base_dex = 94
+actor.base_skl = 69
+actor.base_spd = 96
+
+actor.weapon_name = "Sjaelsvaerd"
+actor.weapon_longrange = false
+actor.weapon_atk = 0
+actor.weapon_hit = 0
+actor.weapon_crit = 0
+actor.attack_xoffset = 50
+actor.helmet = 0
+actor.armor = 103
+actor.boots = 201
+actor.acc1 = 320
+actor.acc2 = 390
+actor.acc3 = 0
+actor.item1 = 24
+actor.item2 = 14
+actor.item3 = 0
+actor.relation = [[58, "B"], # Ryan
+                  [19, "C"], # Fitch
+                  [45, "C"]] # Naja
+
+actor.special = 0
+
+$exdata_actors[34] = actor
+#--------------------------------------------------------------------------
+# Luther
+#--------------------------------------------------------------------------
+actor = Data_Actor.new
+actor.name = "Luther"
+actor.init_level = 18
+actor.element = 1
+actor.no_armour = false
+actor.join_msg = "Come, my son."
+actor.base_hp = 106
+actor.base_mp = 120
+actor.base_str = 100
+actor.base_mag = 137
+actor.base_pdf = 114
+actor.base_mdf = 138
+actor.base_acc = 87
+actor.base_dex = 79
+actor.base_skl = 81
+actor.base_spd = 93
+
+actor.weapon_name = "Holy Water Sprinkler"
+actor.weapon_longrange = false
+actor.weapon_atk = 4
+actor.weapon_hit = 3
+actor.weapon_crit = 3
+actor.attack_xoffset = 50
+actor.helmet = 4
+actor.armor = 104
+actor.boots = 201
+actor.acc1 = 390
+actor.acc2 = 310
+actor.acc3 = 0
+actor.item1 = 14
+actor.item2 = 10
+actor.item3 = 0
+actor.relation = [[16, "A"], # Deus
+                  [3, "C"], # Avelion
+                  [71, "F"]] # Vanrushal
+
+actor.special = 8
+
+$exdata_actors[35] = actor
+#--------------------------------------------------------------------------
+# Mai
+#--------------------------------------------------------------------------
+actor = Data_Actor.new
+actor.name = "Mai"
+actor.init_level = 38
+actor.element = 4
+actor.no_armour = false
+actor.join_msg = "Oh well, I guess you can't do it without me"
+actor.base_hp = 99
+actor.base_mp = 97
+actor.base_str = 60
+actor.base_mag = 160
+actor.base_pdf = 92
+actor.base_mdf = 178
+actor.base_acc = 95
+actor.base_dex = 103
+actor.base_skl = 80
+actor.base_spd = 105
+
+actor.weapon_name = "Designer Purse"
+actor.weapon_longrange = false
+actor.weapon_atk = 4
+actor.weapon_hit = 5
+actor.weapon_crit = 4
+actor.attack_xoffset = 50
+actor.helmet = 10
+actor.armor = 117
+actor.boots = 203
+actor.acc1 = 392
+actor.acc2 = 321
+actor.acc3 = 0
+actor.item1 = 33
+actor.item2 = 0
+actor.item3 = 0
+actor.relation = [[39, "B"], # Marian
+                  [44, "C"], # Myst
+                  [74, "C"]] # Yan Angwa
+
+actor.special = 0
+
+$exdata_actors[36] = actor
+#--------------------------------------------------------------------------
+# Mandala
+#--------------------------------------------------------------------------
+actor = Data_Actor.new
+actor.name = "Mandala"
+actor.init_level = 27
+actor.element = 4
+actor.no_armour = false
+actor.join_msg = "I hope there's something in it for me."
+actor.base_hp = 114
+actor.base_mp = 80
+actor.base_str = 103
+actor.base_mag = 95
+actor.base_pdf = 119
+actor.base_mdf = 100
+actor.base_acc = 91
+actor.base_dex = 86
+actor.base_skl = 103
+actor.base_spd = 103
+
+actor.weapon_name = "Commandeer"
+actor.weapon_longrange = true
+actor.weapon_atk = 5
+actor.weapon_hit = 5
+actor.weapon_crit = 4
+actor.attack_xoffset = 50
+actor.helmet = 8
+actor.armor = 106
+actor.boots = 203
+actor.acc1 = 0
+actor.acc2 = 0
+actor.acc3 = 0
+actor.item1 = 0
+actor.item2 = 0
+actor.item3 = 0
+actor.relation = [[41, "B"], # Merrick
+                  [66, "C"], # Stromgaard
+                  [48, "C"]] # Nomad
+
+actor.special = 5
+
+$exdata_actors[37] = actor
+#--------------------------------------------------------------------------
+# Marcello
+#--------------------------------------------------------------------------
+actor = Data_Actor.new
+actor.name = "Marcello"
+actor.init_level = 43
+actor.element = 2
+actor.no_armour = false
+actor.join_msg = "This could be interesting."
+actor.base_hp = 90
+actor.base_mp = 90
+actor.base_str = 98
+actor.base_mag = 122
+actor.base_pdf = 109
+actor.base_mdf = 127
+actor.base_acc = 100
+actor.base_dex = 102
+actor.base_skl = 115
+actor.base_spd = 105
+
+actor.weapon_name = "Razorwire"
+actor.weapon_longrange = false
+actor.weapon_atk = 7
+actor.weapon_hit = 7
+actor.weapon_crit = 7
+actor.attack_xoffset = 50
+actor.helmet = 0
+actor.armor = 116
+actor.boots = 201
+actor.acc1 = 361
+actor.acc2 = 341
+actor.acc3 = 0
+actor.item1 = 0
+actor.item2 = 0
+actor.item3 = 0
+actor.relation = [[28, "C"], # Joe
+                  [53, "C"], # Reod
+                  [60, "F"]] # Sef
+
+actor.special = 3
+
+$exdata_actors[38] = actor
+#--------------------------------------------------------------------------
+# Marian
+#--------------------------------------------------------------------------
+actor = Data_Actor.new
+actor.name = "Marian"
+actor.init_level = 47
+actor.element = 6
+actor.no_armour = false
+actor.join_msg = "Well, what are you waiting for?"
+actor.base_hp = 94
+actor.base_mp = 119
+actor.base_str = 63
+actor.base_mag = 153
+actor.base_pdf = 89
+actor.base_mdf = 173
+actor.base_acc = 99
+actor.base_dex = 103
+actor.base_skl = 76
+actor.base_spd = 94
+
+actor.weapon_name = "Lightseer"
+actor.weapon_longrange = false
+actor.weapon_atk = 5
+actor.weapon_hit = 6
+actor.weapon_crit = 5
+actor.attack_xoffset = 50
+actor.helmet = 10
+actor.armor = 123
+actor.boots = 203
+actor.acc1 = 322
+actor.acc2 = 322
+actor.acc3 = 392
+actor.item1 = 0
+actor.item2 = 0
+actor.item3 = 0
+actor.relation = [[48, "A"], # Nomad
+                  [36, "B"], # Mai
+                  [34, "C"]] # Ljusalf
+
+actor.special = 0
+
+$exdata_actors[39] = actor
+#--------------------------------------------------------------------------
+# Meiko
+#--------------------------------------------------------------------------
+actor = Data_Actor.new
+actor.name = "Meiko"
+actor.init_level = 25
+actor.element = 5
+actor.no_armour = false
+actor.join_msg = "The world is waiting for me!"
+actor.base_hp = 98
+actor.base_mp = 101
+actor.base_str = 89
+actor.base_mag = 105
+actor.base_pdf = 91
+actor.base_mdf = 97
+actor.base_acc = 113
+actor.base_dex = 107
+actor.base_skl = 99
+actor.base_spd = 107
+
+actor.weapon_name = "Steel-Capped Boots"
+actor.weapon_longrange = false
+actor.weapon_atk = 4
+actor.weapon_hit = 5
+actor.weapon_crit = 4
+actor.attack_xoffset = 50
+actor.helmet = 0
+actor.armor = 106
+actor.boots = 204
+actor.acc1 = 361
+actor.acc2 = 340
+actor.acc3 = 0
+actor.item1 = 0
+actor.item2 = 0
+actor.item3 = 0
+actor.relation = [[74, "B"], # Yan Angwa
+                  [20, "B"], # Francesca
+                  [70, "C"]] # Tong Wu
+
+actor.special = 0
+
+$exdata_actors[40] = actor
+#--------------------------------------------------------------------------
+# Merrick
+#--------------------------------------------------------------------------
+actor = Data_Actor.new
+actor.name = "Merrick"
+actor.init_level = 35
+actor.element = 6
+actor.no_armour = false
+actor.join_msg = "I'll show you a thing or two!"
+actor.base_hp = 121
+actor.base_mp = 86
+actor.base_str = 115
+actor.base_mag = 100
+actor.base_pdf = 95
+actor.base_mdf = 75
+actor.base_acc = 103
+actor.base_dex = 92
+actor.base_skl = 104
+actor.base_spd = 96
+
+actor.weapon_name = "Snapper"
+actor.weapon_longrange = true
+actor.weapon_atk = 8
+actor.weapon_hit = 7
+actor.weapon_crit = 6
+actor.attack_xoffset = 50
+actor.helmet = 10
+actor.armor = 116
+actor.boots = 207
+actor.acc1 = 381
+actor.acc2 = 381
+actor.acc3 = 0
+actor.item1 = 0
+actor.item2 = 0
+actor.item3 = 0
+actor.relation = [[18, "B"], # Erin
+                  [37, "B"], # Mandala
+                  [58, "C"]] # Ryan
+
+actor.special = 0
+
+$exdata_actors[41] = actor
+#--------------------------------------------------------------------------
+# Midian
+#--------------------------------------------------------------------------
+actor = Data_Actor.new
+actor.name = "Midian"
+actor.init_level = 15
+actor.element = 2
+actor.no_armour = false
+actor.join_msg = "Don't underestimate this old man."
+actor.base_hp = 69
+actor.base_mp = 125
+actor.base_str = 69
+actor.base_mag = 166
+actor.base_pdf = 60
+actor.base_mdf = 172
+actor.base_acc = 74
+actor.base_dex = 79
+actor.base_skl = 75
+actor.base_spd = 97
+
+actor.weapon_name = "Soulburner"
+actor.weapon_longrange = true
+actor.weapon_atk = 0
+actor.weapon_hit = 0
+actor.weapon_crit = 0
+actor.attack_xoffset = 50
+actor.helmet = 4
+actor.armor = 103
+actor.boots = 0
+actor.acc1 = 310
+actor.acc2 = 321
+actor.acc3 = 0
+actor.item1 = 21
+actor.item2 = 0
+actor.item3 = 0
+actor.relation = [[34, "B"], # Ljusalf
+                  [44, "C"], # Myst
+                  [57, "C"]] # Royston
+
+actor.special = 0
+
+$exdata_actors[42] = actor
+#--------------------------------------------------------------------------
+# Mike
+#--------------------------------------------------------------------------
+actor = Data_Actor.new
+actor.name = "Mike"
+actor.init_level = 9
+actor.element = 3
+actor.no_armour = false
+actor.join_msg = "That's what I'm here for."
+actor.base_hp = 105
+actor.base_mp = 90
+actor.base_str = 122
+actor.base_mag = 100
+actor.base_pdf = 118
+actor.base_mdf = 61
+actor.base_acc = 100
+actor.base_dex = 97
+actor.base_skl = 104
+actor.base_spd = 108
+
+actor.weapon_name = "Sentinel"
+actor.weapon_longrange = false
+actor.weapon_atk = 3
+actor.weapon_hit = 2
+actor.weapon_crit = 3
+actor.attack_xoffset = 50
+actor.helmet = 5
+actor.armor = 105
+actor.boots = 202
+actor.acc1 = 301
+actor.acc2 = 330
+actor.acc3 = 350
+actor.item1 = 4
+actor.item2 = 18
+actor.item3 = 0
+actor.relation = [[50, "A"], # Outsider
+                  [51, "C"], # Paris
+                  [27, "C"]] # Jasper
+
+actor.special = 0
+
+$exdata_actors[43] = actor
+#--------------------------------------------------------------------------
+# Myst
+#--------------------------------------------------------------------------
+actor = Data_Actor.new
+actor.name = "Myst"
+actor.init_level = 23
+actor.element = 2
+actor.no_armour = false
+actor.join_msg = "Oh! Very good, my boy."
+actor.base_hp = 79
+actor.base_mp = 123
+actor.base_str = 70
+actor.base_mag = 171
+actor.base_pdf = 92
+actor.base_mdf = 139
+actor.base_acc = 75
+actor.base_dex = 77
+actor.base_skl = 74
+actor.base_spd = 87
+
+actor.weapon_name = "Wyrmtooth"
+actor.weapon_longrange = false
+actor.weapon_atk = 1
+actor.weapon_hit = 0
+actor.weapon_crit = 0
+actor.attack_xoffset = 50
+actor.helmet = 7
+actor.armor = 108
+actor.boots = 0
+actor.acc1 = 321
+actor.acc2 = 311
+actor.acc3 = 0
+actor.item1 = 17
+actor.item2 = 10
+actor.item3 = 0
+actor.relation = [[15, "B"], # Derek
+                  [42, "C"], # Midian
+                  [74, "C"]] # Yan Angwa
+
+actor.special = 6
+
+$exdata_actors[44] = actor
+#--------------------------------------------------------------------------
+# Naja
+#--------------------------------------------------------------------------
+actor = Data_Actor.new
+actor.name = "Naja"
+actor.init_level = 22
+actor.element = 5
+actor.no_armour = false
+actor.join_msg = "For all my people!"
+actor.base_hp = 90
+actor.base_mp = 109
+actor.base_str = 85
+actor.base_mag = 145
+actor.base_pdf = 99
+actor.base_mdf = 118
+actor.base_acc = 112
+actor.base_dex = 100
+actor.base_skl = 93
+actor.base_spd = 109
+
+actor.weapon_name = "Tsunami"
+actor.weapon_longrange = false
+actor.weapon_atk = 2
+actor.weapon_hit = 2
+actor.weapon_crit = 2
+actor.attack_xoffset = 50
+actor.helmet = 0
+actor.armor = 108
+actor.boots = 201
+actor.acc1 = 320
+actor.acc2 = 0
+actor.acc3 = 0
+actor.item1 = 34
+actor.item2 = 0
+actor.item3 = 0
+actor.relation = [[34, "B"], # Ljusalf
+                  [54, "C"], # Richard
+                  [19, "C"]] # Fitch
+
+actor.special = 0
+
+$exdata_actors[45] = actor
+#--------------------------------------------------------------------------
+# Nashal
+#--------------------------------------------------------------------------
+actor = Data_Actor.new
+actor.name = "Nashal"
+actor.init_level = 36
+actor.element = 1
+actor.no_armour = false
+actor.join_msg = "I've pledged loyalty to you."
+actor.base_hp = 110
+actor.base_mp = 101
+actor.base_str = 111
+actor.base_mag = 100
+actor.base_pdf = 79
+actor.base_mdf = 84
+actor.base_acc = 100
+actor.base_dex = 109
+actor.base_skl = 118
+actor.base_spd = 93
+
+actor.weapon_name = "Tiger Claw"
+actor.weapon_longrange = false
+actor.weapon_atk = 8
+actor.weapon_hit = 8
+actor.weapon_crit = 8
+actor.attack_xoffset = 50
+actor.helmet = 0
+actor.armor = 113
+actor.boots = 207
+actor.acc1 = 372
+actor.acc2 = 0
+actor.acc3 = 0
+actor.item1 = 0
+actor.item2 = 0
+actor.item3 = 0
+actor.relation = [[48, "B"], # Nomad
+                  [21, "C"], # Frore
+                  [49, "C"]] # Orlando
+
+actor.special = 0
+
+$exdata_actors[46] = actor
+#--------------------------------------------------------------------------
+# Nikolai
+#--------------------------------------------------------------------------
+actor = Data_Actor.new
+actor.name = "Nikolai"
+actor.init_level = 32
+actor.element = 4
+actor.no_armour = false
+actor.join_msg = "What better way to test the limits of a weapon?"
+actor.base_hp = 113
+actor.base_mp = 84
+actor.base_str = 108
+actor.base_mag = 76
+actor.base_pdf = 147
+actor.base_mdf = 77
+actor.base_acc = 103
+actor.base_dex = 95
+actor.base_skl = 105
+actor.base_spd = 102
+
+actor.weapon_name = "Red Star"
+actor.weapon_longrange = false
+actor.weapon_atk = 7
+actor.weapon_hit = 7
+actor.weapon_crit = 7
+actor.attack_xoffset = 100
+actor.helmet = 10
+actor.armor = 116
+actor.boots = 207
+actor.acc1 = 301
+actor.acc2 = 382
+actor.acc3 = 0
+actor.item1 = 11
+actor.item2 = 0
+actor.item3 = 0
+actor.relation = [
+                  [66, "B"], # Stromgaard
+                  [21, "C"], # Frore
+                  [72, "C"]] # Venkal
+
+actor.special = 0
+
+$exdata_actors[47] = actor
+#--------------------------------------------------------------------------
+# Nomad
+#--------------------------------------------------------------------------
+actor = Data_Actor.new
+actor.name = "Nomad"
+actor.init_level = 35
+actor.element = 3
+actor.no_armour = false
+actor.join_msg = "Where are we going today?"
+actor.base_hp = 111
+actor.base_mp = 89
+actor.base_str = 108
+actor.base_mag = 105
+actor.base_pdf = 112
+actor.base_mdf = 100
+actor.base_acc = 97
+actor.base_dex = 91
+actor.base_skl = 91
+actor.base_spd = 105
+
+actor.weapon_name = "Glaive"
+actor.weapon_longrange = false
+actor.weapon_atk = 7
+actor.weapon_hit = 7
+actor.weapon_crit = 6
+actor.attack_xoffset = 50
+actor.helmet = 0
+actor.armor = 116
+actor.boots = 207
+actor.acc1 = 351
+actor.acc2 = 371
+actor.acc3 = 361
+actor.item1 = 32
+actor.item2 = 0
+actor.item3 = 0
+actor.relation = [[39, "A"], # Marian
+                  [46, "B"], # Nashal
+                  [37, "C"]] # Mandala
+
+actor.special = 10
+
+$exdata_actors[48] = actor
+#--------------------------------------------------------------------------
+# Orlando
+#--------------------------------------------------------------------------
+actor = Data_Actor.new
+actor.name = "Orlando"
+actor.init_level = 39
+actor.element = 5
+actor.no_armour = false
+actor.join_msg = "Yeah, I'm coming."
+actor.base_hp = 98
+actor.base_mp = 102
+actor.base_str = 96
+actor.base_mag = 133
+actor.base_pdf = 104
+actor.base_mdf = 204
+actor.base_acc = 87
+actor.base_dex = 97
+actor.base_skl = 90
+actor.base_spd = 99
+
+actor.weapon_name = "Bo"
+actor.weapon_longrange = false
+actor.weapon_atk = 6
+actor.weapon_hit = 6
+actor.weapon_crit = 6
+actor.attack_xoffset = 50
+actor.helmet = 10
+actor.armor = 114
+actor.boots = 203
+actor.acc1 = 312
+actor.acc2 = 0
+actor.acc3 = 0
+actor.item1 = 34
+actor.item2 = 0
+actor.item3 = 0
+actor.relation = [[26, "B"], # Ice
+                  [16, "C"], # Deus
+                  [46, "C"]] # Nashal
+
+actor.special = 6
+
+$exdata_actors[49] = actor
+#--------------------------------------------------------------------------
+# Outsider
+#--------------------------------------------------------------------------
+actor = Data_Actor.new
+actor.name = "Outsider"
+actor.init_level = 18
+actor.element = 2
+actor.no_armour = false
+actor.join_msg = "I got paid, so I'll do my job."
+actor.base_hp = 119
+actor.base_mp = 79
+actor.base_str = 132
+actor.base_mag = 75
+actor.base_pdf = 167
+actor.base_mdf = 55
+actor.base_acc = 81
+actor.base_dex = 85
+actor.base_skl = 100
+actor.base_spd = 91
+
+actor.weapon_name = "Chain"
+actor.weapon_longrange = false
+actor.weapon_atk = 4
+actor.weapon_hit = 2
+actor.weapon_crit = 3
+actor.attack_xoffset = 75
+actor.helmet = 5
+actor.armor = 106
+actor.boots = 202
+actor.acc1 = 301
+actor.acc2 = 331
+actor.acc3 = 0
+actor.item1 = 0
+actor.item2 = 0
+actor.item3 = 0
+actor.relation = [[43, "A"], # Mike
+                  [51, "B"], # Paris
+                  [64, "C"]] # Sormaus
+
+actor.special = 10
+
+$exdata_actors[50] = actor
+#--------------------------------------------------------------------------
+# Paris
+#--------------------------------------------------------------------------
+actor = Data_Actor.new
+actor.name = "Paris"
+actor.init_level = 20
+actor.element = 3
+actor.no_armour = false
+actor.join_msg = "Lead the way."
+actor.base_hp = 130
+actor.base_mp = 78
+actor.base_str = 118
+actor.base_mag = 80
+actor.base_pdf = 138
+actor.base_mdf = 82
+actor.base_acc = 92
+actor.base_dex = 85
+actor.base_skl = 113
+actor.base_spd = 86
+
+actor.weapon_name = "Javelin"
+actor.weapon_longrange = true
+actor.weapon_atk = 3
+actor.weapon_hit = 3
+actor.weapon_crit = 3
+actor.attack_xoffset = 125
+actor.helmet = 8
+actor.armor = 107
+actor.boots = 203
+actor.acc1 = 300
+actor.acc2 = 0
+actor.acc3 = 0
+actor.item1 = 0
+actor.item2 = 0
+actor.item3 = 0
+actor.relation = [[50, "B"], # Outsider
+                  [52, "C"], # Petra
+                  [66, "C"]] # Stromgaard
+
+actor.special = 0
+
+$exdata_actors[51] = actor
+#--------------------------------------------------------------------------
+# Petra
+#--------------------------------------------------------------------------
+actor = Data_Actor.new
+actor.name = "Petra"
+actor.init_level = 36
+actor.element = 2
+actor.no_armour = false
+actor.join_msg = "Do you require a woman's strength?"
+actor.base_hp = 133
+actor.base_mp = 75
+actor.base_str = 121
+actor.base_mag = 57
+actor.base_pdf = 134
+actor.base_mdf = 70
+actor.base_acc = 108
+actor.base_dex = 96
+actor.base_skl = 128
+actor.base_spd = 88
+
+actor.weapon_name = "Independence"
+actor.weapon_longrange = false
+actor.weapon_atk = 9
+actor.weapon_hit = 6
+actor.weapon_crit = 7
+actor.attack_xoffset = 100
+actor.helmet = 11
+actor.armor = 115
+actor.boots = 208
+actor.acc1 = 302
+actor.acc2 = 371
+actor.acc3 = 381
+actor.item1 = 5
+actor.item2 = 0
+actor.item3 = 0
+actor.relation = [[18, "B"], # Erin
+                  [67, "B"], # Tarlia
+                  [4, "C"]] # Ayara
+
+actor.special = 7
+
+$exdata_actors[52] = actor
+#--------------------------------------------------------------------------
+# Reod
+#--------------------------------------------------------------------------
+actor = Data_Actor.new
+actor.name = "Reod"
+actor.init_level = 41
+actor.element = 3
+actor.no_armour = false
+actor.join_msg = "Uhh, are you sure about this?"
+actor.base_hp = 84
+actor.base_mp = 108
+actor.base_str = 97
+actor.base_mag = 152
+actor.base_pdf = 60
+actor.base_mdf = 103
+actor.base_acc = 112
+actor.base_dex = 119
+actor.base_skl = 109
+actor.base_spd = 121
+
+actor.weapon_name = "Spike"
+actor.weapon_longrange = false
+actor.weapon_atk = 6
+actor.weapon_hit = 7
+actor.weapon_crit = 8
+actor.attack_xoffset = 75
+actor.helmet = 0
+actor.armor = 113
+actor.boots = 205
+actor.acc1 = 361
+actor.acc2 = 342
+actor.acc3 = 0
+actor.item1 = 32
+actor.item2 = 0
+actor.item3 = 0
+actor.relation = [[28, "B"], # Joe
+                  [38, "B"], # Marcello
+                  [56, "C"]] # Rorshach
+
+actor.special = 3
+
+$exdata_actors[53] = actor
+#--------------------------------------------------------------------------
+# Richard
+#--------------------------------------------------------------------------
+actor = Data_Actor.new
+actor.name = "Richard"
+actor.init_level = 24
+actor.element = 6
+actor.no_armour = false
+actor.join_msg = "Of course. I still owe you."
+actor.base_hp = 105
+actor.base_mp = 90
+actor.base_str = 98
+actor.base_mag = 116
+actor.base_pdf = 121
+actor.base_mdf = 94
+actor.base_acc = 140
+actor.base_dex = 89
+actor.base_skl = 100
+actor.base_spd = 106
+
+actor.weapon_name = "Longbow"
+actor.weapon_longrange = true
+actor.weapon_atk = 4
+actor.weapon_hit = 5
+actor.weapon_crit = 4
+actor.attack_xoffset = 50
+actor.helmet = 4
+actor.armor = 106
+actor.boots = 203
+actor.acc1 = 351
+actor.acc2 = 370
+actor.acc3 = 0
+actor.item1 = 4
+actor.item2 = 4
+actor.item3 = 0
+actor.relation = [[34, "B"], # Ljusalf
+                  [1, "B"], # Alex
+                  [45, "C"]] # Naja
+
+actor.special = 0
+
+$exdata_actors[54] = actor
+#--------------------------------------------------------------------------
+# Rock
+#--------------------------------------------------------------------------
+actor = Data_Actor.new
+actor.name = "Rock"
+actor.init_level = 37
+actor.element = 4
+actor.no_armour = false
+actor.join_msg = "I'm coming along."
+actor.base_hp = 128
+actor.base_mp = 67
+actor.base_str = 164
+actor.base_mag = 65
+actor.base_pdf = 135
+actor.base_mdf = 58
+actor.base_acc = 92
+actor.base_dex = 85
+actor.base_skl = 104
+actor.base_spd = 81
+
+actor.weapon_name = "Behemoth"
+actor.weapon_longrange = false
+actor.weapon_atk = 8
+actor.weapon_hit = 6
+actor.weapon_crit = 7
+actor.attack_xoffset = 100
+actor.helmet = 11
+actor.armor = 115
+actor.boots = 208
+actor.acc1 = 302
+actor.acc2 = 331
+actor.acc3 = 331
+actor.item1 = 0
+actor.item2 = 0
+actor.item3 = 0
+actor.relation = [[51, "B"], # Paris
+                  [64, "C"], # Sormaus
+                  [18, "F"]] # Erin
+
+actor.special = 0
+
+$exdata_actors[55] = actor
+#--------------------------------------------------------------------------
+# Rorschach
+#--------------------------------------------------------------------------
+actor = Data_Actor.new
+actor.name = "Rorschach"
+actor.init_level = 23
+actor.element = 5
+actor.no_armour = false
+actor.join_msg = "Of course."
+actor.base_hp = 92
+actor.base_mp = 85
+actor.base_str = 101
+actor.base_mag = 98
+actor.base_pdf = 93
+actor.base_mdf = 78
+actor.base_acc = 131
+actor.base_dex = 138
+actor.base_skl = 144
+actor.base_spd = 132
+
+actor.weapon_name = "Katar"
+actor.weapon_longrange = false
+actor.weapon_atk = 3
+actor.weapon_hit = 4
+actor.weapon_crit = 4
+actor.attack_xoffset = 50
+actor.helmet = 0
+actor.armor = 104
+actor.boots = 203
+actor.acc1 = 341
+actor.acc2 = 340
+actor.acc3 = 0
+actor.item1 = 0
+actor.item2 = 0
+actor.item3 = 0
+actor.relation = [[22, "B"], # Gilbert
+                  [75, "B"], # Yomiko
+                  [46, "C"]] # Nashal
+
+actor.special = 3
+
+$exdata_actors[56] = actor
+#--------------------------------------------------------------------------
+# Royston
+#--------------------------------------------------------------------------
+actor = Data_Actor.new
+actor.name = "Royston"
+actor.init_level = 1
+actor.element = 6
+actor.no_armour = false
+actor.join_msg = "Oh, are we going on a trip?"
+actor.base_hp = 115
+actor.base_mp = 135
+actor.base_str = 84
+actor.base_mag = 90
+actor.base_pdf = 66
+actor.base_mdf = 175
+actor.base_acc = 87
+actor.base_dex = 86
+actor.base_skl = 76
+actor.base_spd = 90
+
+actor.weapon_name = "Walking Cane"
+actor.weapon_longrange = false
+actor.weapon_atk = 0
+actor.weapon_hit = 0
+actor.weapon_crit = 0
+actor.attack_xoffset = 50
+actor.helmet = 0
+actor.armor = 102
+actor.boots = 0
+actor.acc1 = 390
+actor.acc2 = 0
+actor.acc3 = 0
+actor.item1 = 4
+actor.item2 = 0
+actor.item3 = 0
+actor.relation = [[58, "B"], # Ryan
+                  [72, "C"], # Venkal
+                  [42, "C"]] # Midian
+
+actor.special = 0
+
+$exdata_actors[57] = actor
+#--------------------------------------------------------------------------
+# Ryan
+#--------------------------------------------------------------------------
+actor = Data_Actor.new
+actor.name = "Ryan"
+actor.init_level = 45
+actor.element = 1
+actor.no_armour = false
+actor.join_msg = "I will try."
+actor.base_hp = 74
+actor.base_mp = 116
+actor.base_str = 78
+actor.base_mag = 125
+actor.base_pdf = 61
+actor.base_mdf = 172
+actor.base_acc = 94
+actor.base_dex = 101
+actor.base_skl = 76
+actor.base_spd = 105
+
+actor.weapon_name = "Sceptre"
+actor.weapon_longrange = false
+actor.weapon_atk = 1
+actor.weapon_hit = 1
+actor.weapon_crit = 1
+actor.attack_xoffset = 50
+actor.helmet = 0
+actor.armor = 123
+actor.boots = 201
+actor.acc1 = 311
+actor.acc2 = 321
+actor.acc3 = 321
+actor.item1 = 0
+actor.item2 = 0
+actor.item3 = 0
+actor.relation = [[18, "B"], # Erin
+                  [34, "B"], # Ljusalf
+                  [9, "C"]] # Carson
+
+actor.special = 0
+
+$exdata_actors[58] = actor
+#--------------------------------------------------------------------------
+# Sally
+#--------------------------------------------------------------------------
+actor = Data_Actor.new
+actor.name = "Sally"
+actor.init_level = 13
+actor.element = 5
+actor.no_armour = false
+actor.join_msg = "Yarr! Let's go, matey!"
+actor.base_hp = 88
+actor.base_mp = 92
+actor.base_str = 83
+actor.base_mag = 100
+actor.base_pdf = 101
+actor.base_mdf = 101
+actor.base_acc = 117
+actor.base_dex = 124
+actor.base_skl = 125
+actor.base_spd = 123
+
+actor.weapon_name = "Cutlass"
+actor.weapon_longrange = false
+actor.weapon_atk = 2
+actor.weapon_hit = 3
+actor.weapon_crit = 3
+actor.attack_xoffset = 50
+actor.helmet = 0
+actor.armor = 102
+actor.boots = 201
+actor.acc1 = 340
+actor.acc2 = 360
+actor.acc3 = 0
+actor.item1 = 0
+actor.item2 = 0
+actor.item3 = 0
+actor.relation = [[4, "B"], # Ayara
+                  [37, "C"], # Mandala
+                  [63, "C"]] # Shiro
+
+actor.special = 0
+
+$exdata_actors[59] = actor
+#--------------------------------------------------------------------------
+# Sef
+#--------------------------------------------------------------------------
+actor = Data_Actor.new
+actor.name = "Sef"
+actor.init_level = 38
+actor.element = 1
+actor.no_armour = false
+actor.join_msg = "Onwards! For justice!"
+actor.base_hp = 109
+actor.base_mp = 93
+actor.base_str = 100
+actor.base_mag = 97
+actor.base_pdf = 118
+actor.base_mdf = 101
+actor.base_acc = 112
+actor.base_dex = 104
+actor.base_skl = 118
+actor.base_spd = 106
+
+actor.weapon_name = "Lightbringer"
+actor.weapon_longrange = false
+actor.weapon_atk = 4
+actor.weapon_hit = 5
+actor.weapon_crit = 5
+actor.attack_xoffset = 50
+actor.helmet = 8
+actor.armor = 112
+actor.boots = 202
+actor.acc1 = 300
+actor.acc2 = 330
+actor.acc3 = 0
+actor.item1 = 0
+actor.item2 = 0
+actor.item3 = 0
+actor.relation = [[65, "A"], # Soth
+                  [38, "F"], # Marcello
+                  [62, "F"]] # Shin
+
+actor.special = 0
+
+$exdata_actors[60] = actor
+#--------------------------------------------------------------------------
+# Shadfork
+#--------------------------------------------------------------------------
+actor = Data_Actor.new
+actor.name = "Shadfork"
+actor.init_level = 28
+actor.element = 1
+actor.no_armour = false
+actor.join_msg = "I'll prove my superiority!"
+actor.base_hp = 137
+actor.base_mp = 71
+actor.base_str = 105
+actor.base_mag = 59
+actor.base_pdf = 196
+actor.base_mdf = 100
+actor.base_acc = 87
+actor.base_dex = 67
+actor.base_skl = 100
+actor.base_spd = 78
+
+actor.weapon_name = "Gauntlet"
+actor.weapon_longrange = false
+actor.weapon_atk = 4
+actor.weapon_hit = 1
+actor.weapon_crit = 4
+actor.attack_xoffset = 50
+actor.helmet = 0
+actor.armor = 113
+actor.boots = 203
+actor.acc1 = 301
+actor.acc2 = 381
+actor.acc3 = 0
+actor.item1 = 5
+actor.item2 = 0
+actor.item3 = 0
+actor.relation = [[70, "A"], # Tong Wu
+                  [55, "C"], # Rock
+                  [31, "C"]] # Keyser
+
+actor.special = 7
+
+$exdata_actors[61] = actor
+#--------------------------------------------------------------------------
+# Shin
+#--------------------------------------------------------------------------
+actor = Data_Actor.new
+actor.name = "Shin"
+actor.init_level = 50
+actor.element = 2
+actor.no_armour = false
+actor.join_msg = "Hmmm."
+actor.base_hp = 124
+actor.base_mp = 66
+actor.base_str = 138
+actor.base_mag = 92
+actor.base_pdf = 104
+actor.base_mdf = 147
+actor.base_acc = 87
+actor.base_dex = 86
+actor.base_skl = 105
+actor.base_spd = 92
+
+actor.weapon_name = "Charon"
+actor.weapon_longrange = false
+actor.weapon_atk = 11
+actor.weapon_hit = 9
+actor.weapon_crit = 9
+actor.attack_xoffset = 50
+actor.helmet = 18
+actor.armor = 121
+actor.boots = 208
+actor.acc1 = 332
+actor.acc2 = 312
+actor.acc3 = 0
+actor.item1 = 0
+actor.item2 = 0
+actor.item3 = 0
+actor.relation = [[65, "C"], # Soth
+                  [44, "C"], # Myst
+                  [74, "C"]] # Yan Angwa
+
+actor.special = 9
+
+$exdata_actors[62] = actor
+#--------------------------------------------------------------------------
+# Shiro
+#--------------------------------------------------------------------------
+actor = Data_Actor.new
+actor.name = "Shiro"
+actor.init_level = 25
+actor.element = 1
+actor.no_armour = false
+actor.join_msg = "Ready in body and spirit."
+actor.base_hp = 128
+actor.base_mp = 88
+actor.base_str = 106
+actor.base_mag = 83
+actor.base_pdf = 132
+actor.base_mdf = 78
+actor.base_acc = 152
+actor.base_dex = 100
+actor.base_skl = 138
+actor.base_spd = 113
+
+actor.weapon_name = "Masamune"
+actor.weapon_longrange = false
+actor.weapon_atk = 5
+actor.weapon_hit = 5
+actor.weapon_crit = 5
+actor.attack_xoffset = 75
+actor.helmet = 0
+actor.armor = 107
+actor.boots = 203
+actor.acc1 = 361
+actor.acc2 = 350
+actor.acc3 = 350
+actor.item1 = 20
+actor.item2 = 20
+actor.item3 = 0
+actor.relation = [[6, "A"], # Bast
+                  [60, "B"], # Sef
+                  [27, "C"]] # Jasper
+
+actor.special = 0
+
+$exdata_actors[63] = actor
+#--------------------------------------------------------------------------
+# Sormaus
+#--------------------------------------------------------------------------
+actor = Data_Actor.new
+actor.name = "Sormaus"
+actor.init_level = 55
+actor.element = 3
+actor.no_armour = false
+actor.join_msg = ". . . ."
+actor.base_hp = 147
+actor.base_mp = 65
+actor.base_str = 120
+actor.base_mag = 73
+actor.base_pdf = 144
+actor.base_mdf = 71
+actor.base_acc = 95
+actor.base_dex = 80
+actor.base_skl = 86
+actor.base_spd = 82
+
+actor.weapon_name = "Titan"
+actor.weapon_longrange = false
+actor.weapon_atk = 10
+actor.weapon_hit = 8
+actor.weapon_crit = 7
+actor.attack_xoffset = 100
+actor.helmet = 0
+actor.armor = 0
+actor.boots = 0
+actor.acc1 = 0
+actor.acc2 = 0
+actor.acc3 = 0
+actor.item1 = 0
+actor.item2 = 0
+actor.item3 = 0
+actor.relation = [[61, "C"], # Shadfork
+                  [55, "C"], # Rock
+                  [50, "C"]] # Outsider
+
+actor.special = 0
+
+$exdata_actors[64] = actor
+#--------------------------------------------------------------------------
+# Soth
+#--------------------------------------------------------------------------
+actor = Data_Actor.new
+actor.name = "Soth"
+actor.init_level = 38
+actor.element = 2
+actor.no_armour = false
+actor.join_msg = "To redeem myself, I must."
+actor.base_hp = 111
+actor.base_mp = 84
+actor.base_str = 105
+actor.base_mag = 99
+actor.base_pdf = 121
+actor.base_mdf = 83
+actor.base_acc = 103
+actor.base_dex = 99
+actor.base_skl = 121
+actor.base_spd = 102
+
+actor.weapon_name = "Lightbane"
+actor.weapon_longrange = false
+actor.weapon_atk = 10
+actor.weapon_hit = 8
+actor.weapon_crit = 8
+actor.attack_xoffset = 50
+actor.helmet = 0
+actor.armor = 107
+actor.boots = 203
+actor.acc1 = 361
+actor.acc2 = 350
+actor.acc3 = 350
+actor.item1 = 20
+actor.item2 = 20
+actor.item3 = 0
+actor.relation = [[60, "A"], # Sef
+                  [62, "C"], # Shin
+                  [71, "C"]] # Vanrushal
+
+actor.special = 0
+
+$exdata_actors[65] = actor
+#--------------------------------------------------------------------------
+# Stromgaard
+#--------------------------------------------------------------------------
+actor = Data_Actor.new
+actor.name = "Stromgaard"
+actor.init_level = 5
+actor.element = 6
+actor.no_armour = false
+actor.join_msg = "Sounds like fun."
+actor.base_hp = 115
+actor.base_mp = 82
+actor.base_str = 112
+actor.base_mag = 87
+actor.base_pdf = 134
+actor.base_mdf = 66
+actor.base_acc = 96
+actor.base_dex = 94
+actor.base_skl = 104
+actor.base_spd = 97
+
+actor.weapon_name = "Tempest"
+actor.weapon_longrange = true
+actor.weapon_atk = 1
+actor.weapon_hit = 2
+actor.weapon_crit = 1
+actor.attack_xoffset = 50
+actor.helmet = 2
+actor.armor = 102
+actor.boots = 201
+actor.acc1 = 300
+actor.acc2 = 300
+actor.acc3 = 0
+actor.item1 = 4
+actor.item2 = 0
+actor.item3 = 0
+actor.relation = [[37, "B"], # Mandala
+                  [11, "C"], # Col
+                  [47, "C"]] # Nikolai
+
+actor.special = 0
+
+$exdata_actors[66] = actor
+#--------------------------------------------------------------------------
+# Tarlia
+#--------------------------------------------------------------------------
+actor = Data_Actor.new
+actor.name = "Tarlia"
+actor.init_level = 61
+actor.element = 4
+actor.no_armour = false
+actor.join_msg = "I won't let anyone get in our way."
+actor.base_hp = 135
+actor.base_mp = 81
+actor.base_str = 103
+actor.base_mag = 74
+actor.base_pdf = 183
+actor.base_mdf = 130
+actor.base_acc = 91
+actor.base_dex = 81
+actor.base_skl = 99
+actor.base_spd = 93
+
+actor.weapon_name = "Valhalla"
+actor.weapon_longrange = false
+actor.weapon_atk = 11
+actor.weapon_hit = 11
+actor.weapon_crit = 11
+actor.attack_xoffset = 100
+actor.helmet = 18
+actor.armor = 124
+actor.boots = 208
+actor.acc1 = 302
+actor.acc2 = 302
+actor.acc3 = 0
+actor.item1 = 6
+actor.item2 = 0
+actor.item3 = 0
+actor.relation = [[23, "B"], # Griever
+                  [52, "C"], # Petra
+                  [55, "C"]] # Rock
+
+actor.special = 10
+
+$exdata_actors[67] = actor
+#--------------------------------------------------------------------------
+# Teej
+#--------------------------------------------------------------------------
+actor = Data_Actor.new
+actor.name = "Teej"
+actor.init_level = 26
+actor.element = 6
+actor.no_armour = false
+actor.join_msg = "Yeah dude, let's rock."
+actor.base_hp = 84
+actor.base_mp = 104
+actor.base_str = 89
+actor.base_mag = 111
+actor.base_pdf = 101
+actor.base_mdf = 108
+actor.base_acc = 99
+actor.base_dex = 91
+actor.base_skl = 85
+actor.base_spd = 104
+
+actor.weapon_name = "Harmony"
+actor.weapon_longrange = false
+actor.weapon_atk = 2
+actor.weapon_hit = 2
+actor.weapon_crit = 2
+actor.attack_xoffset = 50
+actor.helmet = 0
+actor.armor = 102
+actor.boots = 203
+actor.acc1 = 0
+actor.acc2 = 0
+actor.acc3 = 0
+actor.item1 = 0
+actor.item2 = 0
+actor.item3 = 0
+actor.relation = [[69, "A"], # Tiffany
+                  [10, "C"], # Cid
+                  [5, "C"]] # Bartolli
+
+actor.special = 0
+
+$exdata_actors[68] = actor
+#--------------------------------------------------------------------------
+# Tiffany
+#--------------------------------------------------------------------------
+actor = Data_Actor.new
+actor.name = "Tiffany"
+actor.init_level = 25
+actor.element = 5
+actor.no_armour = false
+actor.join_msg = "Don't you think I have better things to do?"
+actor.base_hp = 83
+actor.base_mp = 109
+actor.base_str = 86
+actor.base_mag = 138
+actor.base_pdf = 91
+actor.base_mdf = 122
+actor.base_acc = 91
+actor.base_dex = 113
+actor.base_skl = 99
+actor.base_spd = 111
+
+actor.weapon_name = "Twin Fans"
+actor.weapon_longrange = false
+actor.weapon_atk = 2
+actor.weapon_hit = 2
+actor.weapon_crit = 2
+actor.attack_xoffset = 50
+actor.helmet = 0
+actor.armor = 117
+actor.boots = 321
+actor.acc1 = 341
+actor.acc2 = 0
+actor.acc3 = 0
+actor.item1 = 0
+actor.item2 = 0
+actor.item3 = 0
+actor.relation = [[68, "A"], # Teej
+                  [40, "C"], # Meiko
+                  [36, "C"]] # Mai
+
+actor.special = 0
+
+$exdata_actors[69] = actor
+#--------------------------------------------------------------------------
+# Tong Wu
+#--------------------------------------------------------------------------
+actor = Data_Actor.new
+actor.name = "Tong Wu"
+actor.init_level = 45
+actor.element = 6
+actor.no_armour = false
+actor.join_msg = "That's the way to go."
+actor.base_hp = 104
+actor.base_mp = 87
+actor.base_str = 113
+actor.base_mag = 88
+actor.base_pdf = 89
+actor.base_mdf = 82
+actor.base_acc = 118
+actor.base_dex = 152
+actor.base_skl = 128
+actor.base_spd = 117
+
+actor.weapon_name = "Nunchaku"
+actor.weapon_longrange = false
+actor.weapon_atk = 8
+actor.weapon_hit = 10
+actor.weapon_crit = 9
+actor.attack_xoffset = 50
+actor.helmet = 0
+actor.armor = 113
+actor.boots = 0
+actor.acc1 = 341
+actor.acc2 = 351
+actor.acc3 = 361
+actor.item1 = 5
+actor.item2 = 5
+actor.item3 = 0
+actor.relation = [[61, "A"], # Shadfork
+                  [63, "B"], # Shiro
+                  [22, "C"]] # Gilbert
+
+actor.special = 0
+
+$exdata_actors[70] = actor
+#--------------------------------------------------------------------------
+# Vanrushal
+#--------------------------------------------------------------------------
+actor = Data_Actor.new
+actor.name = "Vanrushal"
+actor.init_level = 71
+actor.element = 2
+actor.no_armour = false
+actor.join_msg = "Oh? Can't handle it alone?"
+actor.base_hp = 110
+actor.base_mp = 90
+actor.base_str = 99
+actor.base_mag = 118
+actor.base_pdf = 114
+actor.base_mdf = 165
+actor.base_acc = 107
+actor.base_dex = 98
+actor.base_skl = 118
+actor.base_spd = 102
+
+actor.weapon_name = "Nosferatu"
+actor.weapon_longrange = false
+actor.weapon_atk = 13
+actor.weapon_hit = 13
+actor.weapon_crit = 11
+actor.attack_xoffset = 50
+actor.helmet = 20
+actor.armor = 123
+actor.boots = 207
+actor.acc1 = 312
+actor.acc2 = 381
+actor.acc3 = 0
+actor.item1 = 0
+actor.item2 = 0
+actor.item3 = 0
+actor.relation = [
+                  [20, "B"], # Francesca
+                  [35, "C"], # Luther
+                  [65, "C"]] # Soth
+
+actor.special = 0
+
+$exdata_actors[71] = actor
+#--------------------------------------------------------------------------
+# Venkal
+#--------------------------------------------------------------------------
+actor = Data_Actor.new
+actor.name = "Venkal"
+actor.init_level = 18
+actor.element = 3
+actor.no_armour = false
+actor.join_msg = "What do you need from me?"
+actor.base_hp = 109
+actor.base_mp = 100
+actor.base_str = 90
+actor.base_mag = 99
+actor.base_pdf = 128
+actor.base_mdf = 108
+actor.base_acc = 90
+actor.base_dex = 90
+actor.base_skl = 81
+actor.base_spd = 88
+
+actor.weapon_name = "Rembrandt"
+actor.weapon_longrange = false
+actor.weapon_atk = 1
+actor.weapon_hit = 1
+actor.weapon_crit = 1
+actor.attack_xoffset = 50
+actor.helmet = 0
+actor.armor = 106
+actor.boots = 201
+actor.acc1 = 0
+actor.acc2 = 0
+actor.acc3 = 0
+actor.item1 = 0
+actor.item2 = 0
+actor.item3 = 0
+actor.relation = [[57, "B"], # Royston
+                  [73, "C"], # Wilona
+                  [47, "C"]] # Nikolai
+
+actor.special = 0
+
+$exdata_actors[72] = actor
+#--------------------------------------------------------------------------
+# Wilona
+#--------------------------------------------------------------------------
+actor = Data_Actor.new
+actor.name = "Wilona"
+actor.init_level = 20
+actor.element = 5
+actor.no_armour = false
+actor.join_msg = "The chance that I can make myself useful is 64%"
+actor.base_hp = 90
+actor.base_mp = 104
+actor.base_str = 83
+actor.base_mag = 114
+actor.base_pdf = 105
+actor.base_mdf = 103
+actor.base_acc = 87
+actor.base_dex = 105
+actor.base_skl = 98
+actor.base_spd = 111
+
+actor.weapon_name = "Red Pencil"
+actor.weapon_longrange = false
+actor.weapon_atk = 2
+actor.weapon_hit = 3
+actor.weapon_crit = 2
+actor.attack_xoffset = 50
+actor.helmet = 7
+actor.armor = 108
+actor.boots = 0
+actor.acc1 = 0
+actor.acc2 = 0
+actor.acc3 = 0
+actor.item1 = 10
+actor.item2 = 17
+actor.item3 = 0
+actor.relation = [[29, "A"], # Johnny
+                  [40, "C"], # Meiko
+                  [13, "C"]] # Darwin
+
+actor.special = 4
+
+$exdata_actors[73] = actor
+#--------------------------------------------------------------------------
+# Yan Angwa
+#--------------------------------------------------------------------------
+actor = Data_Actor.new
+actor.name = "Yan Angwa"
+actor.init_level = 19
+actor.element = 2
+actor.no_armour = false
+actor.join_msg = "Yes, I shall."
+actor.base_hp = 97
+actor.base_mp = 122
+actor.base_str = 87
+actor.base_mag = 141
+actor.base_pdf = 75
+actor.base_mdf = 192
+actor.base_acc = 92
+actor.base_dex = 94
+actor.base_skl = 82
+actor.base_spd = 90
+
+actor.weapon_name = "al-Dabaran"
+actor.weapon_longrange = true
+actor.weapon_atk = 2
+actor.weapon_hit = 2
+actor.weapon_crit = 0
+actor.attack_xoffset = 75
+actor.helmet = 7
+actor.armor = 108
+actor.boots = 201
+actor.acc1 = 311
+actor.acc2 = 330
+actor.acc3 = 0
+actor.item1 = 0
+actor.item2 = 0
+actor.item3 = 0
+actor.relation = [[12, "C"], # Daniel
+                  [46, "F"], # Nashal
+                  [40, "F"]] # Meiko
+
+actor.special = 0
+
+$exdata_actors[74] = actor
+#--------------------------------------------------------------------------
+# Yomiko
+#--------------------------------------------------------------------------
+actor = Data_Actor.new
+actor.name = "Yomiko"
+actor.init_level = 68
+actor.element = 6
+actor.no_armour = false
+actor.join_msg = "Awaiting instructions."
+actor.base_hp = 92
+actor.base_mp = 97
+actor.base_str = 91
+actor.base_mag = 128
+actor.base_pdf = 97
+actor.base_mdf = 113
+actor.base_acc = 105
+actor.base_dex = 128
+actor.base_skl = 138
+actor.base_spd = 129
+
+actor.weapon_name = "Kunai"
+actor.weapon_longrange = true
+actor.weapon_atk = 13
+actor.weapon_hit = 14
+actor.weapon_crit = 13
+actor.attack_xoffset = 50
+actor.helmet = 0
+actor.armor = 122
+actor.boots = 207
+actor.acc1 = 362
+actor.acc2 = 342
+actor.acc3 = 0
+actor.item1 = 35
+actor.item2 = 0
+actor.item3 = 0
+actor.relation = [[22, "A"], # Gilbert
+                  [56, "B"], # Rorshach
+                  [29, "C"]] # Johnny
+
+actor.special = 5
+
+$exdata_actors[75] = actor
+#--------------------------------------------------------------------------
+# Daniel
+#--------------------------------------------------------------------------
+actor = Data_Actor.new
+actor.name = "Daniel"
+actor.init_level = 1
+actor.element = 1
+actor.no_armour = false
+actor.join_msg = "-"
+actor.base_hp = 118
+actor.base_mp = 114
+actor.base_str = 95
+actor.base_mag = 118
+actor.base_pdf = 92
+actor.base_mdf = 148
+actor.base_acc = 130
+actor.base_dex = 110
+actor.base_skl = 90
+actor.base_spd = 103
+
+actor.weapon_name = "Seraphim"
+actor.weapon_longrange = false
+actor.weapon_atk = 0
+actor.weapon_hit = 0
+actor.weapon_crit = 0
+actor.attack_xoffset = 50
+actor.helmet = 3
+actor.armor = 101
+actor.boots = 201
+actor.acc1 = 300
+actor.acc2 = 320
+actor.acc3 = 0
+actor.item1 = 4
+actor.item2 = 0
+actor.item3 = 0
+actor.relation = [[78, "A"], # Jovian
+                  [77, "B"], # Angel
+                  [2, "C"]] # N/A
+
+actor.special = 0
+
+$exdata_actors[76] = actor
+#--------------------------------------------------------------------------
+# Angel
+#--------------------------------------------------------------------------
+actor = Data_Actor.new
+actor.name = "Angel"
+actor.init_level = 1
+actor.element = 4
+actor.no_armour = false
+actor.join_msg = "I'll help you, Daniel."
+actor.base_hp = 116
+actor.base_mp = 96
+actor.base_str = 105
+actor.base_mag = 101
+actor.base_pdf = 89
+actor.base_mdf = 107
+actor.base_acc = 140
+actor.base_dex = 100
+actor.base_skl = 131
+actor.base_spd = 100
+
+actor.weapon_name = "Silver Lance"
+actor.weapon_longrange = false
+actor.weapon_atk = 0
+actor.weapon_hit = 0
+actor.weapon_crit = 0
+actor.attack_xoffset = 50
+actor.helmet = 3
+actor.armor = 101
+actor.boots = 201
+actor.acc1 = 330
+actor.acc2 = 0
+actor.acc3 = 0
+actor.item1 = 0
+actor.item2 = 0
+actor.item3 = 0
+actor.relation = [[78, "A"], # Jovian
+                  [76, "B"], # Daniel
+                  [2, "C"]] # N/A
+
+actor.special = 9
+
+$exdata_actors[77] = actor
+#--------------------------------------------------------------------------
+# Jovian
+#--------------------------------------------------------------------------
+actor = Data_Actor.new
+actor.name = "Jovian"
+actor.init_level = 1
+actor.element = 3
+actor.no_armour = false
+actor.join_msg = "You can always count on me, Daniel."
+actor.base_hp = 121
+actor.base_mp = 90
+actor.base_str = 126
+actor.base_mag = 76
+actor.base_pdf = 156
+actor.base_mdf = 86
+actor.base_acc = 100
+actor.base_dex = 98
+actor.base_skl = 126
+actor.base_spd = 90
+
+actor.weapon_name = "Firebrand"
+actor.weapon_longrange = false
+actor.weapon_atk = 0
+actor.weapon_hit = 0
+actor.weapon_crit = 0
+actor.attack_xoffset = 50
+actor.helmet = 3
+actor.armor = 101
+actor.boots = 201
+actor.acc1 = 360
+actor.acc2 = 370
+actor.acc3 = 0
+actor.item1 = 0
+actor.item2 = 0
+actor.item3 = 0
+actor.relation = [[77, "A"], # Angel
+                  [76, "A"], # Daniel
+                  [2, "C"]] # N/A
+
+actor.special = 0
+
+$exdata_actors[78] = actor

@@ -1,0 +1,711 @@
+#==============================================================================
+# ** Data_War
+#------------------------------------------------------------------------------
+#  Contains static data for player-side war units
+#==============================================================================
+          
+class Data_WarLeader
+  attr_accessor :name
+  attr_accessor :men # Base number of men
+  attr_accessor :attack # Base attack
+  attr_accessor :defence # Base def
+  attr_accessor :rating  # 4 * A, B, C, skill at Inf, Cav, Sco, Sor
+  attr_accessor :default_type # 0-3 Inf, Cav, Sco, Sor
+  attr_accessor :required_char # Character id required for this unit
+  attr_accessor :deathmessage
+  #attr_accessor :ability # Special ability
+end
+
+class Data_WarMember
+  attr_accessor :name
+  attr_accessor :men
+  attr_accessor :attack
+  attr_accessor :defence
+  attr_accessor :ability
+  attr_accessor :required_char # Character id required for this unit
+end
+
+$data_warmembers = []
+$data_warleaders = []
+for i in 1..14
+  $data_warleaders[i] = Data_WarLeader.new
+end
+
+## UNIT LEADERS
+
+$data_warleaders[1].name = "Daniel"
+$data_warleaders[1].men = 550
+$data_warleaders[1].attack = 5
+$data_warleaders[1].defence = 5
+$data_warleaders[1].rating = ["", "A", "A", "B", "B"]
+$data_warleaders[1].default_type = UNIT_INFANTRY
+$data_warleaders[1].required_char = 12
+$data_warleaders[1].deathmessage = "Is this... the end?"
+
+$data_warleaders[2].name = "Ljusalf"
+$data_warleaders[2].men = 450
+$data_warleaders[2].attack = 4
+$data_warleaders[2].defence = 2
+$data_warleaders[2].rating = ["", "C", "C", "B", "A"]
+$data_warleaders[2].default_type = UNIT_SORCERY
+$data_warleaders[2].required_char = 34
+$data_warleaders[2].deathmessage = "I'm sorry, Daniel."
+
+$data_warleaders[3].name = "Outsider"
+$data_warleaders[3].men = 475
+$data_warleaders[3].attack = 3
+$data_warleaders[3].defence = 3
+$data_warleaders[3].rating = ["", "A", "B", "A", "C"]
+$data_warleaders[3].default_type = UNIT_SCOUT
+$data_warleaders[3].required_char = 50
+$data_warleaders[3].deathmessage = "Screw it! I'm heading back!"
+
+$data_warleaders[4].name = "Paris"
+$data_warleaders[4].men = 475
+$data_warleaders[4].attack = 4
+$data_warleaders[4].defence = 3
+$data_warleaders[4].rating = ["", "B", "C", "A", "C"]
+$data_warleaders[4].default_type = UNIT_SCOUT
+$data_warleaders[4].required_char = 51
+$data_warleaders[4].deathmessage = "I can't take much more of this."
+
+$data_warleaders[5].name = "Bast"
+$data_warleaders[5].men = 550
+$data_warleaders[5].attack = 4
+$data_warleaders[5].defence = 5
+$data_warleaders[5].rating = ["", "A", "A", "B", "C"]
+$data_warleaders[5].default_type = UNIT_CAVALRY
+$data_warleaders[5].required_char = 6
+$data_warleaders[5].deathmessage = "I'm leaving the rest to you, Daniel."
+
+$data_warleaders[6].name = "Shiro"
+$data_warleaders[6].men = 525
+$data_warleaders[6].attack = 3
+$data_warleaders[6].defence = 4
+$data_warleaders[6].rating = ["", "A", "A", "A", "A"]
+$data_warleaders[6].default_type = UNIT_INFANTRY
+$data_warleaders[6].required_char = 63
+$data_warleaders[6].deathmessage = "Forgive me. I've failed."
+
+$data_warleaders[7].name = "Griever"
+$data_warleaders[7].men = 450
+$data_warleaders[7].attack = 7
+$data_warleaders[7].defence = 2
+$data_warleaders[7].rating = ["", "B", "A", "C", "C"]
+$data_warleaders[7].default_type = UNIT_CAVALRY
+$data_warleaders[7].required_char = 23
+$data_warleaders[7].deathmessage = "I go where fate takes me."
+
+$data_warleaders[8].name = "Keyser"
+$data_warleaders[8].men = 525
+$data_warleaders[8].attack = 3
+$data_warleaders[8].defence = 6
+$data_warleaders[8].rating = ["", "A", "C", "C", "B"]
+$data_warleaders[8].default_type = UNIT_INFANTRY
+$data_warleaders[8].required_char = 31
+$data_warleaders[8].deathmessage = "This is all part of the strategy."
+
+$data_warleaders[9].name = "Jovian"
+$data_warleaders[9].men = 500
+$data_warleaders[9].attack = 5
+$data_warleaders[9].defence = 4
+$data_warleaders[9].rating = ["", "A", "A", "A", "C"]
+$data_warleaders[9].default_type = UNIT_CAVALRY
+$data_warleaders[9].required_char = 30
+$data_warleaders[9].deathmessage = "Damn it! We're not done yet!"
+
+$data_warleaders[10].name = "Nashal"
+$data_warleaders[10].men = 500
+$data_warleaders[10].attack = 4
+$data_warleaders[10].defence = 4
+$data_warleaders[10].rating = ["", "A", "C", "B", "B"]
+$data_warleaders[10].default_type = UNIT_INFANTRY
+$data_warleaders[10].required_char = 46
+$data_warleaders[10].deathmessage = "I must fall back."
+
+$data_warleaders[11].name = "Merrick"
+$data_warleaders[11].men = 450
+$data_warleaders[11].attack = 4
+$data_warleaders[11].defence = 4
+$data_warleaders[11].rating = ["", "B", "B", "A", "C"]
+$data_warleaders[11].default_type = UNIT_SCOUT
+$data_warleaders[11].required_char = 41
+$data_warleaders[11].deathmessage = "Argh!! Damn you!"
+
+$data_warleaders[12].name = "Eander"
+$data_warleaders[12].men = 550
+$data_warleaders[12].attack = 6
+$data_warleaders[12].defence = 5
+$data_warleaders[12].rating = ["", "B", "A", "B", "B"]
+$data_warleaders[12].default_type = UNIT_CAVALRY
+$data_warleaders[12].required_char = 17
+$data_warleaders[12].deathmessage = "Tch. Dumb luck."
+
+$data_warleaders[13].name = "Erin"
+$data_warleaders[13].men = 375
+$data_warleaders[13].attack = 4
+$data_warleaders[13].defence = 5
+$data_warleaders[13].rating = ["", "A", "C", "B", "C"]
+$data_warleaders[13].default_type = UNIT_INFANTRY
+$data_warleaders[13].required_char = 18
+$data_warleaders[13].deathmessage = "Commander! We must retreat!"
+
+$data_warleaders[14].name = "Marian"
+$data_warleaders[14].men = 425
+$data_warleaders[14].attack = 5
+$data_warleaders[14].defence = 2
+$data_warleaders[14].rating = ["", "C", "C", "C", "A"]
+$data_warleaders[14].default_type = UNIT_SORCERY
+$data_warleaders[14].required_char = 39
+$data_warleaders[14].deathmessage = "What do you think you're doing?"
+
+## UNIT MEMBERS
+### Alex
+unit = Data_WarMember.new
+unit.name = "Alex"
+unit.men = 35
+unit.attack = 0
+unit.defence = 0
+unit.ability = 5
+unit.required_char = 1
+$data_warmembers[1] = unit
+### Angel
+unit = Data_WarMember.new
+unit.name = "Angel"
+unit.men = 50
+unit.attack = 1
+unit.defence = 0
+unit.ability = 10
+unit.required_char = 2
+$data_warmembers[2] = unit
+### Avelion
+unit = Data_WarMember.new
+unit.name = "Avelion"
+unit.men = 40
+unit.attack = 0
+unit.defence = 1
+unit.ability = 0
+unit.required_char = 3
+$data_warmembers[3] = unit
+### Ayara
+unit = Data_WarMember.new
+unit.name = "Ayara"
+unit.men = 30
+unit.attack = 1
+unit.defence = 1
+unit.ability = 3
+unit.required_char = 4
+$data_warmembers[4] = unit
+### Bartolli
+unit = Data_WarMember.new
+unit.name = "Bartolli"
+unit.men = 25
+unit.attack = 0
+unit.defence = 0
+unit.ability = 0
+unit.required_char = 5
+$data_warmembers[5] = unit
+### Beau
+unit = Data_WarMember.new
+unit.name = "Beau"
+unit.men = 20
+unit.attack = 0
+unit.defence = 0
+unit.ability = 0
+unit.required_char = 7
+$data_warmembers[6] = unit
+### Bruce
+unit = Data_WarMember.new
+unit.name = "Bruce"
+unit.men = 50
+unit.attack = 2
+unit.defence = 0
+unit.ability = 0
+unit.required_char = 8
+$data_warmembers[7] = unit
+### Carson
+unit = Data_WarMember.new
+unit.name = "Carson"
+unit.men = 30
+unit.attack = 1
+unit.defence = 0
+unit.ability = 0
+unit.required_char = 9
+$data_warmembers[8] = unit
+### Cid
+unit = Data_WarMember.new
+unit.name = "Cid"
+unit.men = 20
+unit.attack = 0
+unit.defence = 0
+unit.ability = 0
+unit.required_char = 10
+$data_warmembers[9] = unit
+### Col
+unit = Data_WarMember.new
+unit.name = "Col"
+unit.men = 25
+unit.attack = 0
+unit.defence = 0
+unit.ability = 2
+unit.required_char = 11
+$data_warmembers[10] = unit
+### Darwin
+unit = Data_WarMember.new
+unit.name = "Darwin"
+unit.men = 30
+unit.attack = 0
+unit.defence = 0
+unit.ability = 1
+unit.required_char = 13
+$data_warmembers[11] = unit
+### Deke
+unit = Data_WarMember.new
+unit.name = "Deke"
+unit.men = 20
+unit.attack = 1
+unit.defence = -1
+unit.ability = 0
+unit.required_char = 14
+$data_warmembers[12] = unit
+### Derek
+unit = Data_WarMember.new
+unit.name = "Derek"
+unit.men = 40
+unit.attack = 0
+unit.defence = 0
+unit.ability = 0
+unit.required_char = 15
+$data_warmembers[13] = unit
+### Deus
+unit = Data_WarMember.new
+unit.name = "Deus"
+unit.men = 35
+unit.attack = -1
+unit.defence = 1
+unit.ability = 7
+unit.required_char = 16
+$data_warmembers[14] = unit
+### Fitch
+unit = Data_WarMember.new
+unit.name = "Fitch"
+unit.men = 25
+unit.attack = 0
+unit.defence = 0
+unit.ability = 0
+unit.required_char = 19
+$data_warmembers[15] = unit
+### Francesca
+unit = Data_WarMember.new
+unit.name = "Francesca"
+unit.men = 25
+unit.attack = 0
+unit.defence = 0
+unit.ability = 9
+unit.required_char = 20
+$data_warmembers[16] = unit
+### Frore
+unit = Data_WarMember.new
+unit.name = "Frore"
+unit.men = 45
+unit.attack = 1
+unit.defence = 0
+unit.ability = 0
+unit.required_char = 21
+$data_warmembers[17] = unit
+### Gilbert
+unit = Data_WarMember.new
+unit.name = "Gilbert"
+unit.men = 15
+unit.attack = 2
+unit.defence = 0
+unit.ability = 2
+unit.required_char = 22
+$data_warmembers[18] = unit
+### Harvey
+unit = Data_WarMember.new
+unit.name = "Harvey"
+unit.men = 40
+unit.attack = 0
+unit.defence = 1
+unit.ability = 3
+unit.required_char = 24
+$data_warmembers[19] = unit
+### Hawk
+unit = Data_WarMember.new
+unit.name = "Hawk"
+unit.men = 55
+unit.attack = 0
+unit.defence = -1
+unit.ability = 0
+unit.required_char = 25
+$data_warmembers[20] = unit
+### Ice
+unit = Data_WarMember.new
+unit.name = "Ice"
+unit.men = 30
+unit.attack = 0
+unit.defence = 0
+unit.ability = 12
+unit.required_char = 26
+$data_warmembers[21] = unit
+### Jasper
+unit = Data_WarMember.new
+unit.name = "Jasper"
+unit.men = 45
+unit.attack = 1
+unit.defence = 1
+unit.ability = 10
+unit.required_char = 27
+$data_warmembers[22] = unit
+### Joe
+unit = Data_WarMember.new
+unit.name = "Joe"
+unit.men = 25
+unit.attack = 0
+unit.defence = 0
+unit.ability = 8
+unit.required_char = 28
+$data_warmembers[23] = unit
+### Johnny
+unit = Data_WarMember.new
+unit.name = "Johnny"
+unit.men = 30
+unit.attack = 0
+unit.defence = 0
+unit.ability = 0
+unit.required_char = 29
+$data_warmembers[24] = unit
+### King
+unit = Data_WarMember.new
+unit.name = "King"
+unit.men = 20
+unit.attack = 0
+unit.defence = 0
+unit.ability = 0
+unit.required_char = 32
+$data_warmembers[25] = unit
+### Klaus
+unit = Data_WarMember.new
+unit.name = "Klaus"
+unit.men = 20
+unit.attack = 0
+unit.defence = 0
+unit.ability = 8
+unit.required_char = 33
+$data_warmembers[26] = unit
+### Luther
+unit = Data_WarMember.new
+unit.name = "Luther"
+unit.men = 30
+unit.attack = 0
+unit.defence = 0
+unit.ability = 7
+unit.required_char = 35
+$data_warmembers[27] = unit
+### Mai
+unit = Data_WarMember.new
+unit.name = "Mai"
+unit.men = 30
+unit.attack = 0
+unit.defence = 0
+unit.ability = 12
+unit.required_char = 36
+$data_warmembers[28] = unit
+### Mandala
+unit = Data_WarMember.new
+unit.name = "Mandala"
+unit.men = 35
+unit.attack = 0
+unit.defence = 0
+unit.ability = 0
+unit.required_char = 37
+$data_warmembers[29] = unit
+### Marcello
+unit = Data_WarMember.new
+unit.name = "Marcello"
+unit.men = 30
+unit.attack = 0
+unit.defence = 0
+unit.ability = 0
+unit.required_char = 38
+$data_warmembers[30] = unit
+### Meiko
+unit = Data_WarMember.new
+unit.name = "Meiko"
+unit.men = 25
+unit.attack = 0
+unit.defence = 0
+unit.ability = 0
+unit.required_char = 40
+$data_warmembers[31] = unit
+### Midian
+unit = Data_WarMember.new
+unit.name = "Midian"
+unit.men = 25
+unit.attack = 0
+unit.defence = 0
+unit.ability = 0
+unit.required_char = 42
+$data_warmembers[32] = unit
+### Mike
+unit = Data_WarMember.new
+unit.name = "Mike"
+unit.men = 30
+unit.attack = 0
+unit.defence = 0
+unit.ability = 2
+unit.required_char = 43
+$data_warmembers[33] = unit
+### Myst
+unit = Data_WarMember.new
+unit.name = "Myst"
+unit.men = 10
+unit.attack = 2
+unit.defence = -2
+unit.ability = 0
+unit.required_char = 44
+$data_warmembers[34] = unit
+### Naja
+unit = Data_WarMember.new
+unit.name = "Naja"
+unit.men = 25
+unit.attack = 0
+unit.defence = 0
+unit.ability = 0
+unit.required_char = 45
+$data_warmembers[35] = unit
+### Nikolai
+unit = Data_WarMember.new
+unit.name = "Nikolai"
+unit.men = 30
+unit.attack = 0
+unit.defence = 1
+unit.ability = 0
+unit.required_char = 47
+$data_warmembers[36] = unit
+### Nomad
+unit = Data_WarMember.new
+unit.name = "Nomad"
+unit.men = 35
+unit.attack = 1
+unit.defence = 0
+unit.ability = 11
+unit.required_char = 48
+$data_warmembers[37] = unit
+### Orlando
+unit = Data_WarMember.new
+unit.name = "Orlando"
+unit.men = 30
+unit.attack = 0
+unit.defence = 0
+unit.ability = 0
+unit.required_char = 49
+$data_warmembers[38] = unit
+### Petra
+unit = Data_WarMember.new
+unit.name = "Petra"
+unit.men = 30
+unit.attack = 1
+unit.defence = 1
+unit.ability = 11
+unit.required_char = 52
+$data_warmembers[39] = unit
+### Reod
+unit = Data_WarMember.new
+unit.name = "Reod"
+unit.men = 25
+unit.attack = 0
+unit.defence = 0
+unit.ability = 0
+unit.required_char = 53
+$data_warmembers[40] = unit
+### Richard
+unit = Data_WarMember.new
+unit.name = "Richard"
+unit.men = 30
+unit.attack = 1
+unit.defence = 0
+unit.ability = 5
+unit.required_char = 54
+$data_warmembers[41] = unit
+### Rock
+unit = Data_WarMember.new
+unit.name = "Rock"
+unit.men = 50
+unit.attack = 2
+unit.defence = 0
+unit.ability = 6
+unit.required_char = 55
+$data_warmembers[42] = unit
+### Rorschach
+unit = Data_WarMember.new
+unit.name = "Rorschach"
+unit.men = 20
+unit.attack = 1
+unit.defence = 0
+unit.ability = 8
+unit.required_char = 56
+$data_warmembers[43] = unit
+### Royston
+unit = Data_WarMember.new
+unit.name = "Royston"
+unit.men = 25
+unit.attack = 0
+unit.defence = 1
+unit.ability = 0
+unit.required_char = 57
+$data_warmembers[44] = unit
+### Ryan
+unit = Data_WarMember.new
+unit.name = "Ryan"
+unit.men = 30
+unit.attack = 0
+unit.defence = 0
+unit.ability = 0
+unit.required_char = 58
+$data_warmembers[45] = unit
+### Sally
+unit = Data_WarMember.new
+unit.name = "Sally"
+unit.men = 30
+unit.attack = 0
+unit.defence = 0
+unit.ability = 0
+unit.required_char = 59
+$data_warmembers[46] = unit
+### Sef
+unit = Data_WarMember.new
+unit.name = "Sef"
+unit.men = 35
+unit.attack = 0
+unit.defence = 0
+unit.ability = 9
+unit.required_char = 60
+$data_warmembers[47] = unit
+### Shadfork
+unit = Data_WarMember.new
+unit.name = "Shadfork"
+unit.men = 40
+unit.attack = 0
+unit.defence = 2
+unit.ability = 0
+unit.required_char = 61
+$data_warmembers[48] = unit
+### Shin
+unit = Data_WarMember.new
+unit.name = "Shin"
+unit.men = 30
+unit.attack = 1
+unit.defence = 0
+unit.ability = 0
+unit.required_char = 62
+$data_warmembers[49] = unit
+### Sormaus
+unit = Data_WarMember.new
+unit.name = "Sormaus"
+unit.men = 30
+unit.attack = 1
+unit.defence = 0
+unit.ability = 4
+unit.required_char = 64
+$data_warmembers[50] = unit
+### Soth
+unit = Data_WarMember.new
+unit.name = "Soth"
+unit.men = 30
+unit.attack = 0
+unit.defence = 1
+unit.ability = 0
+unit.required_char = 65
+$data_warmembers[51] = unit
+### Stromgaard
+unit = Data_WarMember.new
+unit.name = "Stromgaard"
+unit.men = 25
+unit.attack = 0
+unit.defence = 1
+unit.ability = 6
+unit.required_char = 66
+$data_warmembers[52] = unit
+### Tarlia
+unit = Data_WarMember.new
+unit.name = "Tarlia"
+unit.men = 50
+unit.attack = 0
+unit.defence = 2
+unit.ability = 3
+unit.required_char = 67
+$data_warmembers[53] = unit
+### Teej
+unit = Data_WarMember.new
+unit.name = "Teej"
+unit.men = 25
+unit.attack = 0
+unit.defence = 0
+unit.ability = 0
+unit.required_char = 68
+$data_warmembers[54] = unit
+### Tiffany
+unit = Data_WarMember.new
+unit.name = "Tiffany"
+unit.men = 20
+unit.attack = 0
+unit.defence = 0
+unit.ability = 0
+unit.required_char = 69
+$data_warmembers[55] = unit
+### Tong Wu
+unit = Data_WarMember.new
+unit.name = "Tong Wu"
+unit.men = 30
+unit.attack = 0
+unit.defence = 0
+unit.ability = 2
+unit.required_char = 70
+$data_warmembers[56] = unit
+### Vanrushal
+unit = Data_WarMember.new
+unit.name = "Vanrushal"
+unit.men = 35
+unit.attack = 0
+unit.defence = 0
+unit.ability = 0
+unit.required_char = 71
+$data_warmembers[57] = unit
+### Venkal
+unit = Data_WarMember.new
+unit.name = "Venkal"
+unit.men = 30
+unit.attack = 0
+unit.defence = 0
+unit.ability = 0
+unit.required_char = 72
+$data_warmembers[58] = unit
+### Wilona
+unit = Data_WarMember.new
+unit.name = "Wilona"
+unit.men = 25
+unit.attack = 0
+unit.defence = 0
+unit.ability = 1
+unit.required_char = 73
+$data_warmembers[59] = unit
+### Yan Angwa
+unit = Data_WarMember.new
+unit.name = "Yan Angwa"
+unit.men = 40
+unit.attack = 1
+unit.defence = 1
+unit.ability = 0
+unit.required_char = 74
+$data_warmembers[60] = unit
+### Yomiko
+unit = Data_WarMember.new
+unit.name = "Yomiko"
+unit.men = 25
+unit.attack = 0
+unit.defence = 0
+unit.ability = 9
+unit.required_char = 75
+$data_warmembers[61] = unit

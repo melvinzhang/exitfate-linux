@@ -1,0 +1,229 @@
+#==============================================================================
+# ** Game_WarUnit
+#------------------------------------------------------------------------------
+#  A unit in war battles
+#==============================================================================
+
+class Game_WarUnit
+  attr_reader :name
+  attr_reader :side
+  attr_reader :leader_unit
+  attr_reader :portrait  
+  attr_reader :maxmen
+  attr_reader :men
+  attr_reader :attack
+  attr_reader :defence
+  attr_reader :unit_type
+  attr_reader :abilities
+  attr_reader :player_side
+  attr_reader :ai
+  attr_reader :cluster_id
+  attr_accessor :x
+  attr_accessor :y
+  attr_reader :deathmessage
+  attr_reader :dead  
+  attr_reader :noscore
+  attr_accessor :move_route
+  attr_accessor :has_turn
+  attr_accessor :wait_turns   # Number oif turns to wait before taking any actions
+  
+  attr_accessor :visible
+  attr_accessor :animation_id
+  attr_accessor :blink
+  attr_accessor :show_death
+  attr_accessor :is_dirty             # flag to show movement grid has to be re-calculated
+  attr_accessor :has_sprite       # flag to determine which units don't have sprites yet
+  #--------------------------------------------------------------------------
+  # * Object Initialization
+  #--------------------------------------------------------------------------       
+  def initialize(x = 0, y = 0, name = "", 
+                 side = SIDE_ELYSIUM, unit_type = UNIT_INFANTRY, 
+                 maxmen = 1, attack = 0, defence = 0, abilities = [], 
+                 portrait = [], leader_unit = false, player_side = false, 
+                 ai = true, cluster_id = 0, deathmessage = "", wait_turns = 0, noscore = false)
+    @name = name
+    @side = side
+    @leader_unit = leader_unit
+    @portrait = portrait
+    
+    @maxmen = maxmen
+    @attack = attack
+    @defence = defence
+    @unit_type = unit_type
+    @abilities = abilities    
+    @cluster_id = cluster_id
+    @wait_turns = wait_turns
+    @noscore = noscore
+    
+    @player_side = player_side
+    @ai = ai           
+    
+    @x = x
+    @y = y
+    
+    # Death portrait is always first in the portrait list
+    @deathmessage = deathmessage
+    
+    @visible = true
+    @flip_direction = false
+    @animation_id = 0
+    @blink = false
+    @show_death = false
+    @has_sprite = false
+    @move_route = nil
+    reset
+  end  
+  #--------------------------------------------------------------------------
+  # * Reset in-battle variables
+  #--------------------------------------------------------------------------
+  def reset
+    @men = @maxmen
+    @has_turn = true #false
+    @dead = false
+  end
+  #--------------------------------------------------------------------------
+  # * Set men
+  #--------------------------------------------------------------------------    
+  def men=(v)
+    @men = [[0, v].max, @maxmen].min
+  end
+  #--------------------------------------------------------------------------
+  # * Set flip sprite direction
+  #--------------------------------------------------------------------------    
+  def flip_direction=(v)
+    @flip_direction = v
+  end 
+  #--------------------------------------------------------------------------
+  # * Sprite direction (left/right)
+  #--------------------------------------------------------------------------    
+  def sprite_direction
+    if @flip_direction
+      return @player_side ? 1 : 2
+    else
+      return @player_side ? 2 : 1
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Can counter?
+  #--------------------------------------------------------------------------    
+  def can_counter?
+    case @unit_type
+      when UNIT_INFANTRY, UNIT_CAVALRY, UNIT_SCOUT
+        return true
+      else
+        return false
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Attack animations
+  #--------------------------------------------------------------------------    
+  def attack_animation
+    case @unit_type
+      when UNIT_INFANTRY
+        return 295
+      when UNIT_CAVALRY
+        return 296
+      when UNIT_SCOUT
+        return 297
+      when UNIT_SORCERY
+        return 298
+      else
+        if @name == "Trevor"
+          return 292
+        else
+          return 293
+        end
+    end
+  end  
+  #--------------------------------------------------------------------------
+  # * Attack range
+  #--------------------------------------------------------------------------    
+  def attack_range
+    case @unit_type
+      when UNIT_INFANTRY
+        return 1
+      when UNIT_CAVALRY
+        return 1
+      when UNIT_SCOUT
+        return 2
+      when UNIT_SORCERY      
+        return 3
+      else
+        return 5
+    end
+  end   
+  #--------------------------------------------------------------------------
+  # * Move distance
+  #--------------------------------------------------------------------------    
+  def move_dist
+    case @unit_type
+      when UNIT_INFANTRY
+        return 2
+      when UNIT_CAVALRY
+        return 4
+      when UNIT_SCOUT
+        return 3
+      else
+        return 2
+    end
+  end  
+  #--------------------------------------------------------------------------
+  # * Move Cost
+  #--------------------------------------------------------------------------    
+  def move_cost(terrain_id)    
+    case terrain_id
+      when 0  # Inpassible
+        return -1
+      when 7  # Inpassible
+        return -1
+      when 1  # Open field
+        return 1
+      when 2  # Forest
+        if @abilities.include?(WA_FORESTER)
+          case @unit_type
+          when UNIT_INFANTRY
+            return 0.666
+          when UNIT_CAVALRY
+            return 2
+          when UNIT_SCOUT
+            return 0.666
+          else
+            return 1
+          end          
+        else
+          case @unit_type
+          when UNIT_INFANTRY
+            return 1
+          when UNIT_CAVALRY
+            return 3
+          when UNIT_SCOUT
+            return 1
+          else
+            return 2
+          end   
+        end
+      when 3  # Mountain
+        if @abilities.include?(WA_MOUNTAINEER)
+          case @unit_type
+          when UNIT_INFANTRY
+            return 0.666
+          when UNIT_CAVALRY
+            return 2
+          else
+            return 1
+          end
+        else
+          case @unit_type
+          when UNIT_INFANTRY
+            return 1
+          when UNIT_CAVALRY
+            return 3
+          else
+            return 2
+          end
+        end
+      else
+        return -1        
+    end
+  end  
+end

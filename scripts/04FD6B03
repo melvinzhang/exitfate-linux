@@ -1,0 +1,98 @@
+#==============================================================================
+# ** Scene_Transport
+#------------------------------------------------------------------------------
+# Choose transport destination for Sally/Deke
+#==============================================================================
+
+class Scene_Transport
+  #--------------------------------------------------------------------------
+  # * Initialize
+  #--------------------------------------------------------------------------
+  def initialize(mode)
+    @mode = mode # 1 = Sally, 2 = Deke
+    @wait = 0
+  end
+  #--------------------------------------------------------------------------
+  # * Main Processing
+  #--------------------------------------------------------------------------
+  def main
+    # Make title graphic
+    @sprite = Sprite.new
+    @sprite.bitmap = RPG::Cache.picture("Backgrounds/Menu" + $game_system.windowskin_id.to_s)    
+    @label_window = Window_Label.new(@mode == 1 ? "Sailing" : "Teleport")
+    @destination_window = Window_Destination.new(@mode)
+    @help_window = Window_Help.new
+    @help_window.set_text(@mode == 1 ? "Aye? What be our destination?" : "Vere do you vant to go?")
+    # Execute transition
+    Graphics.transition
+    # Main loop
+    loop do
+      # Update game screen
+      Graphics.update
+      # Update input information
+      Input.update
+      # Frame update
+      update
+      # Abort loop if screen is changed
+      if $scene != self
+        break
+      end
+    end
+    # Prepare for transition
+    Graphics.freeze
+    # Dispose of windows
+    @destination_window.dispose
+    @help_window.dispose
+    @label_window.dispose
+    @sprite.bitmap.dispose
+    @sprite.dispose
+  end
+  #--------------------------------------------------------------------------
+  # * Frame Update
+  #--------------------------------------------------------------------------
+  def update
+    @destination_window.update
+    if @wait > 0
+      @wait -= 1      
+      if @wait == 0
+        dest = @destination_window.destination      
+        # Set up map position
+        $game_map.setup(dest[1])
+        $game_player.moveto(dest[2], dest[3])    
+        case dest[4]
+        when 2  # down
+          $game_player.turn_down
+        when 4  # left
+          $game_player.turn_left
+        when 6  # right
+          $game_player.turn_right
+        when 8  # up
+          $game_player.turn_up
+        end
+        $game_map.autoplay
+        $game_map.update      
+        $game_screen.start_tone_change(Tone.new(-255, -255, -255), 0)
+        $game_screen.start_tone_change(Tone.new(0, 0, 0), 15)
+        $scene = Scene_Map.new
+        return
+      end
+    end    
+    # If Cbutton was pressed
+    if Input.trigger?(Input::C) and @destination_window.active
+      if @mode == 1
+        $game_system.se_play(RPG::AudioFile.new("022-Dive02", 80, 110))
+      else
+        $game_system.se_play(RPG::AudioFile.new("018-Teleport01", 80, 120))
+      end
+      @help_window.set_text(@mode == 1 ? "Achors aweigh!" : "Hahaha! Boom!")
+      @wait = 30
+      @destination_window.active = false
+    end
+    # If B button was pressed
+    if Input.trigger?(Input::B)
+      $game_system.se_play($data_system.cancel_se)
+      $scene = Scene_Map.new
+      return
+    end
+  end
+end

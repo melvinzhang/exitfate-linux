@@ -1,0 +1,111 @@
+#==============================================================================
+# ** Window_Equip
+#------------------------------------------------------------------------------
+#  This window displays items the actor is currently equipped with on the
+#  equipment screen.
+#==============================================================================
+
+class Window_Equip < Window_Selectable
+  #--------------------------------------------------------------------------
+  # * Object Initialization
+  #     actor : actor
+  #--------------------------------------------------------------------------
+  def initialize()
+    super(0, 0, 300, 228)
+    self.x = 465 - self.width
+    self.contents = Bitmap.new(width - 32, height - 32)
+    @actor = nil
+    @select_all = false
+    self.active = false
+    self.visible = false
+    refresh
+    self.index = 0
+  end
+  #--------------------------------------------------------------------------
+  # * Item Acquisition
+  #--------------------------------------------------------------------------
+  def item
+    return @data[self.index][0]
+  end
+  #--------------------------------------------------------------------------
+  # * Set actor
+  #--------------------------------------------------------------------------
+  def actor=(a)
+    @actor = a
+    refresh
+  end
+  #--------------------------------------------------------------------------
+  # * Select all
+  #--------------------------------------------------------------------------
+  def select_all=(s)
+    @select_all = s
+    update_cursor_rect
+  end
+  #--------------------------------------------------------------------------
+  # * Update Cursor Rectangle
+  #--------------------------------------------------------------------------
+  def update_cursor_rect
+    if @select_all
+      self.cursor_rect.set(0, 0, self.contents.width, self.contents.height)      
+    else
+      super
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Refresh
+  #--------------------------------------------------------------------------
+  def refresh
+    self.contents.clear    
+    return if @actor == nil
+    bitmaps = ["Helmet", "Armour", "Boots", "Accessory", "Item"]
+    rows = [0, 1, 2, 3, 6]
+    for i in 0...5
+      bitmap = RPG::Cache.icon("Slot_" + bitmaps[i])
+      self.contents.blt(4, 24*rows[i] + 2, bitmap, Rect.new(0, 0, 24, 24))
+    end    
+    @data = []
+    @data.push([$data_armors[@actor.helmet_id], true])
+    @data.push([$data_armors[@actor.armor_id], true])
+    @data.push([$data_armors[@actor.boots_id], true])
+    @data.push([$data_armors[@actor.acc_ids[0]]])
+    @data.push([$data_armors[@actor.acc_ids[1]]])
+    @data.push([$data_armors[@actor.acc_ids[2]]])
+    @data.push([$data_items[@actor.item_ids[0]]])
+    @data.push([$data_items[@actor.item_ids[1]]])
+    @item_max = @data.size
+    y = 0
+    for item in @data
+      draw_item_name(item[0], 32, y - 4, item[1])
+      y += 24
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Draw Item Name
+  #     item : item
+  #     x    : draw spot x-coordinate
+  #     y    : draw spot y-coordinate
+  #--------------------------------------------------------------------------
+  def draw_item_name(item, x, y, is_armour = false)
+    if item == nil
+      name = "---------"
+    else
+      name = item.name
+      bitmap = RPG::Cache.icon(item.icon_name)
+      self.contents.blt(x, y + 6, bitmap, Rect.new(0, 0, 24, 24))
+    end
+    if is_armour and $exdata_actors[@actor.id].no_armour
+      self.contents.font.color = disabled_color
+      self.draw_text(x + 28, y, 212, 32, "Can't equip")
+    else
+      self.contents.font.color = normal_color
+      self.draw_text(x + 28, y, 212, 32, name)
+    end    
+  end
+  #--------------------------------------------------------------------------
+  # * Help Text Update
+  #--------------------------------------------------------------------------
+  def update_help
+    return if @actor == nil
+    @help_window.set_text(self.item == nil ? "" : self.item.description)
+  end
+end

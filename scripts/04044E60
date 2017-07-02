@@ -1,0 +1,157 @@
+#==============================================================================
+# ** Scene_Test
+#------------------------------------------------------------------------------
+#==============================================================================
+
+class Scene_Test
+  #--------------------------------------------------------------------------
+  # * Main Processing
+  #--------------------------------------------------------------------------
+  def main   
+    return if not $DEBUG
+    # Make title graphic
+    @sprite = Sprite.new
+    @sprite.bitmap = RPG::Cache.battleback("Avalon")
+    @sprite.z = -5000
+    @wait = 0    
+    @actors = []
+    @sprites = []
+    enemy =  Game_Enemy.new(0, 0, 1, 0, 0)    
+    enemy.freeze_position = true
+    @sprite_target = Sprite_Battler.new(nil, enemy)
+    @sprite_target.x = 200
+    @sprite_target.y = 320
+    @sprite_target.z = @sprite_target.y
+    @sprite_target.visible = false
+    x = 50
+    y = 150
+    alt = false
+    for i in 1..75
+      a = $game_actors[i]
+      if a.joined        
+        a.freeze_position = true
+        a.hide_status = true
+        @actors.push(a)
+        spr = Sprite_Battler.new(nil, a)
+        spr.x = x
+        spr.y = y
+        spr.z = y
+        x += 50      
+        if (x > 600)
+          y +=  65
+          x = alt ? 75 : 50
+          alt = !alt
+        end
+        @sprites.push(spr)
+      end
+    end
+    
+    # Execute transition
+    Graphics.transition
+    # Main loop
+    loop do
+      # Update game screen
+      Graphics.update
+      # Update input information
+      Input.update
+      # Frame update
+      update
+      # Abort loop if screen is changed
+      if $scene != self
+        break
+      end
+    end
+    # Refresh map
+    $game_map.refresh
+    # Prepare for transition
+    Graphics.freeze
+    # Dispose of windows
+    for sprite in @sprites
+      sprite.dispose
+    end
+    @sprite.dispose
+    @sprite_target.dispose
+  end
+  #--------------------------------------------------------------------------
+  # * Frame Update
+  #--------------------------------------------------------------------------
+  def update
+    for sprite in @sprites
+      sprite.update
+    end
+    @sprite_target.update
+    if Input.trigger?(Input::F5)
+      for actor in @actors
+        actor.hp = 1
+      end
+    end    
+    if Input.trigger?(Input::F6)
+      alt = @alt
+      for actor in @actors
+        actor.hp = alt ? 0 : 1
+        alt = !alt
+      end
+      @alt = !@alt
+    end    
+    if Input.trigger?(Input::F7)
+      @index = 0
+      for sprite in @sprites
+        sprite.x = 400
+        sprite.y = 320
+      end
+      update_singlemode
+    end 
+    if Input.trigger?(Input::F8)
+      @sprite_target.visible = true
+      @attacked = true 
+    end
+    if Input.repeat?(Input::L)
+      @index = (@index - 1)  % @sprites.size
+      update_singlemode
+    end 
+    if Input.repeat?(Input::R)
+      @index = (@index + 1)  % @sprites.size
+      update_singlemode
+    end 
+    if @wait > 0
+      @wait -= 1
+      return
+    end        
+    if @attacking
+      a = @actors[@index]
+      if not @sprites[@index].effect?
+        a.battler_name = a.base_battler_name + "_attack2"        
+        animation = $data_animations[100 + a.id]
+        @sprite_target.animation(animation, true, false, a.element)
+        @wait = 20
+        @attacking = false
+        @attacked = true
+        return
+      end
+    end
+    if @attacked      
+      a = @actors[@index]    
+      @sprites[@index].x = 400  
+      if a.weapon_longrange?
+        a.animation_target_x = 325
+      else
+        a.animation_target_x = 200 + a.weapon_xoffset
+      end
+      a.animation_target_y = 320
+      a.animation_movespeed = 15
+      a.battler_name = a.base_battler_name + "_attack1"
+      a.battler_force_switch = true    
+      @attacking = true
+      @attacked = false
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Frame Update
+  #--------------------------------------------------------------------------
+  def update_singlemode
+    for sprite in @sprites
+      sprite.visible = false
+    end
+    @sprites[@index].visible = true
+  end
+end

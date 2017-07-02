@@ -1,0 +1,649 @@
+#==============================================================================
+# ** Scene_War
+#------------------------------------------------------------------------------
+#  This class handles war battles
+#==============================================================================
+
+class Scene_War
+  #--------------------------------------------------------------------------
+  # * Start Phase 1: Start of turn
+  #--------------------------------------------------------------------------
+  def start_phase1  
+    @phase = 1
+    @cursor_sprite.visible = false
+    @unitinfo_window.dont_show = true
+    @player_turn = (not @player_turn)
+    @player_turn_started = false
+    # Turn number increases when player moves
+    if @player_turn
+      @turn += 1
+      $game_temp.war_turn = @turn
+    end
+    # Set eligibility to act according to side
+    for unit in $game_temp.war_units
+      if unit.player_side == @player_turn
+        unit.has_turn = true        
+      else
+        unit.has_turn = false
+      end
+    end        
+    # Create sprite      
+    string = "Turn " + @turn.to_s
+    @sprite_battletitle = Sprite.new
+    @sprite_battletitle.bitmap = Bitmap.new(640, 70)
+    @sprite_battletitle.bitmap.font.name = ["Georgia", "Times New Roman"]
+    @sprite_battletitle.bitmap.font.size = 50
+    @sprite_battletitle.bitmap.font.bold = true
+    w = @sprite_battletitle.bitmap.text_size(string).width + 30
+    flag = @player_turn ? @player_flag : @enemy_flag
+    c = flag == 0 ? Color.new(50, 50, 175)     : flag == 1 ? Color.new(110, 70, 30) :
+          flag == 2 ? Color.new(150, 150, 0) : flag == 3 ? Color.new(150, 150, 150) :
+          flag == 4 ? Color.new(0, 125, 0)      : flag == 5 ? Color.new(150, 0, 0) :
+                              Color.new(0, 0, 0)     
+    @sprite_battletitle.bitmap.fill_rect(320-w/2, 0, w, 70,  Color.new(0, 0, 0))
+    @sprite_battletitle.bitmap.fill_rect(322-w/2, 2, w-4, 66, c)
+    @sprite_battletitle.bitmap.font.color = Color.new(0, 0, 0)
+    @sprite_battletitle.bitmap.draw_text(1, 11, 640, 50, string, 1)   
+    @sprite_battletitle.bitmap.draw_text(2, 12, 640, 50, string, 1)   
+    @sprite_battletitle.bitmap.draw_text(1, 12, 640, 50, string, 1)   
+    @sprite_battletitle.bitmap.draw_text(2, 11, 640, 50, string, 1)   
+    @sprite_battletitle.bitmap.font.color = Color.new(255, 255, 255)
+    @sprite_battletitle.bitmap.draw_text(0, 10, 640, 50, string, 1)   
+    @sprite_battletitle.x = 0
+    @sprite_battletitle.y = 240 - @sprite_battletitle.bitmap.height / 2
+    @sprite_battletitle.opacity = 0
+    @step = 1
+    @wait = 10
+  end  
+  #--------------------------------------------------------------------------
+  # * Update Phase 1: Start of Turn
+  #--------------------------------------------------------------------------
+  def update_phase1
+    if @step == 1
+      @sprite_battletitle.opacity += 25
+      if @sprite_battletitle.opacity >= 255
+        @wait = 30
+        @step = 2
+      end
+    else
+      @sprite_battletitle.opacity -= 25
+      if @sprite_battletitle.opacity <= 0
+        @sprite_battletitle.dispose
+        @phase = 2
+        @step =  1
+        @cursor_sprite.visible = true
+        @unitinfo_window.dont_show = false
+        update_unitinfo
+      end
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Update Phase 2: Main Turn
+  #--------------------------------------------------------------------------
+  def update_phase2    
+    case @step
+      when 1
+        update_phase2_step1     # Find unit to move
+      when 2
+        update_phase2_step2     # Player action
+      when 3
+        update_phase2_step3     # Movement
+      when 4
+        update_phase2_step4     # Select wait/attack
+      when 5
+        update_phase2_step5     # Select attack target
+      when 10
+        update_phase2_step10     # Select attack target
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Update Phase 2 : Move cursor (used at several steps)
+  #--------------------------------------------------------------------------
+  def update_phase2_cursor_move
+    return if @move_wait > 0    
+    if Input.press?(Input::UP)
+      $game_system.se_play($data_system.cursor_se)
+      @cursor_y = [@cursor_y - 1, 1].max      
+      check_scroll
+      @move_wait = 4
+    end
+    if Input.press?(Input::DOWN)
+      $game_system.se_play($data_system.cursor_se)
+      @cursor_y= [@cursor_y + 1, $game_map.height - 5].min   
+      check_scroll
+      @move_wait = 4
+    end
+    if Input.press?(Input::LEFT)
+      $game_system.se_play($data_system.cursor_se)
+      @cursor_x = [@cursor_x - 1, 1].max
+      check_scroll
+      @move_wait = 4
+    end
+    if Input.press?(Input::RIGHT)
+      $game_system.se_play($data_system.cursor_se)
+      @cursor_x= [@cursor_x + 1, $game_map.width - 2].min 
+      check_scroll
+      @move_wait = 4
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Update Phase 2 Step 1: Start unit action
+  #--------------------------------------------------------------------------
+  def update_phase2_step1    
+    # Check for battle events
+    $game_switches[5] = true    
+    $game_map.need_refresh = true
+    @unitinfo_window.dont_show = false
+    # Find the next AI-controlled unit, if there are any.
+    for unit in $game_temp.war_units
+      if unit.has_turn and unit.ai
+        @current_unit = unit
+        break
+      end
+    end    
+    if @current_unit != nil
+      # Proceed to AI mode
+      start_phase4
+      return
+    end
+    # No AI units to move. Do we have anything to move at all?
+    done = true
+    for unit in $game_temp.war_units
+      if unit.has_turn
+        done = false
+        break
+      end
+    end        
+    if done
+      # Next turn
+      start_phase1
+      return
+    end
+    # Player can move now
+    start_phase2_step2
+  end
+  #--------------------------------------------------------------------------
+  # * Start Phase 2 Step 2: Start player action
+  #--------------------------------------------------------------------------
+  def start_phase2_step2
+    if not @player_turn_started
+      # Move to first player unit in list
+      for unit in $game_temp.war_units
+        if unit.has_turn
+          @cursor_x = unit.x
+          @cursor_y = unit.y
+          check_scroll
+          update_unitinfo
+          break
+        end
+      end          
+      @player_turn_started = true
+    end
+    @step = 2    
+  end
+  #--------------------------------------------------------------------------
+  # * Update Phase 2 Step 2: Update player action
+  #--------------------------------------------------------------------------
+  def update_phase2_step2
+    update_phase2_cursor_move
+    # Confirm key
+    if Input.trigger?(Input::C)
+      for unit in $game_temp.war_units
+        if unit.x == @cursor_x and unit.y == @cursor_y
+          @current_unit = unit
+        end
+      end
+      if @current_unit != nil
+        $game_system.se_play($data_system.decision_se)      
+        @current_unit.blink = true
+        # If this is a PC unit with turn left, go to Move phase
+        if @current_unit.has_turn
+          start_phase2_step3
+          return
+        else
+          # Show attack potential
+          start_phase2_step10
+          return
+        end
+      else
+        # No unit under cursor. Move to first unmoved unit
+        for unit in $game_temp.war_units
+          if unit.has_turn
+            nextunit = unit
+            break
+          end
+        end        
+        @cursor_x = nextunit.x
+        @cursor_y = nextunit.y
+        check_scroll
+      end
+    end
+    # Cancel key
+    if Input.trigger?(Input::B)
+      # Show menu
+      @menu_window.visible = true
+      @menu_window.active = true
+      @menu_window.index = 0      
+    end       
+  end
+  #--------------------------------------------------------------------------
+  # * Update menu
+  #--------------------------------------------------------------------------
+  def update_menu    
+    # Cancel key
+    if Input.trigger?(Input::B)
+      $game_system.se_play($data_system.cancel_se)
+      @menu_window.visible = false
+      @menu_window.active = false
+    end  
+    # Confirm key
+    if Input.trigger?(Input::C)
+      $game_system.se_play($data_system.decision_se)
+      if @menu_window.index == 0
+        # Finish turn
+        for unit in $game_temp.war_units
+          unit.has_turn = false
+          @menu_window.visible = false
+          @menu_window.active = false
+          @step = 1
+        end
+      else
+        # Quit
+        @menu_window.visible = false
+        @menu_window.active = false
+        @menu_confirm_window.visible = true
+        @menu_confirm_window.active = true
+        if $game_temp.war_is_sim
+          @menu_confirm_window.index = 3
+        else
+          @menu_confirm_window.index = 2      
+        end
+      end        
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Update confirm menu
+  #--------------------------------------------------------------------------
+  def update_confirm_menu    
+    choice = @menu_confirm_window.index
+    if $game_temp.war_is_sim
+      choice -= 1
+    end
+    # Cancel key
+    if Input.trigger?(Input::B) or (Input.trigger?(Input::C) and choice == 2) 
+      $game_system.se_play($data_system.cancel_se)
+      @menu_window.visible = true
+      @menu_window.active = true
+      @menu_confirm_window.visible = false
+      @menu_confirm_window.active = false
+      return
+    end  
+    # Confirm key
+    if Input.trigger?(Input::C)
+      # Play decision SE
+      $game_system.se_play($data_system.decision_se)
+      # Fade out BGM, BGS, and ME
+      Audio.bgm_fade(800)
+      Audio.bgs_fade(800)
+      Audio.me_fade(800)
+      if choice == 0
+        # Return to title
+        $scene = Scene_Title.new
+      elsif choice == -1
+        # End Simulation
+        end_battle
+      else
+        # Quit game
+        $scene = nil
+      end        
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Start Phase 2 Step 3:  Movement
+  #--------------------------------------------------------------------------
+  def start_phase2_step3
+    # Enable cursor
+    @cursor_sel_sprite.x = @current_unit.x
+    @cursor_sel_sprite.y = @current_unit.y
+    @cursor_sel_sprite.visible = true
+    # Determine movement possibilities and draw sprites
+    @move_grid = generate_movement_grid       
+    @move_sprites = []
+    for x in 0...$game_map.width
+      for y in 0...$game_map.height
+        if @move_grid[x][y] > -1
+          s = Sprite_WarSquare.new(x, y, false, @spriteset.viewport1)
+          @move_sprites.push(s)
+        end
+      end      
+    end  
+    @step = 3
+  end
+  #--------------------------------------------------------------------------
+  # * Update Phase 2 Step 3: Update movement
+  #--------------------------------------------------------------------------
+  def update_phase2_step3
+    update_phase2_cursor_move
+    # Confirm key
+    if Input.trigger?(Input::C)
+      # Check if this is a legal space to move to
+      if @move_grid[@cursor_x][@cursor_y] > -1
+        # Check if grid square is not occupied
+        occupied = false
+        for unit in $game_temp.war_units
+          if unit.x == @cursor_x and unit.y == @cursor_y and unit != @current_unit
+            occupied = true
+            break            
+         end           
+       end                
+       if not occupied
+          # Move the sprite
+          $game_system.se_play($data_system.decision_se)      
+          @old_x = @current_unit.x
+          @old_y = @current_unit.y
+          @old_route = find_route(@move_grid, @current_unit.x, 
+                                                      @current_unit.y, @cursor_x, @cursor_y)
+          @current_unit.move_route = @old_route.clone
+          end_phase2_step3
+          @step = 4
+        end
+      end
+    end
+    # Cancel key
+    if Input.trigger?(Input::B)
+      # Cancel movement
+      $game_system.se_play($data_system.cancel_se)      
+      end_phase2_step3
+      @current_unit.blink = false
+      @current_unit = nil
+      start_phase2_step2
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * End Phase 2 Step 3:  Movement
+  #--------------------------------------------------------------------------
+  def end_phase2_step3
+    # Remove cursor
+    @cursor_sel_sprite.visible = false
+    # Remove all grid sprites
+    for sprite in @move_sprites
+      sprite.dispose
+    end
+    @move_sprites.clear
+  end
+  #--------------------------------------------------------------------------
+  # * Start Phase 2 Step 4: Choose post-move action
+  #--------------------------------------------------------------------------
+  def start_phase2_step4
+    @cursor_sel_sprite.x = @current_unit.x
+    @cursor_sel_sprite.y = @current_unit.y
+    @cursor_sel_sprite.visible = true
+    update_unitinfo
+    # Determine if there are units in range
+    found_target = false
+    for unit in $game_temp.war_units
+      if unit.player_side != @current_unit.player_side
+        dist = (unit.x - @current_unit.x).abs + (unit.y - @current_unit.y).abs
+        if dist <= @current_unit.attack_range
+          found_target = true          
+          break                    
+        end
+     end           
+    end          
+    @command_window.refresh
+    if found_target
+      @command_window.index = 0
+      @can_attack = true
+    else
+      @command_window.disable_item(0)
+      @command_window.index = 1
+      @can_attack = false
+    end
+    # Set location
+    if @cursor_sprite.x > 500
+      @command_window.x = @cursor_sprite.x - 150
+    else
+      @command_window.x = @cursor_sprite.x + 50
+    end
+    @command_window.y = @cursor_sprite.y - 50
+    @command_window.visible = true
+    @command_window.active = true
+    @move_cancel = false
+    @step = 4
+  end    
+  #--------------------------------------------------------------------------
+  # * Update Phase 2 Step 4: Choose post-move action
+  #--------------------------------------------------------------------------
+  def update_phase2_step4
+    if not @command_window.visible
+      if @move_cancel
+        # Movement canceled
+        @move_cancel = false
+        start_phase2_step3
+      else
+        start_phase2_step4        
+      end
+    end    
+    # Update window
+    if Input.repeat?(Input::DOWN)      
+      $game_system.se_play($data_system.cursor_se)
+      @command_window.index = (@command_window.index + 1) % 2
+    elsif Input.repeat?(Input::UP)
+      $game_system.se_play($data_system.cursor_se)
+      @command_window.index = (@command_window.index - 1) % 2
+    end    
+    # Cancel key
+    if Input.trigger?(Input::B)
+      # Cancel movement
+      $game_system.se_play($data_system.decision_se)      
+      @current_unit.move_route = @old_route.reverse
+      @move_cancel = true
+      end_phase2_step4            
+    end    
+    # Confirm key
+    if Input.trigger?(Input::C)
+      if @command_window.index == 0
+        # Attack
+        if @can_attack
+          $game_system.se_play($data_system.decision_se)      
+          end_phase2_step4          
+          start_phase2_step5        
+        else
+          $game_system.se_play($data_system.buzzer_se)  
+        end
+      elsif @command_window.index == 1
+        # Wait
+        $game_system.se_play($data_system.decision_se)      
+        end_phase2_step4          
+        end_turn
+      end
+    end    
+  end
+  #--------------------------------------------------------------------------
+  # * End Phase 2 Step 4: Choose post-move action
+  #--------------------------------------------------------------------------
+  def end_phase2_step4
+    @command_window.visible = false
+    @command_window.active = false
+    @cursor_sel_sprite.visible = false
+  end
+  #--------------------------------------------------------------------------
+  # * Start Phase 2 Step 5:  Select Attack Target
+  #--------------------------------------------------------------------------
+  def start_phase2_step5
+    # Enable cursor
+    @cursor_sel_sprite.x = @current_unit.x
+    @cursor_sel_sprite.y = @current_unit.y
+    @cursor_sel_sprite.visible = true
+    # Determine attack possibilities and draw sprites
+    @move_grid = generate_movement_grid       
+    @attack_sprites = []
+    d = @current_unit.attack_range
+    for x in -d..d
+      for y in -d..d
+        if x.abs + y.abs <= d
+          s = Sprite_WarSquare.new(@current_unit.x + x, @current_unit.y + y, true, @spriteset.viewport1)
+          @attack_sprites.push(s)
+        end
+      end
+    end
+    @step = 5
+  end
+  #--------------------------------------------------------------------------
+  # * Update Phase 2 Step 5: Select Attack Target
+  #--------------------------------------------------------------------------
+  def update_phase2_step5
+    update_phase2_cursor_move
+    update_analyze_window
+    # Cancel key
+    if Input.trigger?(Input::B)
+      $game_system.se_play($data_system.cancel_se)
+      end_phase2_step5
+      start_phase2_step4
+    end    
+    # Confirm key
+    if Input.trigger?(Input::C)
+      # Is there an eligible target here?
+      @battle_target = nil
+      for unit in $game_temp.war_units
+        if unit.player_side != @current_unit.player_side and 
+                unit.x == @cursor_x and unit.y == @cursor_y
+          # Check distance
+          dist = (unit.x - @current_unit.x).abs + (unit.y - @current_unit.y).abs
+          if dist <= @current_unit.attack_range
+            @battle_target = unit
+            break                    
+          end                      
+        end           
+      end                
+      if @battle_target != nil
+        # Target found. Go to battle phase
+        $game_system.se_play($data_system.decision_se)           
+        @cursor_sprite.visible = false
+        @current_unit.blink = false
+        end_phase2_step5
+        start_phase3
+      end
+    end    
+  end
+  #--------------------------------------------------------------------------
+  # * Phase 2 Step 5: Update analyze window
+  #--------------------------------------------------------------------------
+  def update_analyze_window
+    if not @current_unit.abilities.include?(WA_ANALYZE)
+      @analyze_window.visible = false
+      return
+    end
+    # Find target under cursor
+    battle_target = nil
+    dist = 0
+    for unit in $game_temp.war_units
+      if unit.player_side != @current_unit.player_side and 
+              unit.x == @cursor_x and unit.y == @cursor_y
+        # Check distance
+        dist = (unit.x - @current_unit.x).abs + (unit.y - @current_unit.y).abs
+        if dist <= @current_unit.attack_range
+          battle_target = unit
+          break                    
+        end                      
+      end    
+    end      
+    if battle_target == nil
+      @analyze_window.visible = false
+      return
+    end
+    @analyze_window.visible = true
+    # Update x-position to be opposite of unit info window
+    if @unitinfo_window.x == 0
+      @analyze_window.x = 640 - @analyze_window.width
+    else
+      @analyze_window.x = 0
+    end    
+    if (@analyze_window.user != @current_unit or
+        @analyze_window.target != battle_target)        
+        e_dmg = calc_damage(@current_unit, battle_target, false)
+        s_dmg = 0
+        # Check for counter-attack
+        if e_dmg < battle_target.men and 
+            battle_target.can_counter? and dist <= battle_target.attack_range 
+          old_men = battle_target.men
+          battle_target.men -= e_dmg
+          s_dmg = calc_damage(battle_target, @current_unit, true)
+          battle_target.men = old_men
+        end        
+        @analyze_window.set(@current_unit, battle_target, s_dmg, e_dmg)
+    end    
+  end
+  #--------------------------------------------------------------------------
+  # * End Phase 2 Step 5:  Select Attack Target
+  #--------------------------------------------------------------------------
+  def end_phase2_step5
+    @analyze_window.visible = false
+    @analyze_window.set(nil, nil, 0, 0)
+    # Remove cursor
+    @cursor_sel_sprite.visible = false
+    # Remove all grid sprites
+    for sprite in @attack_sprites
+      sprite.dispose
+    end
+    @attack_sprites.clear
+  end
+  #--------------------------------------------------------------------------
+  # * Start Phase 2 Step 10:  Show unit attack potential
+  #--------------------------------------------------------------------------
+  def start_phase2_step10
+    # Enable cursor
+    @cursor_sel_sprite.x = @current_unit.x
+    @cursor_sel_sprite.y = @current_unit.y
+    @cursor_sel_sprite.visible = true
+    # Determine movement possibilities and draw sprites
+    atk_grid = generate_attack_potential_grid       
+    @attack_sprites = []
+    for x in 0...$game_map.width
+      for y in 0...$game_map.height
+        if atk_grid[x][y].size > 0
+          s = Sprite_WarSquare.new(x, y, true, @spriteset.viewport1)
+          @attack_sprites.push(s)
+        end
+      end      
+    end  
+    @step = 10
+  end
+  #--------------------------------------------------------------------------
+  # * Update Phase 2 Step 10: Show unit attack potential
+  #--------------------------------------------------------------------------
+  def update_phase2_step10
+    update_phase2_cursor_move
+    # Cancel key
+    if Input.trigger?(Input::B)
+      $game_system.se_play($data_system.cancel_se)
+      end_phase2_step10
+      start_phase2_step2
+    end    
+  end
+  #--------------------------------------------------------------------------
+  # * End Phase 2 Step 10:  Show unit attack potential
+  #--------------------------------------------------------------------------
+  def end_phase2_step10
+    @current_unit.blink = false
+    @current_unit = nil
+    # Remove cursor
+    @cursor_sel_sprite.visible = false
+    # Remove all grid sprites
+    for sprite in @attack_sprites
+      sprite.dispose
+    end
+    @attack_sprites.clear
+  end
+  #--------------------------------------------------------------------------
+  # * End unit's turn
+  #--------------------------------------------------------------------------  
+  def end_turn    
+    @movement_grids[@current_unit] = generate_total_movement_grid
+    @current_unit.blink = false
+    @current_unit.has_turn = false
+    @current_unit = nil
+    @phase = 2
+    @step = 1
+  end
+end

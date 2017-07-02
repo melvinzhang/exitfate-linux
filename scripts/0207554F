@@ -1,0 +1,108 @@
+#==============================================================================
+# ** Window_ShopSell
+#------------------------------------------------------------------------------
+#  This window displays items to sell
+#==============================================================================
+
+class Window_ShopSell < Window_Selectable
+  #--------------------------------------------------------------------------
+  # * Object Initialization
+  #--------------------------------------------------------------------------
+  def initialize
+    super(16, 115, 350, 224)
+    refresh
+    self.index = 0
+    self.z += 10
+  end
+  #--------------------------------------------------------------------------
+  # * Get Item
+  #--------------------------------------------------------------------------
+  def item
+    return @data[self.index]
+  end
+  #--------------------------------------------------------------------------
+  # * Nothing to sell?
+  #--------------------------------------------------------------------------
+  def list_empty?
+    return @data.size == 0
+  end
+  #--------------------------------------------------------------------------
+  # * Refresh
+  #--------------------------------------------------------------------------
+  def refresh
+    if self.contents != nil
+      self.contents.dispose
+      self.contents = nil
+    end
+    @data = []
+    for i in 1...$data_items.size
+      if $game_party.item_number(i) > 0 and not $data_items[i].element_set.include?(10)
+        @data.push($data_items[i])
+      end
+    end
+    for i in 1...$data_armors.size
+      if $game_party.armor_number(i) > 0
+        @data.push($data_armors[i])
+      end
+    end
+    # If item count is not 0, make a bit map and draw all items
+    @item_max = @data.size
+    if @item_max > 0
+      self.contents = Bitmap.new(width - 32, row_max * @row_height )
+      for i in 0...@item_max
+        draw_item(i)
+      end
+    end
+    # Make sure cursor isn't past the end (when selling the last item on the list)
+    if @index >= @item_max
+      @index = @item_max - 1
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Update
+  #--------------------------------------------------------------------------  
+  def update
+    super
+    # Update help text (update_help is defined by the subclasses)
+    if self.active and @owned_window != nil
+      @owned_window.set(self.item)
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Draw Item
+  #     index : item number
+  #--------------------------------------------------------------------------
+  def draw_item(index)
+    item = @data[index]    
+    case item
+    when RPG::Item
+      number = $game_party.item_number(item.id)
+    when RPG::Armor
+      number = $game_party.armor_number(item.id)
+    end
+    can_sell = item.price > 0
+    x = 4
+    y = index * @row_height - 4
+    rect = Rect.new(x, y+4, self.width - 32, @row_height)
+    self.contents.fill_rect(rect, Color.new(0, 0, 0, 0))
+    bitmap = RPG::Cache.icon(item.icon_name)
+    self.contents.font.color = can_sell ? normal_color : disabled_color
+    opacity = can_sell ? 255 : 128
+    self.contents.blt(x, y+4, bitmap, Rect.new(0, 0, 24, 24), opacity)
+    self.draw_text(x + 28, y, 212, 32, item.name, 0)
+    self.draw_text(0, y, self.contents.width-2, 32, number.to_s, 2)
+  end
+  #--------------------------------------------------------------------------
+  # * Set Owned Window
+  #     owned_window : new owned window
+  #--------------------------------------------------------------------------
+  def owned_window=(owned_window)
+    @owned_window = owned_window
+  end
+  #--------------------------------------------------------------------------
+  # * Help Text Update
+  #--------------------------------------------------------------------------
+  def update_help
+    @help_window.set_text(self.item == nil ? "" : self.item.description)
+  end
+end

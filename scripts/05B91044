@@ -1,0 +1,80 @@
+#==============================================================================
+# ** Game_Troop
+#------------------------------------------------------------------------------
+#  This class deals with troops. Refer to "$game_troop" for the instance of
+#  this class.
+#==============================================================================
+
+class Game_Troop
+  #--------------------------------------------------------------------------
+  # * Object Initialization
+  #--------------------------------------------------------------------------
+  def initialize
+    # Create enemy array
+    @enemies = [[nil, nil, nil],[nil, nil, nil],[nil, nil, nil]]
+  end
+  #--------------------------------------------------------------------------
+  # * Get Grid of Enemies
+  #--------------------------------------------------------------------------
+  def enemies_grid
+    return @enemies
+  end
+  #--------------------------------------------------------------------------
+  # * Get Array of Enemies
+  #--------------------------------------------------------------------------
+  def enemies
+    # Add all enemies to a single array
+    e = []
+    for row in @enemies
+      e = e + row
+    end
+    e.delete(nil)
+    e.sort!{|a, b| a.troop_index - b.troop_index}
+    return e
+  end
+  #--------------------------------------------------------------------------
+  # * Setup
+  #     troop_id : troop ID
+  #--------------------------------------------------------------------------
+  def setup(troop_id)
+    # Set array of enemies who are set as troops
+    @enemies = [[nil, nil, nil],[nil, nil, nil],[nil, nil, nil]]
+    troop = $exdata_troops[troop_id]
+    for i in 0...troop.enemies.size
+      e = troop.enemies[i]
+      @enemies[e[1]][e[2]] = Game_Enemy.new(troop_id, i, e[0], e[1], e[2])
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Random Selection of a Target Enemy
+  #     hp0 : limited to enemies with 0 HP
+  #--------------------------------------------------------------------------
+  def random_target_enemy(hp0 = false, longrange = false)
+    # Initialize roulette
+    roulette = []
+    grid = self.enemies_grid
+    for col in 0..2 # Check each column
+      for row in 0..2 # Look from front to back
+        if grid[row][col] != nil
+          enemy = grid[row][col]
+          if (not hp0 and enemy.exist?) or (hp0 and enemy.hp0?)
+            roulette.push(enemy)
+            break if not longrange
+          end
+        end
+      end
+    end           
+    # If roulette size is 0
+    if roulette.size == 0
+      return nil
+    end
+    # Spin the roulette, choose an actor
+    return roulette[rand(roulette.size)]  
+  end
+  #--------------------------------------------------------------------------
+  # * Random Selection of a Target Enemy (HP 0)
+  #--------------------------------------------------------------------------
+  def random_target_enemy_hp0
+    return random_target_enemy(true)
+  end
+end

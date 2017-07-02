@@ -1,0 +1,219 @@
+#==============================================================================
+# ** Sprite_Battler
+#------------------------------------------------------------------------------
+#  This sprite is used to display the battler.It observes the Game_Character
+#  class and automatically changes sprite conditions.
+#==============================================================================
+
+class Sprite_Battler < RPG::Sprite
+  #--------------------------------------------------------------------------
+  # * Public Instance Variables
+  #--------------------------------------------------------------------------
+  attr_accessor :battler                  # battler
+  #--------------------------------------------------------------------------
+  # * Object Initialization
+  #     viewport : viewport
+  #     battler  : battler (Game_Battler)
+  #--------------------------------------------------------------------------
+  def initialize(viewport, battler = nil)
+    super(viewport)
+    @battler = battler
+    @battler_visible = false
+    @attack_animation_frame_wait = 0
+    if @battler != nil
+      update_status_sprites(@battler.states)
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Dispose
+  #--------------------------------------------------------------------------
+  def dispose
+    if self.bitmap != nil
+      self.bitmap.dispose
+    end
+    super
+  end
+  #--------------------------------------------------------------------------
+  # * Battler
+  #--------------------------------------------------------------------------  
+  def battler=(b)
+    return if @battler == b    
+    if @battler != nil and b == nil
+      # If switching from battler to nothing, remove status sprites
+      update_status_sprites([])
+    end    
+    @battler = b
+    # Update status sprites
+    if @battler != nil
+      update_status_sprites(@battler.states)
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Effect ?
+  #--------------------------------------------------------------------------
+  def effect?
+    if @attack_animation_frame_wait > 0
+      return true
+    end
+    return super
+  end
+  #--------------------------------------------------------------------------
+  # * Frame Update
+  #--------------------------------------------------------------------------
+  def update
+    super
+    # If battler is nil
+    if @battler == nil
+      self.bitmap = nil
+      loop_animation(nil)
+      return
+    end
+    # Attack animation check
+    if @attack_animation_frame_wait > 0
+      @attack_animation_frame_wait -= 1
+      if @attack_animation_frame_wait == 0
+        # Show the next animation frame, if there are any left
+        if @attack_animation_frame >= @battler.attack_sprite_frames
+          # Reached end, go back to normal sprite
+          @attack_animation_frame_wait = 0
+          @battler.battler_name = @battler.base_battler_name
+        else
+          @attack_animation_frame_wait -= 1
+          @attack_animation_frame += 1
+          @battler.battler_name = @battler.base_battler_name + "_attack" + @attack_animation_frame.to_s
+          @battler.battler_force_switch = true
+          @attack_animation_frame_wait = [1, 10 / (@battler.attack_sprite_frames - 1)].max
+        end
+      end
+    end 
+    # If file name or hue are different than current ones
+    if (@battler.battler_name != @battler_name or
+       @battler.battler_hue != @battler_hue) and (not @battler.freeze_sprite or @battler.battler_force_switch)
+      #Get and set bitmap
+      @battler_name = @battler.battler_name
+      @battler_hue = @battler.battler_hue
+      self.bitmap = RPG::Cache.battler(@battler_name, @battler_hue)
+      @width = bitmap.width
+      @height = bitmap.height
+      self.ox = @width / 2
+      self.oy = @height
+      @battler.battler_force_switch = false
+      # Change opacity level to 0 when dead or hidden
+      if @battler.hidden #or @battler.dead? 
+        self.opacity = 0
+      end
+    end
+    # If animation ID is different than current one
+    if @battler.damage == nil and
+       @battler.state_animation_id != @state_animation_id
+      @state_animation_id = @battler.state_animation_id
+      loop_animation($data_animations[@state_animation_id])
+    end
+    # Blink
+    if @battler.blink
+      blink_on
+    else
+      blink_off
+    end
+    # Blink Target
+    if @battler.blink_target
+      blink_target_on
+    else
+      blink_target_off
+    end
+    # Hide status
+    if @battler.hide_status
+      hide_status
+      @status_hidden = true
+    elsif @status_hidden
+      show_status
+      @status_hidden = false
+    end
+    # If invisible
+    unless @battler_visible or @battler.freeze_sprite
+      # Appear
+      if not @battler.hidden and not @battler.dead? and
+         (@battler.damage == nil or @battler.damage_pop)
+        appear
+        @battler_visible = true
+      end
+    end
+    # If visible
+    if @battler_visible
+      # Escape
+      if @battler.hidden
+        $game_system.se_play($data_system.escape_se)
+        escape
+        @battler_visible = false
+      end
+      # White flash
+      if @battler.white_flash
+        whiten
+        @battler.white_flash = false
+      end
+      # Animation
+      if @battler.animation_id != 0
+        animation = $data_animations[@battler.animation_id]
+        animation(animation, @battler.animation_hit, @battler.animation_flip, @battler.animation_element)
+        @battler.animation_element = nil
+        @battler.animation_id = 0
+      end      
+      # Attack animation
+      if @battler.animation_show_attack
+        @attack_animation_frame = 1
+        @attack_animation_frame_wait = 1
+        @battler.animation_show_attack = false
+      end     
+      # Movement
+      if @battler.animation_target_x > -1
+        move(@battler.animation_target_x, @battler.animation_target_y, @battler.animation_movespeed)
+        @battler.animation_target_x = -1
+        @battler.animation_target_y = -1
+      end
+      # Damage
+      if @battler.damage_pop
+        damage(@battler.damage, @battler.critical)
+        @battler.damage = nil
+        @battler.critical = false
+        @battler.damage_pop = false
+      end
+      # Collapse
+      if @battler.damage == nil and @battler.dead? and not @battler.freeze_sprite
+        if @battler.is_a?(Game_Enemy)
+          $game_system.se_play($data_system.enemy_collapse_se)
+          if @battler.boss?
+            collapse_boss
+          elsif @battler.endboss?
+            collapse_endboss
+          else
+            collapse
+          end
+          @battler_visible = false
+        else
+          #$game_system.se_play($data_system.actor_collapse_se)
+        end
+      end
+    end
+    # Check status effect sprites
+    if @battler.states_changed and not @battler.freeze_sprite
+      @battler.states_changed = false
+      states = @battler.states.clone
+      if @battler.is_a?(Game_Actor) and not @battler.dead? and @battler.relation_ally_down?
+        states.unshift(0)
+      else
+        states.delete(0)
+      end
+      update_status_sprites(states)
+    end
+    # Set sprite coordinates
+    unless @battler.freeze_position
+      self.x = @battler.screen_x
+      self.y = @battler.screen_y
+      self.z = @battler.screen_z
+      update_status_sprites_position      
+      if @battler.name == "Wyvern"
+        shift_status_sprites_position(50, 0)
+      end
+    end
+  end
+end

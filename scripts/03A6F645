@@ -1,0 +1,499 @@
+#==============================================================================
+# ** Scene_Arrange
+#------------------------------------------------------------------------------
+#  Arrange/Change party
+#==============================================================================
+
+class Scene_Arrange
+  #--------------------------------------------------------------------------
+  # * Object Initialization
+  # new_chars     Array of new characters joining. (For recruitment)
+  # freechange    Can select from all available characters
+  #--------------------------------------------------------------------------
+  def initialize(new_chars = [], freechange = false)
+    @new_chars = new_chars
+    @freechange = freechange
+  end
+  #--------------------------------------------------------------------------
+  # * Main Processing
+  #--------------------------------------------------------------------------
+  def main        
+    # Make title graphic
+    @sprite = Sprite.new
+    @sprite.bitmap = RPG::Cache.picture("Backgrounds/Menu" + $game_system.windowskin_id.to_s)    
+    # Make label window
+    text = @freechange ? "Change Party" : "Arrange"
+    @label_window = Window_Label.new(text)    
+    # Make command window (for Free Change)
+    s = []
+    s.push("Add")
+    s.push("Remove")
+    @command_window = Window_Command.new(150, s)
+    @command_window.y = 75
+    @command_window.windowskin_suffix = "_left"
+    @command_window.index = 0
+    if @freechange
+      @command_window.active = true
+    else
+      @command_window.active = false
+      @command_window.visible = false
+    end        
+    # Make sprite with left/right arrows
+    windowskin = RPG::Cache.windowskin($game_system.windowskin_name)
+    @arrow_sprite = Sprite.new    
+    @arrow_sprite.x = 0
+    @arrow_sprite.y = 80
+    @arrow_sprite.bitmap = Bitmap.new(180, 16)    
+    @arrow_sprite.bitmap.blt(10, 0, windowskin, Rect.new(144, 24, 8, 16))
+    @arrow_sprite.bitmap.blt(150, 0, windowskin, Rect.new(168, 24, 8, 16))
+    @arrow_sprite.visible = false
+    # Make status window
+    @status_window = []
+    @old_actors = []
+    show_forced = (@freechange or @new_chars.size > 0)
+    for i in 0...6
+      @status_window[i] = Window_MenuStatus.new($game_party.actors[i], true, true, show_forced)
+      @status_window[i].x = 465
+      @status_window[i].y = i*36
+      @old_actors.push($game_party.actors[i].id)
+    end
+    @entourage_window = Window_Base_Short.new(465, 6*36, 300, 40)
+    @entourage_window.contents = Bitmap.new(175, 48)      
+    @entourage_window.windowskin_suffix = "_right"
+    @entourage_window.contents.font.color = @entourage_window.system_color
+    @entourage_window.draw_text(24, 4, 200, 32, "Entourage")
+    for i in 0...2
+      @status_window[6+i] = Window_MenuStatus.new($game_party.entourage[i], true, true, show_forced)
+      @status_window[6+i].x = 465
+      @status_window[6+i].y = (i+7)*36
+    end
+    @window_oldactor = Window_ArrangeStatus.new
+    @window_oldactor.actor = @status_window[0].actor
+    @window_oldactor.x = 200
+    @window_oldactor.y = 0    
+    @window_newactor = Window_ArrangeStatus.new
+    @window_newactor.visible = false    
+    @window_newactor.x = 200
+    @window_newactor.y = 240
+    @selected_index = -1
+    @available_index = 0
+    @target_index = 0    
+    # Make available party windows
+    @available_window = []
+    if @freechange
+      for i in 0...10
+        @available_window[i] = Window_MenuStatus.new(nil, true, true, false, true)
+        @available_window[i].x = -125
+        @available_window[i].y = 95 + i*36
+        @available_window[i].visible = false
+        @available_page = 0
+      end   
+      @window_oldactor.visible = false
+    else      
+      @status_window[0].select
+      @status_window[0].active = true
+    end
+    if @new_chars.size > 0
+      for i in 0...@new_chars.size
+        @available_window[i] = Window_MenuStatus.new(nil, true, true, true, true)       
+        @available_window[i].x = -125
+        @available_window[i].y = 95 + i*36
+        @available_window[i].actor = $game_actors[@new_chars[i]]
+      end
+    end
+    @message_window = Window_Message.new
+    @needs_formation_check = false
+    # Execute transition
+    Graphics.transition
+    # Main loop
+    loop do
+      # Update game screen
+      Graphics.update
+      # Update input information
+      Input.update
+      # Frame update
+      update
+      # Abort loop if screen is changed
+      if $scene != self
+        break
+      end
+    end
+    # Prepare for transition
+    Graphics.freeze
+    # Dispose of windows
+    for w in @status_window + @available_window
+      w.dispose
+    end
+    @command_window.dispose
+    @label_window.dispose
+    @arrow_sprite.dispose
+    @sprite.bitmap.dispose
+    @sprite.dispose
+    @entourage_window.dispose
+    @window_oldactor.dispose
+    @window_newactor.dispose
+    @message_window.dispose
+  end
+  #--------------------------------------------------------------------------
+  # * Frame Update
+  #--------------------------------------------------------------------------
+  def update
+    # Update windows
+    for w in @status_window + @available_window
+      w.update
+    end        
+    @message_window.update
+    return if @message_waiting
+    if @switch_waiting
+      available_doswitch
+      @switch_waiting = false
+      return
+    end
+    @command_window.update
+    if @command_window.active
+      update_command
+    elsif (@freechange or @new_chars.size > 0) and @available_window[@available_index].active
+      update_available
+    else
+      update_target    
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Frame Update (when Command window is active
+  #--------------------------------------------------------------------------
+  def update_command
+    # If B button was pressed
+    if Input.trigger?(Input::B)
+      $game_system.se_play($data_system.cancel_se)
+      $game_map.need_refresh = true
+      if @needs_formation_check
+        $scene = Scene_Formation.new(true)
+      else
+        $scene = Scene_Map.new      
+      end
+      return
+    end
+    # If C button was pressed, switch to target mode
+    if Input.trigger?(Input::C)
+      $game_system.se_play($data_system.decision_se)
+      @command_window.active = false
+      @command_window.visible = false
+      @status_window[@target_index].select
+      @status_window[@target_index].active = true
+      @window_oldactor.visible = true
+      if @command_window.index == 0
+        # Add characters
+        refresh_available
+        for w in @available_window
+          w.visible = true
+        end
+      end
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Frame Update (when selecting from available characters)
+  #--------------------------------------------------------------------------
+  def update_available
+    if Input.repeat?(Input::DOWN)
+      $game_system.se_play($data_system.cursor_se)       
+      @available_window[@available_index].active = false
+      @available_window[@available_index].unselect
+      @available_index = (@available_index + 1) % @available_window.size
+      @available_window[@available_index].active = true
+      @available_window[@available_index].select        
+      @window_newactor.actor = @available_window[@available_index].actor
+    end    
+    if Input.repeat?(Input::UP)
+      $game_system.se_play($data_system.cursor_se)       
+      @available_window[@available_index].active = false
+      @available_window[@available_index].unselect        
+      @available_index = (@available_index - 1) % @available_window.size
+      @available_window[@available_index].active = true
+      @available_window[@available_index].select            
+      @window_newactor.actor = @available_window[@available_index].actor
+    end        
+    if @freechange and (Input.repeat?(Input::LEFT) or Input.repeat?(Input::L))
+      $game_system.se_play($data_system.cursor_se)       
+      @available_page -= 1
+      refresh_available
+      @window_newactor.actor = @available_window[@available_index].actor
+    end    
+    if @freechange and (Input.repeat?(Input::RIGHT) or Input.repeat?(Input::R))
+      $game_system.se_play($data_system.cursor_se)       
+      @available_page += 1
+      refresh_available
+      @window_newactor.actor = @available_window[@available_index].actor
+    end    
+    # If B button was pressed
+    if Input.trigger?(Input::B)
+      $game_system.se_play($data_system.cancel_se)
+      @available_window[@available_index].active = false
+      @available_window[@available_index].unselect                   
+      @status_window[@target_index].active = true
+      @window_newactor.visible = false
+      return
+    end
+    # If C button was pressed
+    if Input.trigger?(Input::C)           
+      if @freechange and @available_window[@available_index].actor == nil
+        $game_system.se_play($data_system.buzzer_se)        
+      else
+        $game_system.se_play($data_system.decision_se)        
+        @switch_waiting = true
+        if @freechange
+          # Set message end waiting flag and callback
+          @message_waiting = true
+          $game_temp.message_proc = Proc.new { @message_waiting = false}
+          actor = @available_window[@available_index].actor
+          $game_temp.d_n = actor.name
+          $game_temp.d_p = actor.name
+          $game_temp.message_text = actor.join_msg
+        end
+      end         
+    end   
+  end
+  #--------------------------------------------------------------------------
+  # *  Perform switch for party changing
+  #--------------------------------------------------------------------------
+  def available_doswitch
+    old_actor = @status_window[@target_index].actor
+    @status_window[@target_index].actor = @available_window[@available_index].actor
+    @available_window[@available_index].active = false
+    @available_window[@available_index].unselect                   
+    @status_window[@target_index].active = true      
+    @window_oldactor.actor = @status_window[@target_index].actor
+    @window_newactor.actor = nil
+    @window_newactor.visible = false    
+    if @freechange
+      refresh_available
+    else
+      @available_window[@available_index].actor = old_actor
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Frame Update (when target window is active)
+  #--------------------------------------------------------------------------
+  def update_target
+    if Input.repeat?(Input::DOWN)
+      if @target_index > -1
+        $game_system.se_play($data_system.cursor_se)       
+        @status_window[@target_index].active = false
+        @status_window[@target_index].unselect if @selected_index != @target_index
+        @target_index = (@target_index + 1) % 8
+        @status_window[@target_index].active = true
+        @status_window[@target_index].select        
+        if @selected_index > -1
+          @window_newactor.actor = @status_window[@target_index].actor
+        else
+          @window_oldactor.actor = @status_window[@target_index].actor
+        end
+      end      
+    end    
+    if Input.repeat?(Input::UP)
+      if @target_index > -1
+        $game_system.se_play($data_system.cursor_se)       
+        @status_window[@target_index].active = false
+        @status_window[@target_index].unselect if @selected_index != @target_index       
+        @target_index = (@target_index - 1 + 8) % 8
+        @status_window[@target_index].active = true
+        @status_window[@target_index].select            
+        if @selected_index > -1
+          @window_newactor.actor = @status_window[@target_index].actor
+        else
+          @window_oldactor.actor = @status_window[@target_index].actor
+        end
+      end      
+    end        
+    # If B button was pressed
+    if Input.trigger?(Input::B)
+      if @selected_index > -1
+        $game_system.se_play($data_system.cancel_se)
+        @status_window[@selected_index].unselect if @target_index != @selected_index    
+        @window_oldactor.actor = @status_window[@target_index].actor
+        @window_newactor.actor = nil
+        @selected_index = -1
+      else      
+        if leave_screen
+          for w in @available_window
+            w.visible = false
+          end
+        end
+      end
+      return
+    end
+    # If C button was pressed
+    if Input.trigger?(Input::C)           
+      if @freechange
+        if @command_window.index == 0          
+          # Add character
+          if @status_window[@target_index].actor != nil and @status_window[@target_index].actor.required
+           $game_system.se_play($data_system.buzzer_se)
+         else
+            $game_system.se_play($data_system.decision_se)
+            @available_window[@available_index].active = true
+            @available_window[@available_index].select       
+            @status_window[@target_index].active = false          
+            @window_newactor.actor = @available_window[@available_index].actor
+          end
+        else
+          # Remove
+          if @status_window[@target_index].actor == nil or @status_window[@target_index].actor.required
+           $game_system.se_play($data_system.buzzer_se)
+         else
+            $game_system.se_play($data_system.decision_se)
+            @status_window[@target_index].actor = nil
+            @window_oldactor.actor = nil
+          end
+        end
+      elsif @new_chars.size > 0
+        # Adding new characters
+        if @status_window[@target_index].actor != nil and @status_window[@target_index].actor.required
+         $game_system.se_play($data_system.buzzer_se)
+       else
+          $game_system.se_play($data_system.decision_se)
+          @available_window[@available_index].active = true
+          @available_window[@available_index].select       
+          @status_window[@target_index].active = false          
+          @window_newactor.actor = @available_window[@available_index].actor
+        end
+      else      
+        $game_system.se_play($data_system.decision_se)
+        # Switch
+        if @selected_index == -1
+          @selected_index = @target_index
+          @window_newactor.actor = @status_window[@target_index].actor
+        else
+          # Do the switch
+          if @selected_index != @target_index
+            temp_actor = @status_window[@target_index].actor
+            @status_window[@target_index].actor = @status_window[@selected_index].actor
+            @status_window[@selected_index].actor = temp_actor
+            @status_window[@selected_index].unselect if @target_index != @selected_index
+            @selected_index = -1          
+            @window_oldactor.actor = @status_window[@target_index].actor
+            @window_newactor.actor = nil
+          end         
+        end
+      return
+      end
+    end   
+  end
+  #--------------------------------------------------------------------------
+  # * Refresh available character list
+  #--------------------------------------------------------------------------
+  def refresh_available
+    chars = $game_actors.get_selectable_characters
+    # Remove actors already in party
+    for w in @status_window
+      if w.actor != nil
+        chars.delete(w.actor)
+      end
+    end
+    # If current page is beyond current amount of characters, reduce it
+    max_page = [((chars.size - 1) / 10) , 0].max
+    @available_page = @available_page % (max_page + 1)
+    start = @available_page * 10
+    for i in 0...10
+      id = start + i
+      if id <= chars.size
+        @available_window[i].actor = chars[id]
+      else
+        @available_window[i].actor = nil
+      end
+    end
+    # Turn on left/right arrows
+    if chars.size > 10
+      @arrow_sprite.visible = true
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Attempt to leave the screen
+  #--------------------------------------------------------------------------
+  def leave_screen 
+      # Do not allow leaving if there are forced characters to add to party        
+      if @new_chars.size > 0
+        for a in @available_window
+          if a.actor != nil
+            if a.actor.required
+              $game_system.se_play($data_system.buzzer_se)
+              return false
+            end
+          end      
+        end
+      end
+      # Do not allow leaving if party is empty
+      count = 0
+      for i in 0..5
+        w = @status_window[i]
+        count += 1 if w.actor != nil
+      end
+      if count == 0
+        if @freechange
+          # If changing party and party is empty, there has to be at least one
+          # required character in the entourage, so bring him over
+          for i in 6..7
+            if @status_window[i].actor != nil and @status_window[i].actor.required
+              @status_window[0].actor = @status_window[i].actor
+              @status_window[i].actor = nil
+              break
+            end
+          end
+        else          
+          $game_system.se_play($data_system.buzzer_se)
+          return false
+        end
+      end        
+      # We haven't actually changed the party yet, so do this now,
+      $game_party.clear_party_and_entourage
+      # Check if any new characters are in the active party
+      new_party = []
+      for i in 0..5
+        w = @status_window[i]
+        if w.actor != nil
+          if not @old_actors.include?(w.actor.id)
+            new_party.push(w.actor)
+          end
+        end
+      end
+      # Add the characters to the party      
+      for i in 0..5
+        w = @status_window[i]
+        if w.actor != nil
+          $game_party.add_actor(w.actor.id)
+        end
+      end
+      for actor in new_party
+        # Fit new characters into the formation
+        $game_party.set_default_formation(actor.id)
+      end
+      # Add entourage characters      
+      for i in 6..7
+        w = @status_window[i]
+        if w.actor != nil
+          $game_party.add_entourage(w.actor.id)
+        end
+      end
+      $game_system.se_play($data_system.cancel_se)
+      # For free party change, return to main menu
+      if @freechange
+        if new_party.size > 0
+          @needs_formation_check = true          
+        end        
+        @status_window[@target_index].unselect
+        @status_window[@target_index].active = false
+        @command_window.active = true
+        @command_window.visible = true
+        @window_oldactor.visible = false        
+        @arrow_sprite.visible = false
+        return true
+      end
+      # If the party changed, go to formation screen first      
+      if new_party.size > 0
+        $scene = Scene_Formation.new(true)
+      elsif @freechange or @new_chars.length > 0
+        $scene = Scene_Map.new
+      else
+        $scene = Scene_Menu.new(5)
+      end
+    end
+end

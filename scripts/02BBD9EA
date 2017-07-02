@@ -1,0 +1,220 @@
+#==============================================================================
+# ** Data_Skill
+#------------------------------------------------------------------------------
+#  Contains static skill data that can't be set in the GUI
+#  1-based array, to match Skill ids
+#==============================================================================
+
+class Data_Skill
+  attr_accessor :status # hash table, status_id -> chance
+  #attr_accessor :target_type 
+  #attr_accessor :ismagic 
+  attr_accessor :drain
+  attr_accessor :steal
+  attr_accessor :scan
+  attr_accessor :focus
+  attr_accessor :escape
+  attr_accessor :target_main # Target main ally (first in list) only
+  attr_accessor :direct_damage  # Use base damage value directly 
+  attr_accessor :stun_user # Stuns the user
+  attr_accessor :long_range  # For physical skills, ignored for magic
+  attr_accessor :raise_stats # Raise stats by 1/x th
+  attr_accessor :hide_name
+  attr_accessor :switch_on # Switch to turn on after using
+  attr_accessor :switch_off # Switch to turn off after using
+  attr_accessor :new_sprite # Sprite to change to after using skill
+  attr_accessor :no_miss # show no "Miss" popup for this skill
+  attr_accessor :aura # Aura skill
+    
+  def initialize
+    @status = {}
+    #@hpdamage = true
+    #@mpdamage = false
+    @drain = false
+    @steal = false
+    @scan = false
+    @focus = false
+    @escape = false
+    #@direct_damage = false
+    @long_range = false
+    @raise_stats = 0
+    @hide_name = false
+    @switch_on = 0
+    @switch_off = 0
+    @new_sprite = ""
+    @aura = false
+  end
+end
+
+$exdata_skills = []
+
+# Steal
+$exdata_skills[3] = Data_Skill.new
+$exdata_skills[3].steal = true
+
+# Scan
+$exdata_skills[4] = Data_Skill.new
+$exdata_skills[4].scan = true
+
+# Smokescreen
+$exdata_skills[5] = Data_Skill.new
+$exdata_skills[5].escape = true
+
+# Focus
+$exdata_skills[6] = Data_Skill.new
+$exdata_skills[6].focus = true
+
+# Wild attack
+$exdata_skills[7] = Data_Skill.new
+$exdata_skills[7].stun_user = true
+
+# Aura
+$exdata_skills[8] = Data_Skill.new
+$exdata_skills[8].aura = true
+
+# Drain
+$exdata_skills[113] = Data_Skill.new
+$exdata_skills[113].drain = true
+
+# Guard Tiger Claw
+$exdata_skills[118] = Data_Skill.new
+$exdata_skills[118].hide_name = true
+
+# Charging (Trevor)
+$exdata_skills[121] = Data_Skill.new
+$exdata_skills[121].switch_on = 8
+
+# Dark Slash (Trevor)
+$exdata_skills[122] = Data_Skill.new
+$exdata_skills[122].switch_off = 8
+
+# Snipe Shot
+$exdata_skills[127] = Data_Skill.new
+$exdata_skills[127].long_range = true
+
+# Protective Scales
+$exdata_skills[149] = Data_Skill.new
+$exdata_skills[149].target_main = true
+
+# High Turbulence
+$exdata_skills[150] = Data_Skill.new
+$exdata_skills[150].target_main = true
+
+# Wyvern Wing attack
+$exdata_skills[151] = Data_Skill.new
+$exdata_skills[151].hide_name = true
+
+# Wyvern attack
+$exdata_skills[152] = Data_Skill.new
+$exdata_skills[152].hide_name = true
+
+# Mesmerizer
+$exdata_skills[157] = Data_Skill.new
+$exdata_skills[157].long_range = true
+
+# Carrion Worm attack
+$exdata_skills[159] = Data_Skill.new
+$exdata_skills[159].hide_name = true
+
+# Deathly Breath
+$exdata_skills[161] = Data_Skill.new
+$exdata_skills[161].status = {4=>25, 6=>25, 8=>25, 10=>25, 12=>25, 14=>25}
+
+# Black Sword (Trevor)
+$exdata_skills[163] = Data_Skill.new
+$exdata_skills[163].switch_off = 8
+
+# Roulette Shot
+$exdata_skills[165] = Data_Skill.new
+$exdata_skills[165].long_range = true
+
+# Surge Laser
+$exdata_skills[173] = Data_Skill.new
+$exdata_skills[173].status = {3=>20, 9=>20, 13=>20}
+
+# Life Drain
+$exdata_skills[175] = Data_Skill.new
+$exdata_skills[175].drain = true
+
+# Life Tap
+$exdata_skills[180] = Data_Skill.new
+$exdata_skills[180].drain = true
+
+# Soth's gather power
+$exdata_skills[189] = Data_Skill.new
+$exdata_skills[189].raise_stats = 5
+$exdata_skills[189].no_miss = true
+
+# Harpy's Air Raid
+$exdata_skills[207] = Data_Skill.new
+$exdata_skills[207].long_range = true
+
+# Rashnu
+$exdata_skills[210] = Data_Skill.new
+$exdata_skills[210].switch_on = 21
+$exdata_skills[210].switch_off = 22
+$exdata_skills[210].new_sprite = "E_Rashnu"
+$exdata_skills[210].no_miss = true
+
+# Rashnu
+$exdata_skills[211] = Data_Skill.new
+$exdata_skills[211].switch_on = 22
+$exdata_skills[211].switch_off = 21
+$exdata_skills[211].new_sprite = "E_Rashnu2"
+$exdata_skills[211].no_miss = true
+
+# Mana Channel (Riftgate)
+$exdata_skills[226] = Data_Skill.new
+$exdata_skills[226].switch_on = 8
+$exdata_skills[226].no_miss = true
+
+# Atomic Incineration  (Riftgate)
+$exdata_skills[227] = Data_Skill.new
+$exdata_skills[227].switch_off = 8
+
+# Absorbing Current  (Charybdis)
+$exdata_skills[232] = Data_Skill.new
+$exdata_skills[232].no_miss = true
+
+# Abyssal Smog
+$exdata_skills[241] = Data_Skill.new
+$exdata_skills[241].status = {4=>20, 6=>20, 8=>20, 10=>20, 12=>20, 14=>20}
+
+# Armageddon  (Riftgate)
+$exdata_skills[243] = Data_Skill.new
+$exdata_skills[243].switch_off = 8
+
+# Annihilation Ray
+$exdata_skills[270] = Data_Skill.new
+$exdata_skills[270].direct_damage = true
+
+# Inspiration
+$exdata_skills[272] = Data_Skill.new
+$exdata_skills[272].raise_stats = 10
+$exdata_skills[272].no_miss = true
+
+# Desperation
+$exdata_skills[273] = Data_Skill.new
+$exdata_skills[273].raise_stats = -10
+$exdata_skills[273].no_miss = true
+
+# Resurrection
+$exdata_skills[301] = Data_Skill.new
+$exdata_skills[301].direct_damage = true
+$exdata_skills[301].no_miss = true
+
+# Falling Angel
+$exdata_skills[304] = Data_Skill.new
+$exdata_skills[304].long_range = true
+
+# Phoenix in Flight
+$exdata_skills[308] = Data_Skill.new
+$exdata_skills[308].switch_on = 8
+
+# Phoenix in Flames
+$exdata_skills[309] = Data_Skill.new
+$exdata_skills[309].switch_off = 8
+
+# Caina
+$exdata_skills[327] = Data_Skill.new
+$exdata_skills[327].long_range = true

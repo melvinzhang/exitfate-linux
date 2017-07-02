@@ -1,0 +1,310 @@
+#==============================================================================
+# ** Scene_War
+#------------------------------------------------------------------------------
+#  This class handles war battles
+#
+#  Victory
+#==============================================================================
+
+class Scene_War
+  #--------------------------------------------------------------------------
+  # * Update phase 5: Victory
+  #--------------------------------------------------------------------------
+  def start_phase5
+    $game_system.bgm_fade(3)
+    @unitinfo_window.dont_show = true
+    @top_sprite.visible = false
+    #Prepare title sprite
+    $game_system.me_play(RPG::AudioFile.new("War Battle Won", 100, 100))
+    @sprite_victory = Sprite.new
+    @sprite_victory.bitmap = Bitmap.new(640, 105)
+    @sprite_victory.bitmap.font.name = ["Georgia", "Times New Roman"]
+    @sprite_victory.bitmap.font.size = 75
+    @sprite_victory.bitmap.font.bold = true
+    @sprite_victory.bitmap.font.color = Color.new(0, 0, 0)
+    @sprite_victory.bitmap.draw_text(0+2, 0+2, 640, 80, "VICTORY!", 1)   
+    @sprite_victory.bitmap.draw_text(0+2, 0+1, 640, 80, "VICTORY!", 1)   
+    @sprite_victory.bitmap.draw_text(0+1, 0+2, 640, 80, "VICTORY!", 1)   
+    @sprite_victory.bitmap.font.color = Color.new(255, 255, 255)
+    @sprite_victory.bitmap.draw_text(0, 0, 640, 80, "VICTORY!", 1)   
+    @sprite_victory.x = 0
+    @sprite_victory.y = 480 + @sprite_victory.bitmap.height
+    @sprite_victory.z = 5000
+    # Calculate score
+    e_units = 0
+    p_units = 0
+    e_units_dead = 0
+    p_units_dead = 0
+    for unit in $game_temp.war_units
+      p_units += 1 if (unit.player_side and not unit.noscore)
+      e_units += 1 if not unit.player_side        
+    end
+    for unit in $game_temp.war_casualties
+      p_units_dead += 1 if (unit.player_side and not unit.noscore)
+      e_units_dead += 1 if not unit.player_side        
+    end
+    p_units += p_units_dead
+    e_units += e_units_dead
+    @score_efficiency = 100 - (100 * p_units_dead / p_units).to_i
+    @score_power =  (100 * e_units_dead / e_units).to_i
+    @score_speed = [100 - [@turn - @score_turn_limit, 0].max * 5, 0].max
+    @score_total = (@score_efficiency + @score_power + @score_speed) / 3
+    if @score_total >= 95
+      @rating = "A"
+      @victory_item = @victory_item_a
+    elsif @score_total >= 85
+      @rating = "B"
+      @victory_item = @victory_item_b
+    elsif @score_total >= 75
+      @rating = "C"
+      @victory_item = @victory_item_c
+    elsif @score_total >= 50
+      @rating = "D"
+      @victory_item = @victory_item_d
+    else
+      @rating = "F"
+      @victory_item = [2, 400]
+    end
+    # Paris recruitment
+    if (@battle_id == 2 and ["A"].include?(@rating)) and not $game_temp.war_is_sim
+      $game_switches[10] = true      
+    end    
+    # Next    
+    @wait = 30
+    @phase = 5
+    @step = 1
+  end
+  #--------------------------------------------------------------------------
+  # * Update phase 5
+  #--------------------------------------------------------------------------
+  def update_phase5
+    if @step == 1
+      update_phase5_step1
+    elsif @step == 2
+      update_phase5_step2
+    elsif @step == 3
+      update_phase5_step3
+    elsif @step == 4
+      update_phase5_step4
+    elsif @step == 5
+      update_phase5_step5
+    elsif @step == 6
+      update_phase5_step6
+    elsif @step == 7
+      update_phase5_step7
+    elsif @step == 8
+      update_phase5_step8
+    end      
+  end      
+  #--------------------------------------------------------------------------
+  # * Update phase 5 step 1: Show Victory
+  #--------------------------------------------------------------------------
+  def update_phase5_step1
+    @sprite_victory.y -= 10
+    if @sprite_victory.y < 100
+      @step = 2
+      @wait = 40
+      @background_sprite = Sprite.new
+      @background_sprite.bitmap = RPG::Cache.picture("Backgrounds/Menu" + $game_system.windowskin_id.to_s)    
+      @background_sprite.opacity = 0
+    end    
+  end
+  #--------------------------------------------------------------------------
+  # * Update phase 5 step 2: Background
+  #--------------------------------------------------------------------------
+  def update_phase5_step2
+    @background_sprite.opacity += 20
+    if @background_sprite.opacity >= 255
+      @step = 3
+      @score_sprite = Sprite.new
+      w = 300
+      @score_sprite.bitmap = Bitmap.new(w, 400)
+      @score_sprite.x = 320 - @score_sprite.bitmap.width/2
+      @score_sprite.y = 200
+      @score_sprite.bitmap.font.name = ["Georgia", "Times New Roman"]
+      @score_sprite.bitmap.font.size = 30
+      @score_sprite.bitmap.font.bold = true
+      @score_sprite.bitmap.font.color = Color.new(255, 255, 255)
+      draw_text_new(0, 0, w, 30, "SPEED", 0, @score_sprite)
+      draw_text_new(0, 35, w, 30, "EFFICIENCY", 0, @score_sprite)
+      draw_text_new(0, 70, w, 30, "POWER", 0, @score_sprite)
+      draw_text_new(0, 110, w, 30, "TOTAL", 0, @score_sprite)
+      @score_sprite.bitmap.font.size = 25
+      @score_sprite.bitmap.fill_rect(0, 105, w, 2, Color.new(0, 0, 0))
+      @score_sprite.bitmap.fill_rect(0, 105, w, 1, Color.new(255, 255, 255))
+      @score_sprite.opacity = 0
+    end    
+  end
+  #--------------------------------------------------------------------------
+  # * Update phase 5 step 3: Score sprite
+  #--------------------------------------------------------------------------
+  def update_phase5_step3
+    @score_sprite.opacity += 20
+    if @score_sprite.opacity .>= 255
+      @step = 4
+      @wait = 20
+      @score2_sprite = Sprite.new
+      @score2_sprite.bitmap = Bitmap.new(300, 400)
+      @score2_sprite.x = 320 - @score_sprite.bitmap.width/2
+      @score2_sprite.y = 200
+      @score2_sprite.bitmap.font.name = ["Georgia", "Times New Roman"]
+      @score2_sprite.bitmap.font.size = 30
+      @score2_sprite.bitmap.font.bold = true
+      @score2_sprite.bitmap.font.color = Color.new(255, 255, 255)
+      @counter_efficiency = 0
+      @counter_power = 0
+      @counter_speed = 0
+      @counter_total = 0
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Update phase 5 step 4: Count score
+  #--------------------------------------------------------------------------
+  def update_phase5_step4    
+    @wait = 1
+    @score2_sprite.bitmap.clear    
+    if @counter_efficiency == @score_efficiency and @counter_power == @score_power and @counter_speed == @score_speed
+      @wait = 10
+      @step = 5
+    end    
+    $game_system.se_play(RPG::AudioFile.new("032-Switch01", 80, 75))
+    draw_text_new(0, 0, 300, 30, @counter_speed.to_s + "%", 2, @score2_sprite)
+    draw_text_new(0, 35, 300, 30, @counter_efficiency.to_s + "%", 2, @score2_sprite)
+    draw_text_new(0, 70, 300, 30, @counter_power.to_s + "%", 2, @score2_sprite)
+    @counter_efficiency = [@counter_efficiency + 2, @score_efficiency].min
+    @counter_power = [@counter_power + 2, @score_power].min
+    @counter_speed = [@counter_speed + 2, @score_speed].min   
+  end
+  #--------------------------------------------------------------------------
+  # * Update phase 5 step 5: Count total score
+  #--------------------------------------------------------------------------
+  def update_phase5_step5
+    @wait = 1
+    @score2_sprite.bitmap.clear    
+    if @counter_total == @score_total
+      @wait = 20
+      @step = 6
+    end        
+    $game_system.se_play(RPG::AudioFile.new("032-Switch01", 80, 75))
+    draw_text_new(0, 0, 300, 30, @counter_speed.to_s + "%", 2, @score2_sprite)
+    draw_text_new(0, 35, 300, 30, @counter_efficiency.to_s + "%", 2, @score2_sprite)
+    draw_text_new(0, 70, 300, 30, @counter_power.to_s + "%", 2, @score2_sprite)
+    draw_text_new(0, 110, 300, 30, @counter_total.to_s + "%", 2, @score2_sprite)
+    @counter_total = [@counter_total + 5, @score_total].min
+  end
+  #--------------------------------------------------------------------------
+  # * Update phase 5 step 6: Rating
+  #--------------------------------------------------------------------------
+  def update_phase5_step6
+    @rating_sprite = Sprite.new
+    @rating_sprite.bitmap = Bitmap.new(100, 100)
+    @rating_sprite.x = 480
+    @rating_sprite.y = 200
+    @rating_sprite.bitmap.font.name = ["Georgia", "Times New Roman"]
+    @rating_sprite.bitmap.font.size = 75
+    @rating_sprite.bitmap.font.bold = true         
+    c = Color.new(255, 255, 128)  if @rating == "A"
+    c = Color.new(128, 128, 255)  if @rating == "B"
+    c = Color.new(128, 255, 128)  if @rating == "C"
+    c = Color.new(255, 255, 255)  if @rating == "D"
+    c = Color.new(255, 0, 0)  if @rating == "F"
+    @rating_sprite.bitmap.font.color = c
+    draw_text_new(0, 0, 100, 100, @rating.to_s, 1, @rating_sprite)
+    $game_system.se_play(RPG::AudioFile.new("037-Switch06", 80, 130))
+    @flash_sprite = Sprite.new
+    @flash_sprite.bitmap = Bitmap.new(640, 480)
+    @flash_sprite.z = 6000
+    @flash_sprite.bitmap.fill_rect(0, 0, 640, 480, Color.new(255, 255, 255))    
+    # Check if score was beaten
+    if @score_total > $game_party.get_war_score(@battle_id) or 
+        (@score_total == $game_party.get_war_score(@battle_id) and 
+          @turn < $game_party.get_war_score_turns(@battle_id))
+      $game_party.set_war_score(@battle_id, @score_total, @turn)
+      beat_record = true
+    end    
+    # Show reward or, if necessary, that the record was beaten
+    if $game_temp.war_is_sim
+      if beat_record 
+        draw_text_new(0, 160, 300, 30, "New record!", 1, @score_sprite)        
+      end
+    else
+      # Give reward
+      draw_text_new(0, 160, 300, 30, "Reward", 1, @score_sprite)
+      @reward_window = Window_Base_Short.new(320-100, 400, 200, 48)
+      @reward_window.set_standard_bitmap
+      if @victory_item[0] == 0
+        item = $data_items[@victory_item[1]]
+        $game_party.gain_item(@victory_item[1], 1)
+      elsif @victory_item[0] == 1
+        item = $data_weapons[@victory_item[1]]
+        $game_party.gain_magic(@victory_item[1], 1)
+      else
+        item = $data_armors[@victory_item[1]]
+        $game_party.gain_armor(@victory_item[1], 1)
+      end
+      @reward_window.draw_item_name(item, 16, 8)
+    end
+    @step = 7
+  end
+  #--------------------------------------------------------------------------
+  # * Update phase 5 step 7: Flash
+  #--------------------------------------------------------------------------
+  def update_phase5_step7
+    @flash_sprite.opacity -= 40
+    if @flash_sprite.opacity <= 0
+      @step = 8
+      @wait = 5
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Update phase 5 step 8: End
+  #--------------------------------------------------------------------------
+  def update_phase5_step8
+    if Input.trigger?(Input::B) or Input.trigger?(Input::C) 
+      end_battle
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * End battle
+  #--------------------------------------------------------------------------
+  def end_battle
+    $game_system.me_play(nil)
+    $game_temp.war_units = nil
+    $game_temp.war_units_extra = nil    
+    $game_temp.war_casualties = nil
+    $game_map.need_refresh = true
+    # Reset war switches
+    for i in 176...186
+      $game_switches[i] = false
+    end
+    if $game_temp.war_is_sim
+      # End simulation battle
+      $game_temp.war_is_sim = false
+      $game_player.character_name = "000-Daniel"
+      $game_system.bgm_play(RPG::AudioFile.new("Elysium", 100, 100)) 
+      $game_map.setup(151)
+      $game_player.moveto(13, 14)    
+      $game_player.turn_up
+      $scene = Scene_Simulation.new(@battle_id)      
+    else
+      $scene = Scene_Map.new
+      $game_screen.start_tone_change(Tone.new(-255, -255, -255, 0), 0)
+      # $game_temp.player_new_map_id is set in the battle end event
+      $game_temp.player_new_x = 1
+      $game_temp.player_new_y = 1
+      $game_temp.player_new_direction = 0
+      return_to_map
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Draw Text New (with shadow)
+  #--------------------------------------------------------------------------
+  def draw_text_new(x, y, width, height, text, align, sprite)
+    tempc = sprite.bitmap.font.color.clone
+    sprite.bitmap.font.color = Color.new(0, 0, 0, 192)
+    sprite.bitmap.draw_text(x + 1, y + 1, width, height, text, align)
+    sprite.bitmap.font.color = tempc
+    sprite.bitmap.draw_text(x, y, width, height, text, align)  
+    sprite.bitmap.draw_text(x, y, width, height, text, align)  
+  end
+end

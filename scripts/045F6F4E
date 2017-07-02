@@ -1,0 +1,125 @@
+#==============================================================================
+# ** Window_WarUnitInfo
+#------------------------------------------------------------------------------
+#  Displays unit info bar of war battle screen
+#==============================================================================
+
+class Window_WarUnitInfo < Window_Base  
+  #--------------------------------------------------------------------------
+  # * Object Initialization
+  #--------------------------------------------------------------------------
+  def initialize
+    super(0, 480-130, 280, 130)    
+    self.visible = false
+    @portrait_sprite = Sprite.new
+    @portrait_sprite.bitmap = Bitmap.new(280, 100)
+    @portrait_sprite.y = 480-180
+    @portrait_sprite.z = 5000
+    @update_vis = false
+    @dont_show = false
+    refresh
+  end
+  #--------------------------------------------------------------------------
+  # * Dispose
+  #--------------------------------------------------------------------------
+  def dispose
+    @portrait_sprite.dispose
+    super
+  end
+  #--------------------------------------------------------------------------
+  # * Don't show at all
+  #--------------------------------------------------------------------------
+  def dont_show=(v)
+    if v == true
+      self.visible = false
+    end
+    @dont_show = v
+    if not @dont_show
+      refresh
+      self.visible = @unit != nil
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Visible
+  #--------------------------------------------------------------------------
+  def visible=(v)
+    return if @dont_show
+    @portrait_sprite.visible = v if @portrait_sprite != nil
+    super
+  end
+  #--------------------------------------------------------------------------
+  # * x
+  #--------------------------------------------------------------------------
+  def x=(v)
+    unless self.x == v
+      @portrait_sprite.x = v if @portrait_sprite != nil
+      super
+      refresh
+    end
+    if @update_vis      
+      @update_vis = false
+      self.visible = @unit != nil
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Set unit
+  #--------------------------------------------------------------------------
+  def unit=(u)
+    unless @unit == u
+      @unit = u
+      refresh
+      self.visible = false
+      @update_vis = true # Update visibility next turn in case the cursor moved 
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Refresh
+  #--------------------------------------------------------------------------
+  def refresh
+    return unless self.width > 0
+    if self.contents != nil
+      self.contents.dispose
+      self.contents = nil
+    end
+    self.contents = Bitmap.new(self.width - 32, self.height - 32)    
+    @portrait_sprite.bitmap.clear
+    return if @unit == nil
+    flip = self.x != 0
+    x = flip ? (@portrait_sprite.bitmap.width - 15 - 64) : 15
+    # Draw portraits  
+    if @unit.portrait.size > 0
+      bitmap = RPG::Cache.picture("Battle Portraits/" + @unit.portrait[0])
+      @portrait_sprite.bitmap.fill_rect(x, 0, 64, 64, Color.new(0, 0, 0))
+      @portrait_sprite.bitmap.blt(x, 0, bitmap, Rect.new(0, 0, 64, 64))
+    end
+    if flip
+      x = @portrait_sprite.bitmap.width - 64 - 15 - 48 * (@unit.portrait.size - 1)
+    else
+      x = 64 + 15 + 48 * (@unit.portrait.size - 2)
+    end
+    for i in 1..(@unit.portrait.size - 1)
+      bitmap = RPG::Cache.picture("Battle Portraits/" + @unit.portrait[@unit.portrait.size - i])
+      rect = Rect.new(x, 15, 48, 48)
+      @portrait_sprite.bitmap.fill_rect(rect, Color.new(0, 0, 0))
+      @portrait_sprite.bitmap.stretch_blt(rect, bitmap, Rect.new(0, 0, 64, 64))      
+      x += flip ? 48 : -48
+    end
+    # Draw Stats
+    self.contents.font.size = 20
+    draw_text(0, 0, 300, 25, @unit.name)
+    self.contents.font.size = 20
+    draw_text(0, 25, 80, 25, "Men")   
+    draw_text(0, 45, 80, 25, "Atk")   
+    draw_text(0, 65, 80, 25, "Def")   
+    draw_text(0, 25, 80, 25, @unit.men.to_s, 2)   
+    draw_text(0, 45, 80, 25, @unit.attack.to_s, 2)   
+    draw_text(0, 65, 80, 25, @unit.defence.to_s, 2)   
+    # Special abilities
+    y = 25
+    self.contents.font.size = 20    
+    for a in @unit.abilities
+      draw_text(100, y, 200, 25, $data_war_ability_names[a])    
+      y += 20
+    end
+  end
+end

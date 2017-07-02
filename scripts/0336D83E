@@ -1,0 +1,58 @@
+#==============================================================================
+# ** Window_WarSetupList
+#------------------------------------------------------------------------------
+#  List of available unit members
+#==============================================================================
+
+class Window_WarSetupList < Window_Selectable
+  #--------------------------------------------------------------------------
+  # * Object Initialization
+  #     width    : window width
+  #     commands : command text string array
+  #--------------------------------------------------------------------------
+  def initialize
+    super(320, 50, 320, 344)#280-75)
+    self.index = 0
+    @row_height = 48+4
+  end
+  #--------------------------------------------------------------------------
+  # * Set list
+  #--------------------------------------------------------------------------  
+  def list=(v)
+    @list = v
+    refresh
+  end
+  #--------------------------------------------------------------------------
+  # * Refresh
+  #--------------------------------------------------------------------------
+  def refresh
+    return if @list == nil
+    @item_max = @list.size + 1
+    self.contents = Bitmap.new(width - 32, row_max * @row_height)# + 32)
+    self.contents.clear
+    for i in 0...@item_max 
+      h = @row_height * i
+      rect = Rect.new(4, h, self.contents.width - 8, @row_height)
+      self.contents.fill_rect(rect, Color.new(0, 0, 0, 0))
+      if i == @item_max - 1
+        self.contents.font.color = disabled_color
+        self.draw_text(4, h, 200, 24, "Remove")
+      else
+        m = $data_warmembers[@list[i]]      
+        self.contents.font.color = normal_color
+        self.draw_text(4, h, 200, 24, m.name)
+        self.draw_text(90, h, 50, 24, m.men.to_s, 2)
+        string = m.attack == 0 ? "0" : m.attack > 0 ? "+" + m.attack.to_s : m.attack.to_s
+        self.contents.font.color = string == "0" ? disabled_color : normal_color
+        self.draw_text(155, h, 25, 24, string, 2)
+        string = m.defence == 0 ? "0" : m.defence > 0 ? "+" + m.defence.to_s : m.defence.to_s
+        self.contents.font.color = string == "0" ? disabled_color : normal_color
+        self.draw_text(195, h, 25, 24, string, 2)      
+        self.contents.font.color = normal_color 
+        if m.ability > 0
+          self.draw_text(120, h+24, 200, 24, $data_war_ability_names[m.ability])
+        end
+      end
+    end    
+  end
+end

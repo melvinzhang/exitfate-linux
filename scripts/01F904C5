@@ -1,0 +1,316 @@
+#==============================================================================
+# ** Scene_Blackjack 2
+#------------------------------------------------------------------------------
+# Johnny's blackjack game
+#==============================================================================
+
+class Scene_Blackjack
+  #--------------------------------------------------------------------------
+  # * Frame Update
+  #--------------------------------------------------------------------------
+  def update_phase2_game
+    for card in @hand_dealer + @hand_player
+      card.sprite.update
+      # This works fine since only one card moves at a time
+      if card.sprite.is_moving?
+        return
+      end
+    end      
+    if @draw_wait > 0
+      @draw_wait -= 1
+      return
+    end
+    if @step == 1
+      start_phase2_step1_start_game
+    elsif @step == 2 
+      update_phase2_step2_dealing
+    elsif @step == 3
+      update_phase2_step3_command
+    elsif @step == 4
+      update_phase2_step4_card_drawn
+    elsif @step == 5
+      update_phase2_step5_dealer_show
+    elsif @step == 6
+      update_phase2_step6_dealer_draw
+    elsif @step == 7
+      update_phase2_step7_end_game
+    elsif @step == 8
+      update_phase2_step8_result
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Start Phase 2 Step 1 : Start game
+  #--------------------------------------------------------------------------
+  def start_phase2_step1_start_game
+    # Create randomized deck
+    @deck = []
+    for suit in [SUIT_DIAMONDS, SUIT_HEARTS, SUIT_CLUBS, SUIT_SPADES]
+      for number in 1..12
+        rnd = rand(@deck.size)
+        @deck.insert(rnd, Game_Card.new(suit, number))
+      end
+    end       
+    @hand_dealer = []
+    @hand_player = []
+    @bet = @bet_window.bet
+    @currentbet_window.bet = @bet
+    @currentbet_window.visible = true
+    @step = 2
+  end
+  #--------------------------------------------------------------------------
+  # * Update Phase 2 Step 2 : Initial dealing
+  #--------------------------------------------------------------------------  
+  def update_phase2_step2_dealing    
+    if @hand_player.size == 2 and @hand_dealer.size == 2
+      @doubled = false
+      @wait = 20
+      start_phase2_step3_command
+    else
+      if @hand_dealer.size == 0
+        draw_card(true, false)
+      elsif @hand_player.size == 0
+        draw_card(false)
+      elsif @hand_dealer.size == 1
+        draw_card(true)
+      else
+        draw_card(false)
+      end       
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Start Phase 2 Step 3 : Command
+  #--------------------------------------------------------------------------  
+  def start_phase2_step3_command
+    @step = 3  
+    return if check_win_lose    
+    @gamecommand_window.visible = true
+    @gamecommand_window.active = true
+    @gamecommand_window.index = 0
+    @gamecommand_window.refresh
+    @allow_double = @bet * 2 <= $game_party.gold
+    if not @allow_double
+      @gamecommand_window.disable_item(2)
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Update Phase 2 Step 3 : Command
+  #--------------------------------------------------------------------------  
+  def update_phase2_step3_command
+    @gamecommand_window.update
+    # If C button was pressed
+    if Input.trigger?(Input::C)
+      if @gamecommand_window.index == 2 and not @allow_double
+        $game_system.se_play($data_system.buzzer_se)        
+        return
+      end      
+      $game_system.se_play($data_system.decision_se)
+      if @gamecommand_window.index == 0
+        # Hit
+        draw_card(false)
+        @step = 4
+        @draw_wait = 15
+      elsif @gamecommand_window.index == 1
+        # Stand
+        @step = 5
+        @wait = 20
+      else
+        # Double down        
+        @bet *= 2
+        @currentbet_window.bet  = @bet
+        @doubled = true
+        draw_card(false)
+        @step = 4 
+      end
+      @gamecommand_window.visible = false
+      @gamecommand_window.active = false
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Update Phase 2 Step 4 : Card drawn
+  #--------------------------------------------------------------------------
+  def update_phase2_step4_card_drawn
+    if @doubled
+      # Stand after doubling
+      @step = 5
+      @wait = 20
+    else
+      start_phase2_step3_command
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Update Phase 2 Step 5 : Dealer shows cards
+  #--------------------------------------------------------------------------  
+  def update_phase2_step5_dealer_show
+    for card in @hand_dealer
+      card.sprite.front_turned = true
+    end
+    @step = 6
+    @wait = 15
+  end
+  #--------------------------------------------------------------------------
+  # * Update Phase 2 Step 6 : Dealer draws
+  #--------------------------------------------------------------------------  
+  def update_phase2_step6_dealer_draw
+    if check_win_lose
+      return
+    end
+    # Dealer just draws until he wins or busts
+    draw_card(true)    
+    @draw_wait = 20
+  end
+  #--------------------------------------------------------------------------
+  # * Update Phase 2 Step 7 : End game
+  #--------------------------------------------------------------------------  
+  def update_phase2_step7_end_game
+    if @message_sprite == nil
+      @message_sprite = Sprite.new    
+      @message_sprite.bitmap = Bitmap.new(640, 105)
+      @message_sprite.bitmap.font.name = ["Georgia", "Times New Roman"]
+      @message_sprite.bitmap.font.size = 40
+      @message_sprite.bitmap.font.bold = true
+      if @result == -2
+        color = Color.new(255, 0, 0)
+        message = "Player busts"
+        $game_system.se_play(RPG::AudioFile.new("011-System11", 80, 120))
+      elsif @result == -1      
+        color = Color.new(255, 0, 0)
+        p_score = calculate_score(@hand_player)
+        d_score = calculate_score(@hand_dealer)
+        message = "Dealer wins, " + d_score.to_s + " to " + p_score.to_s
+        $game_system.se_play(RPG::AudioFile.new("011-System11", 80, 120))
+      elsif @result == 1
+        color = Color.new(0, 255, 0)
+        message = "Player blackjack!"
+        $game_system.se_play(RPG::AudioFile.new("Recover4", 80, 100))
+      elsif @result == 2
+        color = Color.new(0, 255, 0)
+        message = "Dealer busts"
+        $game_system.se_play(RPG::AudioFile.new("Recover4", 80, 100))
+      end      
+      @message_sprite.bitmap.font.color = color
+      draw_text_new(0, 10, 640, 40, message, 1, @message_sprite)   
+      @message_sprite.x = 0
+      @message_sprite.y = 200
+      @message_sprite.opacity = 0
+      return
+    end 
+    if @message_sprite.opacity < 255      
+      @message_sprite.opacity += 20
+      if @message_sprite.opacity >= 255     
+        @wait = 30
+      end
+      return
+    end
+    @step = 8
+  end
+  #--------------------------------------------------------------------------
+  # * Update Phase 2 Step 8 : Result
+  #--------------------------------------------------------------------------  
+  def update_phase2_step8_result    
+    if @hand_player.size > 0      
+       if @result > 0
+         $game_party.gain_gold(@bet)
+         @balance_window.balance += @bet
+       else
+         $game_party.lose_gold(@bet)
+         @balance_window.balance -= @bet
+       end
+       $game_temp.blackjack_result = @balance_window.balance
+       @gold_window.refresh
+       @currentbet_window.visible = false
+       for card in @hand_player + @hand_dealer
+         card.sprite.dispose
+       end     
+      @hand_dealer = []
+      @hand_player = []
+    end
+    if @message_sprite.opacity > 0
+      @message_sprite.opacity -= 30
+      if @message_sprite.opacity <= 0
+        @wait = 10
+      end
+      return
+    end
+    @message_sprite.dispose
+    @message_sprite = nil
+    start_phase1_select_bet
+  end
+  #--------------------------------------------------------------------------
+  # * Draw a card
+  #--------------------------------------------------------------------------
+  def draw_card(is_dealer, front_turned = true)
+    # Draw a card and add it to the right player's hand
+    card = @deck.shift
+    hand = is_dealer ? @hand_dealer : @hand_player    
+    hand.push(card)
+    # Create sprite
+    x = hand.size * 45 + (is_dealer ? 15 : 140)
+    y = (is_dealer ? 18 : 300)
+    z = hand.size 
+    sprite = Sprite_Card.new(card, front_turned, x, y, z)
+    card.sprite = sprite
+    $game_system.se_play(RPG::AudioFile.new("046-Book01", 80, 100))
+  end
+  #--------------------------------------------------------------------------
+  # * Check win or lose
+  #--------------------------------------------------------------------------
+  def check_win_lose
+    @result = 0
+    p_score = calculate_score(@hand_player)
+    d_score = calculate_score(@hand_dealer)
+    if p_score > 21
+      @result = -2
+    elsif p_score == 21
+      @result = 1
+    elsif d_score > 21
+      @result = 2
+    elsif @step == 6 and d_score > p_score
+      @result = -1      
+    end    
+    if @result != 0
+      @gamecommand_window.visible = false
+      @gamecommand_window.active = false
+      @step = 7
+      @wait = 15      
+      return true
+    end    
+    return false
+  end
+  #--------------------------------------------------------------------------
+  # * Calculate score
+  #--------------------------------------------------------------------------
+  def calculate_score(hand)
+    score = 0
+    aces = 0
+    for card in hand
+      score += card.value
+      if card.number == 1
+        aces += 1
+      end
+    end    
+    # If score > 21, then aces should be used as 1
+    while aces > 0 and score > 21
+      score -= 10
+      aces -= 1
+    end
+    return score    
+  end
+  #--------------------------------------------------------------------------
+  # * Draw Text New (with shadow)
+  #--------------------------------------------------------------------------
+  def draw_text_new(x, y, width, height, text, align, sprite)
+    tempc = sprite.bitmap.font.color.clone
+    sprite.bitmap.font.color = Color.new(0, 0, 0, 192)
+    for xo in -3..3
+      for yo in -3..3
+        sprite.bitmap.draw_text(x - xo, y - yo, width, height, text, align)
+      end
+    end
+    sprite.bitmap.font.color = tempc
+    sprite.bitmap.draw_text(x, y, width, height, text, align)  
+    sprite.bitmap.draw_text(x, y, width, height, text, align)  
+  end
+end
+
+
+

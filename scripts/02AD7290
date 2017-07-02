@@ -1,0 +1,277 @@
+#==============================================================================
+# ** Scene_Simulation
+#------------------------------------------------------------------------------
+#  Battle simulation
+#==============================================================================
+class Scene_Simulation  
+  #--------------------------------------------------------------------------
+  # * Initialize
+  #--------------------------------------------------------------------------
+  def initialize(selected_id = 1)
+    @selected_id = selected_id
+    # We arrive back here after the battle so turn this off 
+    $game_temp.war_is_sim = false
+    $game_system.lock_bgm = false
+  end
+  #--------------------------------------------------------------------------
+  # * Main Processing
+  #--------------------------------------------------------------------------
+  def main        
+    # Make title graphic
+    @sprite = Sprite.new
+    @sprite.bitmap = RPG::Cache.picture("Backgrounds/Menu" + $game_system.windowskin_id.to_s)    
+    # Make label window
+    @label_window = Window_Label.new("Battle Simulation")
+    # Make windows
+    @list_window = Window_SimList.new
+    @list_window.set_index(@selected_id)
+    @name_window = Window_Base_Short.new(332, 64, 300, 64)
+    @score_window = Window_Base_Short.new(16, 412, 300, 48)
+    @opp_window = Window_Base_Short.new(332, 480-48, 300, 48)
+    @opp_window.set_standard_bitmap
+    @opp_window.contents.font.color = @opp_window.normal_color
+    @opp_window.draw_text(16, 2, 300-32, 46, "Enemy Commanders", 1)
+    @flag_sprite = Sprite.new
+    @flag_sprite.x = 340
+    @flag_sprite.y = 130    
+    @flag_sprite.bitmap = Bitmap.new(350, 250)
+    @flag_sprite.z = 2
+    @portrait_sprite = Sprite.new
+    @portrait_sprite.x = 340
+    @portrait_sprite.y = 250-40
+    @portrait_sprite.bitmap = Bitmap.new(350, 230)
+    @portrait_sprite.z = 1
+    @command_window = Window_Command.new(300, ["Play with cutscenes", "Play without cutscenes"])
+    @command_window.index = $game_system.war_sim_cutscenes ? 0 : 1
+    @command_window.x = 320 - @command_window.width / 2
+    @command_window.y = 240 - @command_window.height / 2
+    @command_window.z = 500
+    @command_window.visible = false
+    @command_window.active = false
+    refresh
+    # Execute transition
+    Graphics.transition
+    # Main loop
+    loop do
+      # Update game screen
+      Graphics.update
+      # Update input information
+      Input.update
+      # Frame update
+      update
+      # Abort loop if screen is changed
+      if $scene != self
+        break
+      end
+    end
+    # Prepare for transition
+    Graphics.freeze
+    # Dispose of windows
+    @flag_sprite.bitmap.dispose
+    @flag_sprite.dispose
+    @portrait_sprite.bitmap.dispose
+    @portrait_sprite.dispose
+    @command_window.dispose
+    @name_window.dispose
+    @score_window.dispose
+    @opp_window.dispose
+    @list_window.dispose
+    @label_window.dispose
+    @sprite.bitmap.dispose
+    @sprite.dispose
+  end
+  #--------------------------------------------------------------------------
+  # * Frame Update
+  #--------------------------------------------------------------------------
+  def update
+    @list_window.update
+    @command_window.update
+    if @selected_id != @list_window.index
+      @selected_id = @list_window.index
+      refresh
+    end
+    if @command_window.active
+      update_command
+    else
+      # If B button was pressed
+      if Input.trigger?(Input::B)
+        $game_system.se_play($data_system.cancel_se)
+        # TODO: teleport to old map position
+        $scene = Scene_Map.new
+        return
+      end 
+      # If C button was pressed
+      if Input.trigger?(Input::C)
+        if @list_window.data == nil
+          $game_system.se_play($data_system.buzzer_se)
+          return
+        end
+        $game_system.se_play($data_system.decision_se)
+        if @list_window.data.battle_id >= 100
+          # Extra battle, no cutscenes to begin with
+          start_battle
+        else
+          @list_window.active = false
+          @command_window.active = true
+          @command_window.visible = true
+        end
+        return
+      end 
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Update when command window is active
+  #--------------------------------------------------------------------------
+  def update_command
+      # If B button was pressed
+      if Input.trigger?(Input::B)
+        $game_system.se_play($data_system.cancel_se)
+        @list_window.active = true
+        @command_window.active = false
+        @command_window.visible = false
+        return
+      end 
+      # If C button was pressed
+      if Input.trigger?(Input::C)
+        $game_system.se_play($data_system.decision_se)
+        start_battle
+        return
+      end      
+    end
+  #--------------------------------------------------------------------------
+  # * Start battle
+  #--------------------------------------------------------------------------
+  def start_battle
+    $game_system.war_sim_cutscenes = @command_window.index == 1 ? false : true
+    $game_system.bgm_fade(2)
+    battle_id = @list_window.data.battle_id
+    case (battle_id)
+      when 1
+        map_id = 13
+      when 2
+        map_id = 124
+      when 4
+        map_id = 240
+      when 5
+        map_id = 318
+      when 6
+        map_id = 343
+      when 7
+        map_id = 370
+      when 8
+        map_id = 395
+      when 10
+        map_id = 409
+      when 11
+        map_id = 519
+      when 13
+        map_id = 543
+      when 14
+        map_id = 556
+      when 15
+        map_id = 580
+      when 16
+        map_id = 634
+      when 100
+        map_id = 373
+      when 101        
+        map_id = 404
+      when 102
+        map_id = 405
+      when 103
+        map_id = 525
+      when 104
+        map_id = 615
+      when 105
+        map_id = 560
+      when 106
+        map_id = 559
+      when 107
+        map_id = 670
+      when 108
+        map_id = 672
+      when 109
+        map_id = 673
+    end
+    $game_screen.start_tone_change(Tone.new(-255, -255, -255, 0), 0)
+    $game_temp.war_is_sim = true
+    $game_map.setup(map_id)
+    $game_player.moveto(1, 1)    
+    $scene = Scene_War.new(battle_id)
+  end
+  #--------------------------------------------------------------------------
+  # * Refresh screen
+  #--------------------------------------------------------------------------
+  def refresh
+    battle = @list_window.data
+    if battle == nil
+      @opp_window.visible = false
+      @name_window.visible = false      
+      @score_window.visible = false    
+      @flag_sprite.visible = false
+      @portrait_sprite.visible = false
+    else
+      @opp_window.visible = true
+      @name_window.visible = true
+      @name_window.set_standard_bitmap
+      @name_window.contents.font.color = @name_window.normal_color
+      @name_window.contents.font.size = 25
+      @name_window.draw_text(16, 2, 300-32, 60, battle.name, 1)
+      # Score window
+      @score_window.visible = true     
+      @score_window.set_standard_bitmap
+      @score_window.contents.font.color = @score_window.normal_color
+      @score_window.draw_text(16, 2, 350, 48, "Best score: ", 0)
+      score = $game_party.get_war_score(battle.battle_id)
+      turns =  $game_party.get_war_score_turns(battle.battle_id)
+      if (score > 0)
+        @score_window.draw_text(135, 2, 30, 48, score.to_s, 2)
+        @score_window.draw_text(165, 2, 250, 48, " ( " + turns.to_s + " turns)", 0)        
+      else
+        @score_window.draw_text(135, 2, 30, 48, "-- ", 2)        
+      end
+      # Draw flags
+      @flag_sprite.visible = true
+      @flag_sprite.bitmap.clear
+      bitmap = RPG::Cache.picture("Flag_" + battle.side1.to_s)
+      cw = bitmap.width
+      ch = bitmap.height
+      src_rect = Rect.new(0, 0, cw, ch)
+      @flag_sprite.bitmap.blt(0, 0, bitmap, src_rect)          
+      bitmap = RPG::Cache.picture("Flag_" + battle.side2.to_s)
+      @flag_sprite.bitmap.blt(150, 0, bitmap, src_rect)          
+      @flag_sprite.bitmap.font.size = 30
+      @flag_sprite.bitmap.font.bold = true
+      draw_text_new(102, 50, 80, 50, "VS", 1, @flag_sprite) 
+      # Draw portraits
+      @portrait_sprite.visible = true
+      @portrait_sprite.bitmap.clear
+      x = battle.portraits.length - 1
+      xfact = battle.portraits.length < 4 ? 75 : 200 / battle.portraits.length
+      for portrait in battle.portraits.reverse
+        bitmap = RPG::Cache.picture("Portraits/" + portrait)
+        cw = bitmap.width
+        ch = bitmap.height
+        src_rect = Rect.new(0, 0, cw, ch)
+        dest_rect = Rect.new(x * xfact, @portrait_sprite.bitmap.height - ch/2, cw/2, ch/2)
+        @portrait_sprite.bitmap.stretch_blt(dest_rect, bitmap, src_rect)     
+        x -= 1
+      end
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Draw Text New (with shadow)
+  #--------------------------------------------------------------------------
+  def draw_text_new(x, y, width, height, text, align, sprite)
+    tempc = sprite.bitmap.font.color.clone
+    sprite.bitmap.font.color = Color.new(0, 0, 0, 192)
+    for xo in -3..3
+      for yo in -3..3
+        sprite.bitmap.draw_text(x - xo, y - yo, width, height, text, align)
+      end
+    end
+    sprite.bitmap.font.color = tempc
+    sprite.bitmap.draw_text(x, y, width, height, text, align)  
+    sprite.bitmap.draw_text(x, y, width, height, text, align)  
+  end
+end

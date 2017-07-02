@@ -1,0 +1,392 @@
+#==============================================================================
+# ** Window_Message
+#------------------------------------------------------------------------------
+#  This message window is used to display text.
+#==============================================================================
+ 
+class Window_Message < Window_Selectable
+  #--------------------------------------------------------------------------
+  # * Object Initialization
+  #--------------------------------------------------------------------------
+  def initialize
+    super(0, 0, 550, 4*24+38)
+    self.contents = Bitmap.new(width - 32, height - 32)    
+    self.contents_opacity = 0
+    self.visible = false
+    self.z = 9996
+    @fade_in = false
+    @fade_out = false
+    @prepare_fade_out = false # Fade out from next frame on
+    @contents_showing = false
+    @cursor_width = 0
+    @wait = -1
+    @nextchar_wait = -1 # Wait in frames until next character is shown
+    @display_index = 0  # Index of last character shown
+    @display_text = ""    # Parsed display text left to display
+    @display_x = 0  # x-location of the currently parsed text
+    @display_y = 0 # y-location of the currently parsed text
+    @display_delay = 0 # wait time between characters
+    @old_name = "" 
+    @old_portrait = ""  # Store the (suffix-less) portrait name
+    self.active = false
+    self.index = -1
+    @portrait_sprite = Window_Message_Portrait_Picture.new    
+    @name_window = Window_Message_Name.new
+  end
+  #--------------------------------------------------------------------------
+  # * Dispose
+  #--------------------------------------------------------------------------
+  def dispose
+    terminate_message
+    $game_temp.message_window_showing = false
+    if @input_number_window != nil
+      @input_number_window.dispose
+    end
+    @portrait_sprite.dispose
+    @name_window.dispose
+    super
+  end
+  #--------------------------------------------------------------------------
+  # * Terminate Message
+  #--------------------------------------------------------------------------
+  def terminate_message
+    self.active = false
+    self.pause = false
+    self.index = -1
+    @prepare_fade_out = true
+    @fade_picture = true
+    @fade_messagebox = true
+    @fade_namebox = true
+    @fade_name = true
+    # Clear showing flag
+    @contents_showing = false
+    # Call message callback
+    if $game_temp.message_proc != nil
+      $game_temp.message_proc.call
+    end
+    # Clear variables related to text, choices, and number input
+    $game_temp.message_text = nil
+    $game_temp.message_proc = nil
+    $game_temp.choice_start = 99
+    $game_temp.choice_max = 0
+    $game_temp.choice_cancel_type = 0
+    $game_temp.choice_proc = nil
+    $game_temp.num_input_start = 99
+    $game_temp.num_input_variable_id = 0
+    $game_temp.num_input_digits_max = 0
+  end
+  #--------------------------------------------------------------------------
+  # * Draw the next character
+  #--------------------------------------------------------------------------
+  def draw_next_character    
+    ysp = 24
+    no_delay = (@display_delay == 0)
+    continue = true
+    # Hold control in debug mode to fast-forward
+    if $DEBUG and Input.press?(Input::CTRL)
+      no_delay = true
+    end
+    while continue or no_delay
+      # Get the next character
+      c = @display_text.slice!(/./m)
+      if c == nil
+        # Finished writing everything
+        return
+      end            
+      # Pause
+      if c == "#"
+        @nextchar_wait = 15
+        continue = false
+        next
+      end
+      # Change colour
+      if c == "\001"
+        # Change text color
+        @display_text.sub!(/\[([0-9]+)\]/, "")
+        color = $1.to_i
+        if color >= 0 and color <= 7
+          self.contents.font.color = text_color(color)
+        end
+        # go to next text
+        next
+      end
+      # Change delay
+      if c == "\003"
+        @display_text.sub!(/\[([0-9]+)\]/, "")
+        @display_delay = $1.to_i
+        # Set to 0 for instant display
+        no_delay = (@display_delay == 0)
+        continue = true 
+        # go to next text
+        next
+      end
+      # Set self-destruct timer
+      if c == "\002"
+        text.sub!(/\[([0-9]+)\]/, "")
+        @wait = $1.to_i
+        next
+      end
+      # Newline
+      #TODO: Choice (when encountering newline, see original rpgm code)
+      if c == "\n"
+        @cursor_width = [@display_x, @cursor_width].max
+        @display_x = 0
+        @display_y += ysp
+        next
+      end
+      # Draw text
+      draw_text(4 + @display_x, @display_y+4, 40, ysp, c)
+      # Add x to drawn text width
+      @display_x += self.contents.text_size(c).width
+      @nextchar_wait = @display_delay
+      continue = false    
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Refresh
+  #--------------------------------------------------------------------------
+  def refresh
+    # Prepare window for drawing text
+    self.contents.clear
+    self.contents.font.color = normal_color
+    @display_x = 0
+    @display_y = 0
+    @display_delay = 0
+    # If waiting for a message to be displayed,
+    # parse the text to display
+    if $game_temp.message_text != nil      
+      @display_text = $game_temp.message_text.clone
+      @nextchar_wait = 1
+      # Replace all variables
+      begin
+        last_text = @display_text.clone
+        @display_text.gsub!(/\\[Vv]\[([0-9]+)\]/) { $game_variables[$1.to_i] }
+      end until @display_text == last_text
+      # Replace "ITEMNAME"      
+      @display_text.gsub!(/\\ITEMNAME/) { $game_temp.last_item_name }
+      # Change "\\\\" to "\000" for convenience
+      @display_text.gsub!(/\\\\/) { "\000" }
+      # Change "\\C" to "\001" and "\\D" to "\002" and "\\W" to "\003"
+      @display_text.gsub!(/\\[Cc]\[([0-9]+)\]/) { "\001[#{$1}]" }
+      @display_text.gsub!(/\\[Dd]\[([0-9]+)\]/) { "\002[#{$1}]" }       
+      @display_text.gsub!(/\\[Ww]\[([0-9]+)\]/) { "\003[#{$1}]" }      
+    end    
+    @portrait_sprite.refresh
+    @name_window.refresh
+    
+    #TODO: Choice and maybe Number input    
+    @cursor_width = 0
+    # Indent if choice
+    if $game_temp.choice_start == 0
+      x = 8
+    end
+    # If choice
+    if $game_temp.choice_max > 0
+      @item_max = $game_temp.choice_max
+      self.active = true
+      self.index = 0
+    end
+    # If number input
+    if $game_temp.num_input_variable_id > 0
+      digits_max = $game_temp.num_input_digits_max
+      number = $game_variables[$game_temp.num_input_variable_id]
+      @input_number_window = Window_InputNumber.new(digits_max)
+      @input_number_window.number = number
+      @input_number_window.x = self.x + 8
+      @input_number_window.y = self.y + $game_temp.num_input_start * 24
+    end   
+  end
+  #--------------------------------------------------------------------------
+  # * Set Window Position and Opacity Level
+  #--------------------------------------------------------------------------
+  def reset_window
+    self.x = 45
+    if $game_temp.in_battle
+      self.y = 16
+    else
+      self.y = 332
+    end        
+    self.back_opacity = 225        
+    #@portrait_sprite.opacity = self.contents_opacity
+    @name_window.x = self.x + 8
+    @name_window.y = self.y - @name_window.height + 12
+    #@name_window.opacity = self.contents_opacity
+    @name_window.back_opacity = self.back_opacity    
+    #@name_window.contents_opacity = self.contents_opacity    
+  end
+  #--------------------------------------------------------------------------
+  # * Frame Update
+  #--------------------------------------------------------------------------
+  def update
+    super
+    # If fade in
+    if @fade_in
+      val = $game_temp.dialogue_fadefast ? 64 : 28
+      self.opacity += val
+      self.contents_opacity += val
+      if @input_number_window != nil
+        @input_number_window.opacity += val
+      end
+      unless $game_temp.dialogue_name == ""
+        @name_window.opacity += val
+        @name_window.contents_opacity += val
+      end
+      unless $game_temp.dialogue_portrait == ""
+        @portrait_sprite.opacity += val
+      end
+      if self.contents_opacity == 255
+        $game_temp.dialogue_fadefast = false
+        @fade_in = false
+      end
+      return
+    end
+    # If inputting number
+    if @input_number_window != nil
+      @input_number_window.update
+      # Confirm
+      if Input.trigger?(Input::C)
+        $game_system.se_play($data_system.decision_se)
+        $game_variables[$game_temp.num_input_variable_id] =
+          @input_number_window.number
+        $game_map.need_refresh = true
+        # Dispose of number input window
+        @input_number_window.dispose
+        @input_number_window = nil
+        terminate_message
+      end
+      return
+    end
+    # If message is being displayed
+    if @contents_showing
+      # Check if next character needs to be drawn
+      if @nextchar_wait > 0       
+        @nextchar_wait -= 1
+        if @nextchar_wait == 0
+          draw_next_character
+        end
+      end      
+      # Check if message should be terminated
+      if @wait > 0 and not @nextchar_wait > 0
+        @wait -= 1
+        if @wait == 0
+          @wait = -1
+          terminate_message
+        end
+        return
+      end            
+      # If choice isn't being displayed and not waiting, show pause sign
+      if $game_temp.choice_max == 0 and not @nextchar_wait > 0 and not @wait > 0
+        self.pause = true
+      end
+      # Cancel
+      if Input.trigger?(Input::B) and not @nextchar_wait > 0
+        if $game_temp.choice_max > 0 and $game_temp.choice_cancel_type > 0
+          $game_system.se_play($data_system.cancel_se)
+          $game_temp.choice_proc.call($game_temp.choice_cancel_type - 1)
+          terminate_message
+        end
+      end
+      # Confirm
+      if Input.trigger?(Input::C) and not @nextchar_wait > 0
+        if $game_temp.choice_max > 0
+          $game_system.se_play($data_system.decision_se)
+          $game_temp.choice_proc.call(self.index)
+        end
+        terminate_message
+      end
+      return
+    end
+    # If display wait message or choice exists when not fading out
+    if @fade_out == false and $game_temp.message_text != nil      
+      update_newmessage
+      return
+    end
+    # If message which should be displayed is not shown, but window is visible
+    if self.visible
+      @fade_out = true
+      @prepare_fade_out = false
+      val = @fade_name ? 28 : 64 # Go faster if it;s still the same character
+      self.contents_opacity -= val
+      self.opacity -= val if @fade_messagebox
+      @name_window.opacity -= val if @fade_namebox
+      @name_window.contents_opacity -= val if @fade_name
+      @portrait_sprite.opacity -= val if @fade_picture
+      if self.contents_opacity == 0
+        @fade_out = false
+        self.visible = false
+        @name_window.visible = false
+        @portrait_sprite.visible = false
+        $game_temp.message_window_showing = false
+        self.contents.clear
+        if $game_temp.message_text != nil      
+          update_newmessage
+        end
+      end
+      return
+    end    
+  end
+  #--------------------------------------------------------------------------
+  # * Update new message
+  #--------------------------------------------------------------------------   
+  def  update_newmessage
+    if @prepare_fade_out
+      # There was a message box before this fading out
+      # Check to see which parts have to fade out
+      @fade_messagebox = false # The box stays in any case
+      @fade_out = true
+      if $game_temp.dialogue_name == "" 
+        # No name box required
+      elsif $game_temp.dialogue_name != @old_name 
+        # Name changed
+        @fade_namebox = false
+      else 
+        # Name is the same
+        @fade_namebox = false
+        @fade_name = false
+      end
+      if $game_temp.dialogue_portrait == @old_portrait
+        # Portrait  is the same
+        @fade_picture = false
+      end    
+      return
+    end
+    @contents_showing = true
+    $game_temp.message_window_showing = true
+    reset_window
+    refresh
+    Graphics.frame_reset
+    self.visible = true
+    # If text is set to display instantly, draw it now and fade it in
+    if @display_delay == 0
+      draw_next_character
+    end
+    # Store current name and portrait
+    @old_name = $game_temp.dialogue_name 
+    @old_portrait = $game_temp.dialogue_portrait#.gsub(/_(.*)/) {} # Remove _suffix for changing emotions (they should not fade)
+    unless $game_temp.dialogue_name == ""
+      @name_window.visible = true
+      @name_window.refresh
+    end
+    unless $game_temp.dialogue_portrait == ""
+      @portrait_sprite.visible = true
+      @portrait_sprite.refresh
+    end      
+    #self.opacity = 0
+    if @input_number_window != nil
+      @input_number_window.contents_opacity = 0
+    end
+     @fade_in = true
+  end
+  #--------------------------------------------------------------------------
+  # * Cursor Rectangle Update
+  #--------------------------------------------------------------------------
+  def update_cursor_rect
+    if @index >= 0
+      n = $game_temp.choice_start + @index
+      self.cursor_rect.set(0, 4 + n * 24, @cursor_width+16, 26)
+    else
+      self.cursor_rect.empty
+    end
+  end
+end
+

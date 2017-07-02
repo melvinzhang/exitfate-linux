@@ -1,0 +1,55 @@
+#==============================================================================
+# ** Window_WarAnalyze
+#------------------------------------------------------------------------------
+#  Displayed when unit has Analyze ability
+#==============================================================================
+
+class Window_WarAnalyze < Window_Base  
+  attr_reader :target
+  attr_reader :user
+  #--------------------------------------------------------------------------
+  # * Object Initialization
+  #--------------------------------------------------------------------------
+  def initialize
+    super(0, 480-104, 250, 104)    
+    @target = nil
+    @user = nil
+    self.visible = false
+  end
+  #--------------------------------------------------------------------------
+  # * Set values
+  #--------------------------------------------------------------------------
+  def set(user, target, s_dmg, e_dmg)
+    @user = user
+    @target = target
+    return if @user == nil or @target == nil
+    @s_hp_before = @user.men
+    @s_hp_after = [@user.men - s_dmg, 0].max
+    @e_hp_before = @target.men
+    @e_hp_after = [@target.men - e_dmg, 0].max
+    refresh
+  end
+  #--------------------------------------------------------------------------
+  # * Refresh
+  #--------------------------------------------------------------------------
+  def refresh
+    return if @target == nil
+    if self.contents != nil
+      self.contents.dispose
+      self.contents = nil
+    end
+    self.contents = Bitmap.new(self.width - 32, self.height - 32)        
+    self.contents.font.color = system_color
+    draw_text(0, 0, 200, 25, " Battle Analysis", 0)   
+    draw_text(0, 24, 80, 25, "Self:", 0)   
+    draw_text(0, 48, 80, 25, "Enemy:", 0)   
+    draw_text(120, 24, 80, 25, "->", 0)   
+    draw_text(120, 48, 80, 25, "->", 0)   
+    self.contents.font.color = normal_color
+    draw_text(0, 24, 120, 25, @s_hp_before.to_s, 2)   
+    draw_text(0, 48, 120, 25, @e_hp_before.to_s, 2)   
+    draw_text(120, 24, 80, 25, @s_hp_after.to_s, 2)   
+    draw_text(120, 48, 80, 25, @e_hp_after.to_s, 2)   
+  end
+end
+

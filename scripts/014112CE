@@ -1,0 +1,297 @@
+#==============================================================================
+# ** Scene_Item
+#------------------------------------------------------------------------------
+#  This class performs item screen processing.
+#==============================================================================
+
+class Scene_Item
+  #--------------------------------------------------------------------------
+  # * Main Processing
+  #--------------------------------------------------------------------------
+  def main        
+    # Make title graphic
+    @sprite = Sprite.new
+    @sprite.bitmap = RPG::Cache.picture("Backgrounds/Menu" + $game_system.windowskin_id.to_s)    
+    # Make label window
+    @label_window = Window_Label.new("Items")
+    # Make command window
+    s = []
+    s.push("Items")
+    s.push("Special")
+    @command_window = Window_Command.new(150, s)
+    @command_window.y = 75
+    @command_window.windowskin_suffix = "_left"
+    @command_window.index = 0
+    @command_window.active = true
+    # Make status window
+    @status_window = []
+    for i in 0...6
+      @status_window[i] = Window_MenuStatus.new($game_party.actors[i], true)
+      @status_window[i].x = 365
+      @status_window[i].y = i*36
+    end
+    @entourage_window = Window_Base_Short.new(365, 6*36, 300, 40)
+    @entourage_window.contents = Bitmap.new(175, 48)      
+    @entourage_window.windowskin_suffix = "_right"
+    @entourage_window.contents.font.color = @entourage_window.system_color
+    @entourage_window.draw_text(24, 4, 200, 32, "Entourage")
+    for i in 0...2
+      @status_window[6+i] = Window_MenuStatus.new($game_party.entourage[i], true)
+      @status_window[6+i].x = 365
+      @status_window[6+i].y = (i+7)*36
+    end
+    # Make help window, item window    
+    @help_window = Window_Help.new
+    @item_window = Window_Item.new
+    @item_window.visible = false
+    @item_window.active = false
+    # Associate help window
+    @item_window.help_window = @help_window
+    # Execute transition
+    Graphics.transition
+    # Main loop
+    loop do
+      # Update game screen
+      Graphics.update
+      # Update input information
+      Input.update
+      # Frame update
+      update
+      # Abort loop if screen is changed
+      if $scene != self
+        break
+      end
+    end
+    # Prepare for transition
+    Graphics.freeze
+    # Dispose of windows
+    for w in @status_window
+      w.dispose
+    end
+    @item_window.dispose    
+    @help_window.dispose
+    @command_window.dispose
+    @label_window.dispose
+    @sprite.bitmap.dispose
+    @sprite.dispose
+    @entourage_window.dispose
+  end
+  #--------------------------------------------------------------------------
+  # * Frame Update
+  #--------------------------------------------------------------------------
+  def update
+    # Update windows
+    @help_window.update
+    @item_window.update
+    @command_window.update
+    for w in @status_window
+      w.update
+    end        
+    if @command_window.active
+      update_command
+      return
+    end   
+    if @item_window.active
+      update_item
+      return
+    end
+    # If nothing else is active, then we are targetting
+    update_target
+  end
+  #--------------------------------------------------------------------------
+  # * Frame Update (when Command window is active)
+  #--------------------------------------------------------------------------
+  def update_command
+    # If B button was pressed
+    if Input.trigger?(Input::B)
+      $game_system.se_play($data_system.cancel_se)
+      $scene = Scene_Menu.new(0)
+      return
+    end
+    # If C button was pressed, switch to items
+    if Input.trigger?(Input::C)
+      case @command_window.index
+      when 0  # use item
+        @item_window.show_plotitems = false
+      when 1  # plot items
+        @item_window.show_plotitems = true        
+      end
+      $game_system.se_play($data_system.decision_se)
+      @item_window.visible = true
+      @item_window.active = true
+      @command_window.active = false
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Frame Update (when item window is active)
+  #--------------------------------------------------------------------------
+  def update_item
+    # If B button was pressed
+    if Input.trigger?(Input::B)
+      $game_system.se_play($data_system.cancel_se)
+      @item_window.visible = false
+      @item_window.active = false
+      @command_window.active = true
+      @help_window.set_text("")
+      return
+    end
+    # If C button was pressed
+    if Input.trigger?(Input::C)
+      # Get currently selected data on the item window
+      @item = @item_window.item
+      # If not a use item
+      unless @item.is_a?(RPG::Item)
+        # Play buzzer SE
+        $game_system.se_play($data_system.buzzer_se)
+        return
+      end
+      # If it can't be used
+      unless $game_party.item_can_use?(@item.id)
+        # Play buzzer SE
+        $game_system.se_play($data_system.buzzer_se)
+        return
+      end
+      # Play decision SE
+      $game_system.se_play($data_system.decision_se)
+      # If effect scope is an ally
+      if @item.scope >= 3 and @item.scope < 7
+        # Activate target window
+        @item_window.active = false
+        # Set cursor position to effect scope (single / all)
+        if @item.scope == 4 || @item.scope == 6
+          @target_index = -1
+          for w in @status_window
+            w.select
+            w.active = true
+          end
+        else
+          @target_index = 0
+          @status_window[0].select
+          @status_window[0].active = true
+        end
+      # If effect scope is other than an ally
+      else
+        # If command event ID is valid
+        if @item.common_event_id > 0
+          # Command event call reservation
+          $game_temp.common_event_id = @item.common_event_id
+          # Play item use SE
+          $game_system.se_play(@item.menu_se)
+          # If consumable
+          if @item.consumable
+            # Decrease used items by 1
+            $game_party.lose_item(@item.id, 1)
+            # Draw item window item
+            @item_window.draw_item(@item_window.index)
+          end
+          # Switch to map screen
+          $scene = Scene_Map.new
+          return
+        end
+      end
+      return
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Frame Update (when target window is active)
+  #--------------------------------------------------------------------------
+  def update_target
+    if Input.repeat?(Input::DOWN)
+      if @target_index > -1
+        $game_system.se_play($data_system.cursor_se)       
+        @status_window[@target_index].active = false
+        @status_window[@target_index].unselect
+        @target_index = (@target_index + 1) % 8
+        @status_window[@target_index].active = true
+        @status_window[@target_index].select        
+      end      
+    end    
+    if Input.repeat?(Input::UP)
+      if @target_index > -1
+        $game_system.se_play($data_system.cursor_se)       
+        @status_window[@target_index].active = false
+        @status_window[@target_index].unselect        
+        @target_index = (@target_index - 1 + 8) % 8
+        @status_window[@target_index].active = true
+        @status_window[@target_index].select        
+      end      
+    end        
+    # If B button was pressed
+    if Input.trigger?(Input::B)
+      # Play cancel SE
+      $game_system.se_play($data_system.cancel_se)
+      # If unable to use because items ran out
+      unless $game_party.item_can_use?(@item.id)
+        # Remake item window contents
+        @item_window.refresh
+      end
+      for w in @status_window
+        w.unselect
+        w.active = false
+      end
+      @item_window.active = true      
+      return
+    end
+    # If C button was pressed
+    if Input.trigger?(Input::C)
+      # If items are used up
+      if $game_party.item_number(@item.id) == 0
+        # Play buzzer SE
+        $game_system.se_play($data_system.buzzer_se)
+        return
+      end
+      # If target is all
+      if @target_index == -1
+        # Apply item effects to entire party
+        used = false
+        for i in $game_party.actors + $game_party.entourage
+          used |= i.item_effect(@item)
+        end
+      end
+      # If single target
+      if @target_index >= 0
+        # Apply item use effects to target actor
+        target = @status_window[@target_index].actor
+        if target != nil
+          used = target.item_effect(@item)
+        end
+      end
+      # If an item was used
+      if used
+        # Play item use SE
+        $game_system.se_play(@item.menu_se)
+        # If consumable
+        if @item.consumable
+          # Decrease used items by 1
+          $game_party.lose_item(@item.id, 1)
+          # Redraw item window item
+          @item_window.draw_item(@item_window.index)
+        end
+        # Remake target window contents
+        for w in @status_window
+          w.refresh
+        end
+        # If all party members are dead
+        if $game_party.all_dead?
+          # Switch to game over screen
+          $scene = Scene_Gameover.new
+          return
+        end
+        # If common event ID is valid
+        if @item.common_event_id > 0
+          # Common event call reservation
+          $game_temp.common_event_id = @item.common_event_id
+          # Switch to map screen
+          $scene = Scene_Map.new
+          return
+        end
+      end
+      # If item wasn't used
+      unless used
+        # Play buzzer SE
+        $game_system.se_play($data_system.buzzer_se)
+      end
+      return
+    end   
+  end
+end

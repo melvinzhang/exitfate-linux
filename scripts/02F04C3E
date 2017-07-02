@@ -1,0 +1,237 @@
+#==============================================================================
+# ** Window_Blacksmith
+#------------------------------------------------------------------------------
+#  This window allows upgrading of weapons
+#==============================================================================
+
+class Window_Blacksmith < Window_Base  
+  attr_reader :upgrade_atk
+  attr_reader :upgrade_hit
+  attr_reader :upgrade_crit
+  attr_reader :totalcost
+  #--------------------------------------------------------------------------
+  # * Object Initialization
+  #     actor : actor
+  #--------------------------------------------------------------------------
+  def initialize(actor, maxlevel)
+    super(180, 40, 285, 132)
+    self.contents = Bitmap.new(width - 32, height - 32)
+    self.active = false
+    # Delegate windows
+    @window_wname = Window_Base_Short.new(self.x, 0, self.width, 48)
+    @window_total = Window_Base_Short.new(self.x, 166, self.width, 48)
+    @window_money = Window_Base_Short.new(self.x, 206, self.width, 48)    
+    @window_wname.set_standard_bitmap
+    @window_total.set_standard_bitmap
+    @window_money.set_standard_bitmap
+    @actor = actor        
+    @maxlevel = maxlevel
+    reset
+    refresh
+  end 
+  #--------------------------------------------------------------------------
+  # Reset
+  #--------------------------------------------------------------------------
+  def reset
+    @upgrade_atk = @actor.weapon_atk
+    @upgrade_hit = @actor.weapon_hit
+    @upgrade_crit = @actor.weapon_crit
+  end
+  #--------------------------------------------------------------------------
+  # Dispose
+  #--------------------------------------------------------------------------
+  def dispose
+    @window_wname.dispose
+    @window_total.dispose
+    @window_money.dispose
+    super
+  end
+  #--------------------------------------------------------------------------
+  # Visible
+  #--------------------------------------------------------------------------
+  def visible=(v)
+    # Don't actually make the main window invisible,
+    
+    #@window_wname.visible = v
+    @window_total.visible = v
+    @window_money.visible = v
+    #super
+    refresh
+  end
+  #--------------------------------------------------------------------------
+  # Refresh
+  #--------------------------------------------------------------------------
+  def refresh
+    self.contents.clear
+    @window_wname.contents.clear
+    @window_total.contents.clear
+    @window_money.contents.clear
+     if @actor == nil
+       return
+    end   
+    # Weapon info    
+    @window_wname.draw_text(16, 8, 250, 32, @actor.weapon_name, 0)   
+    self.contents.font.color = system_color
+    self.draw_text(40, 0, 50, 32, "Lvl", 2)
+    self.draw_text(110, 0, 50, 32, "Bonus", 2)
+    self.draw_text(0, 0, self.width-40, 32, "Cost", 2)    
+    y = 24
+    # Weapon upgrading
+    self.contents.font.color = system_color
+    self.draw_text(0, y+0, 150, 32, "ATK", 0)
+    self.draw_text(0, y+24, 150, 32, "HIT", 0)
+    self.draw_text(0, y+48, 150, 32, "CRT", 0)
+    # Bonuses
+    self.contents.font.color = normal_color
+    self.draw_text(110, y+0, 50, 32, @actor.weapon_bonus_atk(@upgrade_atk).to_s, 2)    
+    self.draw_text(110, y+24, 50, 32, @actor.weapon_bonus_hit(@upgrade_hit).to_s, 2)    
+    self.draw_text(110, y+48, 50, 32, @actor.weapon_bonus_crit(@upgrade_crit).to_s, 2)   
+    self.contents.font.color = @upgrade_atk >= @maxlevel ? system_color :  normal_color
+    self.draw_text(40, y+0, 50, 32, @upgrade_atk.to_s, 2)
+    self.contents.font.color = @upgrade_hit >= @maxlevel ? system_color :  normal_color
+    self.draw_text(40, y+24, 50, 32, @upgrade_hit.to_s, 2)
+    self.contents.font.color = @upgrade_crit >= @maxlevel ? system_color :  normal_color
+    self.draw_text(40, y+48, 50, 32, @upgrade_crit.to_s, 2)        
+    if self.active
+      # Determine costs
+      cost1 = 0
+      for i in (@actor.weapon_atk + 1)..@upgrade_atk
+        cost1 += WEAPON_UPGR_PRICE[i]
+      end
+      cost2 = 0
+      for i in (@actor.weapon_hit + 1)..@upgrade_hit
+        cost2 += (WEAPON_UPGR_PRICE[i] * 0.75).to_i
+      end
+      cost3 = 0
+      for i in (@actor.weapon_crit + 1)..@upgrade_crit
+        cost3 += (WEAPON_UPGR_PRICE[i] * 0.50).to_i
+      end    
+      @totalcost = cost1 + cost2 + cost3    
+      self.contents.font.color = normal_color
+      self.draw_text(0, y+0, self.width - 40, 32, cost1.to_s, 2)
+      self.draw_text(0, y+24, self.width - 40, 32, cost2.to_s, 2)
+      self.draw_text(0, y+48, self.width - 40, 32, cost3.to_s, 2)          
+      # Draw arrows
+      bitmap_left = RPG::Cache.icon("Arrow_Small_Left")
+      bitmap_right= RPG::Cache.icon("Arrow_Small_Right")
+      if @upgrade_atk < @maxlevel
+        self.contents.blt(90, y+6, bitmap_right, Rect.new(0, 0, 24, 24))
+      end
+      if @upgrade_atk > @actor.weapon_atk
+        self.contents.blt(50, y+6, bitmap_left, Rect.new(0, 0, 24, 24))
+      end
+      if @upgrade_hit < @maxlevel
+        self.contents.blt(90, y+30, bitmap_right, Rect.new(0, 0, 24, 24))
+      end
+      if @upgrade_hit > @actor.weapon_hit
+        self.contents.blt(50, y+30, bitmap_left, Rect.new(0, 0, 24, 24))
+      end
+      if @upgrade_crit < @maxlevel
+        self.contents.blt(90, y+54, bitmap_right, Rect.new(0, 0, 24, 24))
+      end
+      if @upgrade_crit > @actor.weapon_crit
+        self.contents.blt(50, y+54, bitmap_left, Rect.new(0, 0, 24, 24))
+      end
+      # Total Cost
+      @window_total.contents.font.color = system_color
+      @window_total.draw_text(16, 8, 150, 32, "Total Cost:", 0)
+      @window_total.contents.font.color = @totalcost > $game_party.gold ? disabled_color : normal_color
+      @window_total.draw_text(16, 8, self.width - 40, 32, @totalcost.to_s, 2)
+      # Money
+      @window_money.contents.font.color = system_color
+      @window_money.draw_text(16, 8, 150, 32, "Money:", 0)
+      @window_money.contents.font.color = normal_color
+      @window_money.draw_text(16, 8, self.width - 40, 32, $game_party.gold.to_s, 2)
+    end
+  end
+  #--------------------------------------------------------------------------
+  # Set actor
+  #--------------------------------------------------------------------------
+  def actor=(a)
+    @actor = a
+    reset if @actor != nil
+    refresh
+  end
+  #--------------------------------------------------------------------------
+  # Set index
+  #--------------------------------------------------------------------------
+  def index=(i)
+    @index = i
+    update_help
+    update_cursor_rect
+  end
+  #--------------------------------------------------------------------------
+  # * Update Cursor Rectangle
+  #--------------------------------------------------------------------------
+  def update_cursor_rect
+    if @index == -1
+      self.cursor_rect.empty
+      return
+    end      
+    self.cursor_rect.set(65, 24*@index+26, 30, 28)
+  end
+  #--------------------------------------------------------------------------
+  # * Update
+  #--------------------------------------------------------------------------
+  def update    
+    super
+    if Input.trigger?(Input::DOWN) 
+      self.index = (@index + 1) % 3
+      return
+    end
+    if Input.trigger?(Input::UP) 
+      self.index = (@index - 1) % 3
+      return
+    end    
+    if Input.repeat?(Input::RIGHT) 
+      $game_system.se_play($data_system.cursor_se)
+      case @index
+      when 0
+        @upgrade_atk += 1 if @upgrade_atk < @maxlevel
+      when 1
+        @upgrade_hit += 1 if @upgrade_hit < @maxlevel
+      when 2
+        @upgrade_crit += 1 if @upgrade_crit < @maxlevel
+      end
+      refresh
+      return
+    end    
+    if Input.repeat?(Input::LEFT) 
+      $game_system.se_play($data_system.cursor_se)
+      case @index
+      when 0
+        @upgrade_atk -= 1 if @upgrade_atk > @actor.weapon_atk
+      when 1
+        @upgrade_hit -= 1 if @upgrade_hit > @actor.weapon_hit
+      when 2
+        @upgrade_crit -= 1 if @upgrade_crit > @actor.weapon_crit
+      end
+      refresh
+      return
+    end    
+  end  
+  #--------------------------------------------------------------------------
+  # * Update help
+  #--------------------------------------------------------------------------
+  def update_help
+    @help_window.set_text("")
+    case @index
+    when 0
+      @help_window.set_text("Upgrade weapon's attack power.")
+    when 1
+      @help_window.set_text("Upgrade weapon's accuracy.")
+    when 2
+      @help_window.set_text("Upgrade weapon's critical hit ratio.")
+    end    
+  end
+  #--------------------------------------------------------------------------
+  # * Set Help Window
+  #     help_window : new help window
+  #--------------------------------------------------------------------------
+  def help_window=(help_window)
+    @help_window = help_window
+    if self.active and @help_window != nil
+      update_help 
+    end
+  end
+end

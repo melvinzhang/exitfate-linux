@@ -1,0 +1,74 @@
+#==============================================================================
+# ** Window_BattleMove
+#------------------------------------------------------------------------------
+#  Move to different square
+#==============================================================================
+
+class Window_BattleMove < Window_Base
+  attr_reader :row  # Selected row
+  attr_reader :col    # Selected column
+  #--------------------------------------------------------------------------
+  # * Object Initialization
+  #--------------------------------------------------------------------------
+  def initialize(actor)
+    super(142, 6*24 + 8, 32+300, 32 + 3 * 24)
+    self.z = 1000
+    self.contents = Bitmap.new(self.width-32, self.height-32)
+    @actor = actor
+    self.active = true
+    @col = actor.battle_column
+    @row = actor.battle_row
+    refresh
+  end
+  #--------------------------------------------------------------------------
+  # * Update cursor
+  #--------------------------------------------------------------------------
+  def update_cursor_rect
+    self.cursor_rect.set(@row*100, 24 * (2 - @col), 100, 24)
+  end
+  #--------------------------------------------------------------------------
+  # * Refresh
+  #--------------------------------------------------------------------------
+  def refresh
+    self.contents.clear
+    grid = [[],[],[]]
+    for a in $game_party.actors
+      grid[a.battle_row][a.battle_column] = a   
+    end    
+    for r in 0..2
+      for c in 0..2
+        a = grid[r][c]
+        string = a == nil ? "----" : a.name    
+        self.contents.font.color = a == @actor ? disabled_color : normal_color    
+        self.draw_text(8+r*100, 24 * (2 - c)-4, 150, 32, string, 0)
+      end
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Update
+  #--------------------------------------------------------------------------
+  def update
+    super
+    @index_changed = false
+    if self.active
+      if Input.repeat?(Input::DOWN)
+        $game_system.se_play($data_system.cursor_se)
+        @col = (@col - 1) % 3
+      end
+      if Input.repeat?(Input::UP)
+        $game_system.se_play($data_system.cursor_se)
+        @col = (@col + 1) % 3
+      end
+      if Input.repeat?(Input::R) or Input.repeat?(Input::RIGHT)
+        $game_system.se_play($data_system.cursor_se)
+        @row = (@row + 1) % 3
+      end
+      if Input.repeat?(Input::L) or Input.repeat?(Input::LEFT)
+        $game_system.se_play($data_system.cursor_se)
+        @row = (@row - 1) % 3
+      end
+    end
+    # Update cursor rectangle
+    update_cursor_rect
+  end
+end

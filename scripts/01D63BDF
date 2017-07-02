@@ -1,0 +1,32 @@
+#==============================================================================
+# ** Main
+#------------------------------------------------------------------------------
+#  After defining each class, actual processing begins here.
+#==============================================================================
+
+begin  
+  #unless $DEBUG
+  if false
+    # Fullscreen
+    $showm = Win32API.new ('user32', 'keybd_event', ['I','I','L','L'], "v")
+    $showm.call(18,0,0,0) 
+    $showm.call(13,0,0,0) 
+    $showm.call(13,0,2,0) 
+    $showm.call(18,0,2,0) 
+  end
+  # Prepare for transition
+  Graphics.freeze
+  # Make scene object (title screen)
+  $scene = Scene_Title.new
+  # Call main method as long as $scene is effective
+  while $scene != nil
+    $scene.main
+  end
+  # Fade out
+  Graphics.transition(20)
+rescue Errno::ENOENT
+  # Supplement Errno::ENOENT exception
+  # If unable to open file, display message and end
+  filename = $!.message.sub("No such file or directory - ", "")
+  print("Unable to find file #{filename}.")
+end

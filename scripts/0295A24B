@@ -1,0 +1,263 @@
+#==============================================================================
+# ** Window_Magic
+#------------------------------------------------------------------------------
+#  This window displays the list of available magic
+#==============================================================================
+
+class Window_Magic < Window_Selectable
+  #--------------------------------------------------------------------------
+  # * Object Initialization
+  #--------------------------------------------------------------------------
+  def initialize
+    super(0, 0, 300, 300)
+    @title_window = Window_Base_Short.new(self.x, self.y, self.width, 48)
+    @title_window.set_bitmap(self.width, self.height)
+    @title_window.ox = -1
+    @page = 0
+    @page_names = ["All", "Light", "Dark", "Fire", "Ice", "Water", "Thunder"]
+    # Store all remaining charges
+    @charges = {}
+    @user = nil
+    refresh
+    self.index = 0
+    if $game_temp.in_battle
+      @title_window.visible = false
+      self.visible = false
+      self.active = false
+      self.z = 800
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * dispose
+  #--------------------------------------------------------------------------
+  def dispose
+    @title_window.dispose
+    super
+  end
+  #--------------------------------------------------------------------------
+  # * visible
+  #--------------------------------------------------------------------------
+  def visible=(v)
+    super(v)
+    if @title_window != nil
+      @title_window.visible = v
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * x
+  #--------------------------------------------------------------------------
+  def x=(x)
+    super(x)
+    if @title_window != nil
+      @title_window.x = x 
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * x
+  #--------------------------------------------------------------------------
+  def y=(y)
+    super(y+40)
+    if @title_window != nil
+      @title_window.y = y
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * z
+  #--------------------------------------------------------------------------
+  def z=(z)
+    super(z)
+    if @title_window != nil
+      @title_window.z = z
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * user element
+  #--------------------------------------------------------------------------
+  def user=(user)
+    @user = user
+    redraw
+  end  
+  #--------------------------------------------------------------------------
+  # * Get selected magic
+  #--------------------------------------------------------------------------
+  def magic
+    item = @data[@page][self.index]
+    return nil if item == nil
+    return $data_skills[item.str_plus]    
+  end  
+  #--------------------------------------------------------------------------
+  # * Get charges
+  #--------------------------------------------------------------------------
+  def num_charges(id)
+    return @charges[id]
+  end
+  #--------------------------------------------------------------------------
+  # * Change charges
+  #--------------------------------------------------------------------------
+  def change_charges(id, amount)
+    @charges[id] += amount
+    redraw
+  end
+  #--------------------------------------------------------------------------
+  # * Return a list of healing magic charges reamining
+  #--------------------------------------------------------------------------
+  def get_remaining_healing
+    healing = []
+    for i in @charges.keys
+      if @charges[i] > 0
+        magic = $data_skills[i]
+        # Check if this is healing magic
+        if magic.power < 0 and [3,4].include?(magic.scope)
+          healing.push([@charges[i], i])
+        end
+      end
+    end
+    # Sort by increasing mp
+    healing.sort!{|a, b| $data_skills[a[1]].sp_cost - $data_skills[b[1]].sp_cost}
+    return healing
+  end
+  #--------------------------------------------------------------------------
+  # * Refresh
+  #--------------------------------------------------------------------------
+  def refresh
+    @data = []    
+    for i in 0..6
+      @data[i] = []
+    end
+    # Add spells
+    for i in 1...$data_weapons.size
+      if $game_party.magic_number(i) > 0
+        spell = $data_weapons[i]
+        magic = $data_skills[spell.str_plus]
+        element = get_element(spell)
+        @data[0].push(spell)
+        @data[element].push(spell)
+        @charges[magic.id] = $game_party.magic_number(spell.id)
+      end
+    end
+    for list in @data
+      list.reverse!
+    end
+    redraw
+  end
+  #--------------------------------------------------------------------------
+  # * Redraw without refreshing all data
+  #--------------------------------------------------------------------------
+  def redraw
+    if self.contents != nil
+      self.contents.dispose
+      self.contents = nil
+    end
+    # Draw title window
+    @title_window.contents.clear
+    @title_window.draw_text(0, 8, self.width, 32, @page_names[@page], 1)
+    bitmap_left = RPG::Cache.icon("Arrow_Small_Left")
+    bitmap_right= RPG::Cache.icon("Arrow_Small_Right")
+    @title_window.contents.blt(16, 15, bitmap_left, Rect.new(0, 0, 24, 24))
+    @title_window.contents.blt(self.width - 32, 15, bitmap_right, Rect.new(0, 0, 24, 24))
+    # Draw spell list
+    @item_max = @data[@page].size
+    if @item_max > 0
+      self.contents = Bitmap.new(width - 32, row_max * @row_height + 32)
+      for i in 0...@item_max
+          if $game_temp.in_battle
+            draw_magic_battle(i)
+          else
+            draw_magic(i)
+          end
+      end
+    end
+    if @index >= @item_max 
+      @index = @item_max - 1
+    elsif @index == -1 and @item_max > 0
+      @index = 0
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Draw Spell
+  #     index : spell number
+  #--------------------------------------------------------------------------
+  def draw_magic(index)
+    spell = @data[@page][index]
+    mpcost = $data_skills[spell.str_plus].sp_cost
+    number = $game_party.magic_number(spell.id)
+    x = 4
+    y = index * @row_height - 4
+    rect = Rect.new(x, y+4, self.width - 32, @row_height)
+    self.contents.fill_rect(rect, Color.new(0, 0, 0, 0))
+    self.contents.font.color == normal_color
+    bitmap = RPG::Cache.icon("Element_" + get_element(spell).to_s)
+    self.contents.blt(x, y+4, bitmap, Rect.new(0, 0, 24, 24))
+    self.draw_text(x + 28, y, 212, 32, spell.name, 0)
+    self.draw_text(0, y, self.contents.width-55, 32, mpcost.to_s + " MP", 2)
+    self.draw_text(0, y, self.contents.width, 32, number.to_s + "x", 2)
+  end
+  #--------------------------------------------------------------------------
+  # * Draw Spell Battle
+  #     index : spell number
+  #--------------------------------------------------------------------------
+  def draw_magic_battle(index)
+    return if @user == nil
+    spell = @data[@page][index]
+    magic = $data_skills[spell.str_plus]
+    info = SkillInfo.new(magic)
+    element = info.element
+    mpcost = info.mp_cost(@user)
+    number = $game_party.magic_number(spell.id)
+    x = 4
+    y = index * @row_height - 4
+    rect = Rect.new(x, y+4, self.width - 32, @row_height)
+    self.contents.fill_rect(rect, Color.new(0, 0, 0, 0))
+    disabled = (@charges[magic.id] == 0 or mpcost > @user.mp)
+    self.contents.font.color = disabled ? disabled_color : normal_color
+    bitmap = RPG::Cache.icon("Element_" + element.to_s)
+    opacity = disabled ? 200 : 255
+    self.contents.blt(x, y+4, bitmap, Rect.new(0, 0, 24, 24), opacity)
+    self.draw_text(x + 28, y, 212, 32, spell.name, 0)
+    self.draw_text(0, y, self.contents.width-55, 32, mpcost.to_s + " MP", 2)
+    self.draw_text(0, y, self.contents.width, 32, @charges[magic.id].to_s + "x", 2)
+  end
+  #--------------------------------------------------------------------------
+  # * Get Magic Element
+  #--------------------------------------------------------------------------
+  def get_element(item)
+    for i in 1..6
+      if item.element_set.include?(i)
+        return i
+      end
+    end
+    return 0
+  end
+  #--------------------------------------------------------------------------
+  # * Update
+  #--------------------------------------------------------------------------
+  def update
+    if Input.trigger?(Input::R)
+      $game_system.se_play($data_system.cursor_se) 
+      @page = (@page + 1) % 7
+      redraw
+      return  
+    end
+    if Input.trigger?(Input::L)
+      $game_system.se_play($data_system.cursor_se) 
+      @page = (@page - 1) % 7
+      redraw
+      return  
+    end
+    super    
+  end
+  #--------------------------------------------------------------------------
+  # * Change page
+  #--------------------------------------------------------------------------
+  def set_page(page)
+    @page = page % 7
+    redraw
+  end
+  #--------------------------------------------------------------------------
+  # * Help Text Update
+  #--------------------------------------------------------------------------
+  def update_help
+    item = @data[@page][self.index]
+    @help_window.set_text(item == nil ? "" : item.description)
+  end
+end

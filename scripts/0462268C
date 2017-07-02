@@ -1,0 +1,52 @@
+#==============================================================================
+# ** Window_EquipStats
+#------------------------------------------------------------------------------
+#  This window displays actor parameter changes on the equipment screen.
+#==============================================================================
+
+class Window_EquipStats < Window_Base
+  #--------------------------------------------------------------------------
+  # * Object Initialization
+  #     actor : actor
+  #--------------------------------------------------------------------------
+  def initialize
+    super(0, 0, 120, 275)
+    self.contents = Bitmap.new(width - 32, height - 32)
+    self.visible = false
+    self.z += 10
+  end
+  #--------------------------------------------------------------------------
+  # * Set actor
+  #--------------------------------------------------------------------------
+  def actor=(a)
+    @actor = a
+  end
+  #--------------------------------------------------------------------------
+  # * Refresh
+  #--------------------------------------------------------------------------
+  def refresh
+    self.contents.clear
+    return if @old_params == nil
+    y = 0
+    for i in STAT_HP..STAT_SKL   
+      diff = @new_params[i] - @old_params[i]
+      draw_actor_parameter(@actor, 0, y, i, diff)
+      y += 24
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Set parameters before changing equipment
+  #--------------------------------------------------------------------------
+  def set_old_parameters
+    @old_params = [0, @actor.maxhp, @actor.mpregen, @actor.str, @actor.mag, @actor.pdf, @actor.mdf, @actor.spd, @actor.acc, @actor.dex, @actor.skl]
+    @new_params = @old_params
+    refresh
+  end
+  #--------------------------------------------------------------------------
+  # * Set parameters after changing equipment
+  #--------------------------------------------------------------------------
+  def set_new_parameters
+    @new_params = [0, @actor.maxhp, @actor.mpregen, @actor.str, @actor.mag, @actor.pdf, @actor.mdf, @actor.spd, @actor.acc, @actor.dex, @actor.skl]
+    refresh
+  end
+end

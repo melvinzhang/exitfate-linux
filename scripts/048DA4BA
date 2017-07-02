@@ -1,0 +1,70 @@
+#==============================================================================
+# ** Window_Status
+#------------------------------------------------------------------------------
+#  This window displays status specs for arrange/party change screen
+#==============================================================================
+
+class Window_ArrangeStatus < Window_Base
+  #--------------------------------------------------------------------------
+  # * Object Initialization
+  #     actor : actor
+  #--------------------------------------------------------------------------
+  def initialize
+    super(0, 0, 265, 240)
+    self.visible = false # This is just a placeholder for the real windows
+    self.contents = Bitmap.new(self.width-32, self.height-32)
+  end
+  #--------------------------------------------------------------------------
+  # * Set actor
+  #--------------------------------------------------------------------------
+  def actor=(a)
+    @actor = a
+    refresh
+    self.visible = true
+  end  
+  #--------------------------------------------------------------------------
+  # * Visible
+  #--------------------------------------------------------------------------  
+  def visible=(v)
+    if @actor == nil
+      super(false)
+    else
+      super(v)
+    end
+  end  
+  #--------------------------------------------------------------------------
+  # * Refresh
+  #--------------------------------------------------------------------------
+  def refresh
+    self.contents.clear          
+    return if @actor == nil
+    
+    draw_actor_menu_portrait(@actor, self.contents.width-140, 0)
+    bitmap = RPG::Cache.icon("Element_" + @actor.element.to_s)
+    self.contents.blt(0, 4, bitmap, Rect.new(0, 0, 20, 20))
+    self.draw_text(25, 0, 150, 32, @actor.name, 0)      
+    self.contents.font.color = system_color
+    self.draw_text(0, 30, 80, 32, "LVL")
+    if @actor.weapon_longrange?
+      self.contents.font.color = normal_color
+      self.draw_text(0, 50, 125, 32, "Long Rng.")
+    end    
+    self.contents.font.color = system_color
+    self.draw_text(100, 90, 75, 32, "HP", 0)
+    self.draw_text(0, 90, 75, 32, "MP+", 0)
+    self.contents.font.color = normal_color
+    self.draw_text(35, 30, 36, 32, @actor.level.to_s, 2)    
+    self.draw_text(100, 90, 100, 32, @actor.maxhp.to_s, 2)
+    self.draw_text(35, 90, 36, 32, @actor.mpregen.to_s, 2)    
+    x = 0
+    y = 110
+    for s in STAT_STR..STAT_SKL
+      self.draw_actor_parameter(@actor, x, y, s)
+      y += 20
+      if y > 170
+        y = 110
+        x += 100
+      end
+    end    
+  end
+end

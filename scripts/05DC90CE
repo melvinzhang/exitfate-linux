@@ -1,0 +1,145 @@
+#==============================================================================
+# ** Scene_Ending2
+#------------------------------------------------------------------------------
+#  Extra post-credits ending
+#==============================================================================
+
+class Scene_Ending2
+  #--------------------------------------------------------------------------
+  # * Main Processing
+  #--------------------------------------------------------------------------
+  def main
+    # Make title graphic
+    @sprite = Sprite.new
+    @sprite.bitmap = RPG::Cache.picture("Ending_3")            
+    @sprite.opacity = 0    
+    @text_sprite = Sprite.new
+    @text_sprite.bitmap = Bitmap.new(640, 480)
+    @temp_sprite = Sprite.new
+    @temp_sprite.bitmap = Bitmap.new(640, 480)
+    @temp_sprite.bitmap.font.name =  ["Georgia", "Times New Roman"]
+    @temp_sprite.bitmap.font.color = Color.new(255, 255, 255, 160)
+    @temp_sprite.bitmap.font.bold = true
+    @temp_sprite.bitmap.font.size = 24
+    @temp_sprite.opacity = 0
+    @text = []
+    @text[0] = [
+    "The dragon will consume the east.",
+    "A star will fall in the west.",
+    "",
+    "When the twin signs appear, ",
+    "chaos will sweep across the land,",
+    "and it shall mark the end of the world."]
+    @text[1] = [
+    "Remember this:",
+    "when the time of the prophecy comes, ",
+    "only I can save you.",
+    "",
+    "Only the Brotherhood can save you.",
+    ]    
+    @line = 0
+    @page = 0
+    @wait  = 0
+    @y = 200
+    @fade_out = false
+    # Execute transition
+    Graphics.transition
+    # Main loop
+    loop do
+      # Update game screen
+      Graphics.update
+      # Update input information
+      Input.update
+      # Frame update
+      update
+      # Abort loop if screen is changed
+      if $scene != self
+        break
+      end
+    end
+    # Prepare for transition
+    Graphics.freeze
+    # Dispose of windows
+    @sprite.bitmap.dispose
+    @sprite.dispose
+    @text_sprite.dispose
+    @temp_sprite.dispose
+  end
+  #--------------------------------------------------------------------------
+  # * Frame Update
+  #--------------------------------------------------------------------------
+  def update    
+    if @wait > 0
+      @wait -= 1
+      return
+    end   
+    if @finished
+      $scene = Scene_Title.new
+    end
+    if @fade_out
+      @sprite.opacity -= 1
+      if @sprite.opacity == 0        
+        @finished = true
+        @wait = 30
+      end
+      return
+    end
+    if @sprite.opacity < 255
+      @sprite.opacity += 1
+      if @sprite.opacity == 255
+        @wait = 20
+      end
+      return
+    end            
+    if @text_fade_out
+      @text_sprite.opacity -= 2
+      if @text_sprite.opacity == 0        
+        @text_sprite.bitmap.clear
+        @text_sprite.opacity = 255
+        @text_fade_out = false
+        if @page > 1
+          @fade_out = true
+        end
+        @wait = 40
+      end
+      return
+    end      
+    # Draw text
+    if @temp_sprite.opacity > 0
+      @temp_sprite.opacity += 3
+      if @temp_sprite.opacity == 255
+        @text_sprite.bitmap.blt(0, 0, @temp_sprite.bitmap, Rect.new(0, 0, 640, 480))
+        @temp_sprite.bitmap.clear
+        @temp_sprite.opacity = 0
+        @wait = 15
+        @y += 32
+        @line += 1
+        if @line >= @text[@page].size
+            @line = 0
+            @y = 200
+            @page += 1
+            @wait = 40
+            @text_fade_out = true
+        end
+      end
+      return
+    end    
+    line = @text[@page][@line]
+    draw_text_new(@y, line)
+    @temp_sprite.opacity = 1
+  end
+  #--------------------------------------------------------------------------
+  # * Draw Text New (with shadow)
+  #--------------------------------------------------------------------------
+  def draw_text_new(y, text, align = 1, sprite = @temp_sprite)
+    x = 0
+    width = 640
+    height = sprite.bitmap.font.size
+    tempc = sprite.bitmap.font.color.clone
+    #sprite.bitmap.font.color = Color.new(0, 0, 0, 192)
+    #sprite.bitmap.draw_text(x + 1, y + 1, width, height, text, align)
+    sprite.bitmap.font.color = tempc
+    sprite.bitmap.draw_text(x, y, width, height, text, align)  
+    #sprite.bitmap.draw_text(x, y, width, height, text, align)  
+  end
+end

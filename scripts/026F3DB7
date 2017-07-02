@@ -1,0 +1,635 @@
+#==============================================================================
+# ** Scene_Battle (part 3)
+#------------------------------------------------------------------------------
+#  This class performs battle screen processing.
+#==============================================================================
+
+class Scene_Battle
+  #--------------------------------------------------------------------------
+  # * Start Actor Command Phase
+  #--------------------------------------------------------------------------
+  def start_phase3
+    # Shift to phase 3
+    @phase = 3
+    # Go to command input for next actor
+    unless judge
+      phase3_select_battler
+    end    
+  end
+  #--------------------------------------------------------------------------
+  # * Go to Command Input for Next Actor
+  #--------------------------------------------------------------------------
+  def phase3_select_battler    
+    # Set up battle event
+    setup_battle_event
+    if $game_system.battle_interpreter.running?
+      return
+    end
+    # Update the turn order
+    @active_battler = @spriteset.refresh_turnorder
+    if @active_battler.hp > 0 and @active_battler.slip_damage?
+      @active_battler.slip_damage_effect
+      @active_battler.damage_pop = true
+      @wait = 15
+    end
+    @active_battler.remove_states_auto
+    unless @active_battler.state?(4)  # Mindblow
+      @active_battler.mp += @active_battler.b_mpregen
+    end
+    if not @active_battler.inputable? or @active_battler.hp <= 0
+      # This battler is unable to act.
+      # If Berserk or Chaos
+      if [2, 3].include?(@active_battler.restriction) 
+        @active_battler.current_action.kind = 0
+        @active_battler.current_action.basic = 0
+        start_phase4
+        return
+      end
+      # Wait a short bit and move on to the next one
+      end_battler_turn
+      @wait_count = 20
+      return
+    end    
+    # We have a battler  who can actually move
+    @status_window.refresh
+    @active_battler.blink = true    
+    @active_battler.current_action.clear
+    if @active_battler.is_a?(Game_Enemy)
+      # Go straight to main phase
+      @active_battler.make_action
+      start_phase4      
+    else
+      phase3_setup_command_window      
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Actor Command Window Setup
+  #--------------------------------------------------------------------------
+  def phase3_setup_command_window
+    # Enable actor command window
+    @status_window.select(@active_battler.index)
+    @actor_command_window.actor = @active_battler
+    @actor_command_window.active = true
+    @actor_command_window.visible = true
+    if $game_system.battle_cursor_type == 0
+      # Reset cursor
+      @actor_command_window.index = 0
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Frame Update (actor command phase)
+  #--------------------------------------------------------------------------
+  def update_phase3
+    # If no battler has been selected yet
+    if @active_battler == nil
+      phase3_select_battler
+    end        
+    if @target_maintarget != nil
+      # Update target selection
+      update_phase3_target_select
+    elsif @magic_window.active
+      # If skill window is enabled
+      update_phase3_magic_select
+    elsif @item_window != nil
+      # If item window is enabled
+      update_phase3_item_select
+    elsif @equip_window != nil
+      # If equip window is enabled
+      update_phase3_change_equip
+    elsif @switch_window != nil
+      # If switch window is enabled
+      update_phase3_switch
+    elsif @move_window != nil
+      # If move window is enabled
+      update_phase3_move
+    elsif @actor_command_window.active
+      # If actor command window is enabled
+      update_phase3_basic_command
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Frame Update (actor command phase : basic command)
+  #--------------------------------------------------------------------------
+  def update_phase3_basic_command
+    # If C button was pressed
+    if Input.trigger?(Input::C)
+      # Branch by actor command window cursor position
+      case @actor_command_window.index
+      when 0  # attack
+        $game_system.se_play($data_system.decision_se)
+        @active_battler.current_action.kind = 0
+        @active_battler.current_action.basic = 0        
+        @previous_window = @actor_command_window
+        start_target_select(true, TARG_ONE, false, @active_battler.weapon_longrange?)
+      when 1  # magic
+        if @active_battler.restriction == 1
+          # Silence
+          $game_system.se_play($data_system.buzzer_se)
+          return          
+        end
+        $game_system.se_play($data_system.decision_se)
+        @active_battler.current_action.kind = 1
+        start_magic_select
+      when 2  # special
+        if @active_battler.special_skill == 0
+          $game_system.se_play($data_system.buzzer_se)
+        else
+          $game_system.se_play($data_system.decision_se)
+          @active_battler.current_action.kind = 1
+          @active_battler.current_action.basic = 0
+          @active_battler.current_action.skill_id = @active_battler.special_skill
+          @previous_window = @actor_command_window        
+          info = SkillInfo.new($data_skills[@active_battler.special_skill])
+          start_target_select(info.target_enemy?, info.target_type, info.target_self?, info.longrange?)
+        end        
+      when 3  # guard
+        $game_system.se_play($data_system.decision_se)
+        @active_battler.current_action.kind = 0
+        @active_battler.current_action.basic = 1
+        start_phase4
+      when 4  # item
+        if $game_party.flashback_mode
+          $game_system.se_play($data_system.buzzer_se)
+          return
+        end        
+        $game_system.se_play($data_system.decision_se)
+        @active_battler.current_action.kind = 2
+        start_item_select
+      when 5 # equip
+        if $game_party.flashback_mode
+          $game_system.se_play($data_system.buzzer_se)
+          return
+        end        
+        $game_system.se_play($data_system.decision_se)
+        start_change_equip
+      when 6 # move
+        $game_system.se_play($data_system.decision_se)
+        start_move        
+      when 7  # switch
+        if $game_party.entourage.size == 0
+          $game_system.se_play($data_system.buzzer_se)
+          return
+        end
+        $game_system.se_play($data_system.decision_se)
+        start_switch
+      end              
+      return
+    end
+    # Show help for special attacks
+    if @actor_command_window.index == 2      
+      if @active_battler.special_skill > 0
+        @help_window.visible = true
+        @help_window.set_text($data_skills[@active_battler.special_skill].description)
+      end
+    else
+      @help_window.visible = false
+    end    
+  end
+  #--------------------------------------------------------------------------
+  # * Frame Update (actor command phase : skill selection)
+  #--------------------------------------------------------------------------
+  def update_phase3_magic_select
+    # Update skill window
+    @magic_window.update
+    # If B button was pressed
+    if Input.trigger?(Input::B)
+      # Play cancel SE
+      $game_system.se_play($data_system.cancel_se)
+      # End skill selection
+      end_magic_select
+      return
+    end
+    # If C button was pressed
+    if Input.trigger?(Input::C)
+      # Get currently selected data on the skill window
+      @skill = @magic_window.magic
+      # If it can't be used
+      if @skill == nil or @magic_window.num_charges(@skill.id) == 0 or not @active_battler.skill_can_use?(@skill.id)
+        $game_system.se_play($data_system.buzzer_se)
+        return
+      end
+      $game_system.se_play($data_system.decision_se)
+      @active_battler.current_action.skill_id = @skill.id
+      @magic_window.visible = false
+      @magic_window.active = false
+      @previous_window = @magic_window        
+      info = SkillInfo.new(@magic_window.magic)
+      start_target_select(info.target_enemy?, info.target_type, info.target_self?, info.longrange?)          
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Frame Update (actor command phase : item selection)
+  #--------------------------------------------------------------------------
+  def update_phase3_item_select
+    @item_window.visible = true
+    @item_window.update
+    # If B button was pressed
+    if Input.trigger?(Input::B)
+      $game_system.se_play($data_system.cancel_se)
+      @active_battler.current_action.no_mp = false
+      end_item_select
+      return
+    end
+    # If C button was pressed
+    if Input.trigger?(Input::C)
+      @item = @item_window.item
+      if @item == nil
+        $game_system.se_play($data_system.buzzer_se)
+        return
+      end
+      $game_system.se_play($data_system.decision_se)
+      @active_battler.current_action.item_id = @item.id
+      @active_battler.current_action.item_slot = @item_window.index
+      @previous_window = @item_window      
+      @item_window.visible = false            
+      if @item.recover_hp_rate > 0
+        # Skill item
+        @active_battler.current_action.kind = 1
+        @active_battler.current_action.skill_id = @item.recover_hp_rate 
+        @active_battler.current_action.no_mp = true
+        info = SkillInfo.new($data_skills[@item.recover_hp_rate])
+        start_target_select(info.target_enemy?, info.target_type, info.target_self?, info.longrange?)                  
+      else
+        @active_battler.current_action.kind = 2
+        target_enemy = [1,2].include?(@item.scope)
+        target_type = [2, 4, 6].include?(@item.scope) ? TARG_ALL : TARG_ONE
+        start_target_select(target_enemy, target_type, @item.scope == 7, true)           
+      end            
+      return
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Frame Update (actor command phase : switch)
+  #--------------------------------------------------------------------------
+  def update_phase3_switch
+    @switch_window.visible = true
+    @switch_window.update
+    # If B button was pressed
+    if Input.trigger?(Input::B)
+      $game_system.se_play($data_system.cancel_se)
+      end_switch
+      return
+    end
+    # If C button was pressed
+    if Input.trigger?(Input::C)
+      actor = @switch_window.actor
+      if actor == nil or actor.hp <= 0
+        $game_system.se_play($data_system.buzzer_se)
+        return
+      end
+      $game_system.se_play($data_system.decision_se)
+      actor.battle_row = @active_battler.battle_row
+      actor.battle_column = @active_battler.battle_column
+      actor.battle_time = 0 # Set battle_time to anything to prevent null pointer exception
+      $game_party.actors.delete(@active_battler)      
+      $game_party.actors.push(actor)
+      $game_party.entourage.delete(actor)
+      $game_party.entourage.push(@active_battler)
+      @wait_count = 15
+      end_switch
+      end_battler_turn
+      actor.battle_time = 0
+      return
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Frame Update (actor command phase : move)
+  #--------------------------------------------------------------------------
+  def update_phase3_move
+    @move_window.visible = true
+    @move_window.update
+    # If B button was pressed
+    if Input.trigger?(Input::B)
+      $game_system.se_play($data_system.cancel_se)
+      end_move
+      return
+    end
+    # If C button was pressed
+    if Input.trigger?(Input::C)
+      row = @move_window.row
+      col = @move_window.col
+      # Can't move to own position
+      if row == @active_battler.battle_row and col == @active_battler.battle_column
+        $game_system.se_play($data_system.buzzer_se)
+        return
+      end
+      # if there's already someone at the target position, switch them
+      for a in $game_party.actors
+        if a.battle_row == row and a.battle_column == col
+          a.battle_row = @active_battler.battle_row
+          a.battle_column = @active_battler.battle_column
+        end
+      end      
+      $game_system.se_play($data_system.decision_se)
+      @active_battler.battle_row = row
+      @active_battler.battle_column = col
+      @wait_count = 15
+      end_move
+      end_battler_turn
+      return
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Frame Update (actor command phase : selection)
+  #--------------------------------------------------------------------------
+  def update_phase3_target_select
+    # Update movement
+    if update_target_select_movement
+      @help_window.set_battler(@target_maintarget)
+      update_target_blink      
+    end        
+    # If B button was pressed
+    if Input.trigger?(Input::B)
+      $game_system.se_play($data_system.cancel_se)
+      end_target_select
+      return
+    end
+    # If C button was pressed
+    if Input.trigger?(Input::C)
+      $game_system.se_play($data_system.decision_se)
+      @active_battler.current_action.target = @target_maintarget
+      end_target_select
+      if @previous_window == @magic_window
+        # Reduce charges by 1
+        @magic_window.change_charges(@active_battler.current_action.skill_id, -1)
+        end_magic_select
+      end
+      if @item_window != nil
+        # Take item
+        if @item_window.item.consumable
+          @active_battler.equip(4, 0, @active_battler.current_action.item_slot)
+          $game_party.lose_item(@active_battler.current_action.item_id, 1)
+        end
+        end_item_select
+      end
+      # Go to main phase
+      start_phase4
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Update target selection movement
+  #     Returns true if target changed
+  #--------------------------------------------------------------------------    
+  def update_target_select_movement    
+    return if @target_selfonly    
+    col = @target_maintarget.battle_column
+    row = @target_maintarget.battle_row    
+    # Move a row backwards
+    if (Input.repeat?(Input::LEFT) and @target_isenemy) or
+        (Input.repeat?(Input::RIGHT) and not @target_isenemy)
+      for r in [(row+1)%3, (row+2)%3, row]
+        for c in [col, (col+1)%3, (col+2)%3]          
+          if @target_grid[r][c] != nil
+            @target_maintarget = @target_grid[r][c]
+            return true
+          end
+        end
+      end        
+    end        
+    # Move a row forwards
+    if (Input.repeat?(Input::RIGHT) and @target_isenemy) or
+        (Input.repeat?(Input::LEFT) and not @target_isenemy)
+      for r in [(row-1)%3, (row-2)%3, row]
+        for c in [col, (col+1)%3, (col+2)%3]
+          if @target_grid[r][c] != nil
+            @target_maintarget = @target_grid[r][c]
+            return true
+          end
+        end
+      end            
+    end    
+    # Move a column upwards
+    if Input.repeat?(Input::UP)
+      for c in [(col+1)%3, (col+2)%3, col]
+        for r in [row, (row-1)%3, (row-2)%3]
+          if @target_grid[r][c] != nil
+            @target_maintarget = @target_grid[r][c]
+            return true
+          end
+        end
+      end           
+    end    
+    # Move a column downwards
+    if Input.repeat?(Input::DOWN)
+      for c in [(col-1)%3, (col-2)%3, col]
+        for r in [row, (row-1)%3, (row-2)%3]
+          if @target_grid[r][c] != nil
+            @target_maintarget = @target_grid[r][c]
+            return true
+          end
+        end
+      end       
+    end        
+    return false
+  end
+  #--------------------------------------------------------------------------
+  # * Start Switch
+  #--------------------------------------------------------------------------  
+  def start_switch
+    @switch_window = Window_BattleSwitch.new
+    @switch_window.help_window = @help_window
+    @actor_command_window.active = false
+  end
+  #--------------------------------------------------------------------------
+  # * End Switch
+  #--------------------------------------------------------------------------
+  def end_switch
+    @switch_window.dispose
+    @switch_window = nil
+    @help_window.visible = false
+    @actor_command_window.active = true
+  end
+  #--------------------------------------------------------------------------
+  # * Start Switch
+  #--------------------------------------------------------------------------  
+  def start_move
+    @move_window = Window_BattleMove.new(@active_battler)
+    @actor_command_window.active = false
+  end
+  #--------------------------------------------------------------------------
+  # * End Switch
+  #--------------------------------------------------------------------------
+  def end_move
+    @move_window.dispose
+    @move_window = nil
+    @help_window.visible = false
+    @actor_command_window.active = true
+  end
+  #--------------------------------------------------------------------------
+  # * Start Target Selection
+  #--------------------------------------------------------------------------  
+  def start_target_select(select_enemy, target_type, self_only, long_range)
+    @actor_command_window.active = false
+    @actor_command_window.visible = false    
+    @target_isenemy = select_enemy
+    @target_type = target_type
+    @target_selfonly = self_only
+    @target_longrange = long_range
+    # Find all potential targets
+    grid = select_enemy ? $game_troop.enemies_grid : $game_party.actors_grid
+    @target_grid = [[nil, nil, nil],[nil, nil, nil],[nil, nil, nil]]
+    if long_range
+      # Any target is valid
+      for col in 0..2
+        for row in 0..2 
+          if grid[row][col] != nil
+            if grid[row][col].targetable?
+              @target_grid[row][col] = grid[row][col]
+            end
+          end
+        end
+      end
+    else
+      # Only the first of each column is selectable
+      @target_grid = [[nil, nil, nil],[nil, nil, nil],[nil, nil, nil]]
+      for col in 0..2 # Check each column
+        for row in 0..2 # Look from front to back
+          if grid[row][col] != nil
+            if grid[row][col].targetable?
+              @target_grid[row][col] = grid[row][col]
+              break
+            end
+          end
+        end
+      end   
+    end      
+    # Determine initial target
+    if not select_enemy
+      @target_maintarget = @active_battler
+    else
+      @target_maintarget = nil
+      for row in 0..2
+        for col in 0..2
+          if @target_grid[row][col] != nil
+            # For enemies, find the one with the highest troop_index       
+            if @target_maintarget == nil or 
+              @target_maintarget.troop_index > @target_grid[row][col].troop_index
+              @target_maintarget = @target_grid[row][col]
+            end
+          end
+        end
+      end
+    end             
+    @help_window.set_battler(@target_maintarget)
+    update_target_blink
+  end
+  #--------------------------------------------------------------------------
+  # * Update target blinking
+  #--------------------------------------------------------------------------
+  def update_target_blink
+    # Reset all blinking
+    for row in @target_grid
+      for b in row
+        b.blink_target = false if b != nil
+      end
+    end
+    # Set blinking based on target type    
+    row = @target_maintarget.battle_row
+    col = @target_maintarget.battle_column
+    case @target_type
+      when TARG_ONE
+        @target_maintarget.blink_target = true
+      when TARG_ALL, TARG_SPREAD
+        # Select all
+        for row in @target_grid
+          for b in row
+            b.blink_target = true if b != nil
+          end
+        end    
+      when TARG_COLUMN
+        # Select whole column
+        for r in 0..2
+          if @target_grid[r][col] != nil
+            @target_grid[r][col].blink_target = true
+          end          
+        end
+      when TARG_ROW
+        # Select whole row
+        for c in 0..2
+          if @target_grid[row][c] != nil
+            @target_grid[row][c].blink_target = true
+          end          
+        end
+      when TARG_ADJACENT
+        # Select target square and adjacent squares
+        set = [[row, col], [row-1, col], [row+1, col], [row, col-1], [row, col+1]]
+        for t in set
+          r = t[0]
+          c = t[1]
+          if r >= 0 and r <= 2 and c >= 0 and c <= 2
+            if @target_grid[r][c] != nil
+              @target_grid[r][c].blink_target = true
+            end
+          end
+      end
+    end    
+  end  
+  #--------------------------------------------------------------------------
+  # * End Target Selection
+  #--------------------------------------------------------------------------
+  def end_target_select
+    for row in @target_grid
+      for b in row
+        b.blink_target = false if b != nil
+      end
+    end              
+    @target_maintarget = nil
+    @help_window.visible = false
+    @actor_command_window.visible = true    
+    @previous_window.active = true
+    @previous_window.visible = true
+  end
+  #--------------------------------------------------------------------------
+  # * Start Magic Selection
+  #--------------------------------------------------------------------------
+  def start_magic_select
+    if $game_system.battle_magic_selection == 0
+      # Reset to "All"
+      @magic_window.set_page(0)
+    elsif $game_system.battle_magic_selection == 1
+      # Reset to user's element
+      @magic_window.set_page(@active_battler.element)
+    else
+      # Remember      
+    end
+    @magic_window.user = @active_battler
+    # Disable actor command window
+    @actor_command_window.active = false
+    #@actor_command_window.visible = false
+    @magic_window.visible = true
+    @magic_window.active = true
+    @help_window.visible = true
+  end
+  #--------------------------------------------------------------------------
+  # * End Magic Selection
+  #--------------------------------------------------------------------------
+  def end_magic_select
+    # Dispose of skill window
+    @magic_window.visible = false
+    @magic_window.active = false
+    # Hide help window
+    @help_window.visible = false
+    # Enable actor command window
+    @actor_command_window.active = true
+    @actor_command_window.visible = true
+  end
+  #--------------------------------------------------------------------------
+  # * Start Item Selection
+  #--------------------------------------------------------------------------
+  def start_item_select
+    @item_window = Window_BattleItem.new(@active_battler)
+    @item_window.help_window = @help_window
+    @actor_command_window.active = false
+    #@actor_command_window.visible = false
+  end
+  #--------------------------------------------------------------------------
+  # * End Item Selection
+  #--------------------------------------------------------------------------
+  def end_item_select
+    @item_window.dispose
+    @item_window = nil
+    @help_window.visible = false
+    @actor_command_window.active = true
+    @actor_command_window.visible = true
+  end
+end

@@ -1,0 +1,563 @@
+#==============================================================================
+# ** Data_CharEnding
+#------------------------------------------------------------------------------
+#  Contains static data that can't be set in the GUI
+#
+#  Character ending data
+#==============================================================================
+
+class Data_CharEnding
+  attr_accessor :char_id  # id of the actor
+  attr_accessor :lines
+  def initialize
+    @lines = []
+  end
+  class Data_CharEnding::Data_CharEnding_Line
+    attr_accessor :switch
+    attr_accessor :text
+    def initialize(text, switch = -1)
+      @text = text
+      @switch = switch
+    end
+  end
+end
+
+$data_charending = []
+
+# Jovian
+ending = Data_CharEnding.new
+ending.char_id = 30
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"A few months after the war, he won a\nlandslide victory and became the first ever\nPresident of Elysium.\n"))
+$data_charending[0] = ending
+
+# Angel
+ending = Data_CharEnding.new
+ending.char_id = 2
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"Received a promotion and became general of   \nthe old royal third legion.\n"))
+$data_charending[1] = ending
+
+# Ayara
+ending = Data_CharEnding.new
+ending.char_id = 4
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"Stayed as an officer of the Elysium army.    \nA year later, she announced a surprise       \nwedding...\n"))
+$data_charending[2] = ending
+
+# Beau
+ending = Data_CharEnding.new
+ending.char_id = 7
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"Appointed attorney-general in the new Elysium\nparliament.\n"))
+$data_charending[3] = ending
+
+# Shiro
+ending = Data_CharEnding.new
+ending.char_id = 63
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"Returned to Blackwater and picked up his     \nduties as mayor again.\n"))
+$data_charending[4] = ending
+
+# Bast
+ending = Data_CharEnding.new
+ending.char_id = 6
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"The war over, he returned to his quiet home  \non Mt. Bosch.\n"))
+$data_charending[5] = ending
+
+# Keyser
+ending = Data_CharEnding.new
+ending.char_id = 31
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"Retired from the army and lives out his days \nin peace. Frequently visits Bast for a game  \nof chess.         \n"))
+$data_charending[6] = ending
+
+# Eander
+ending = Data_CharEnding.new
+ending.char_id = 17
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"Unable to leave military life behind him,    \nhe took charge as commander-in-chief of the  \nElysium army.\n"))
+$data_charending[7] = ending
+
+# Fitch
+ending = Data_CharEnding.new
+ending.char_id = 19
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"Restless as ever, embarked on another journey\nto see more of the world.\n"))
+$data_charending[8] = ending
+
+# Ljusalf
+ending = Data_CharEnding.new
+ending.char_id = 34
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"Returned to Alfheim after Daniel's departure,\nhappy to have brought the story to a good    \nend.\n"))
+$data_charending[9] = ending
+
+# Col
+ending = Data_CharEnding.new
+ending.char_id = 11
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"Politely declined all offers from the army,  \nchoosing instead to go study at Faraday      \nUniversity.\n"))
+$data_charending[10] = ending
+
+# Joe
+ending = Data_CharEnding.new
+ending.char_id = 28
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"Vanished not long after the war.             \nCoincidentally, so did a significant part of \nthe national treasury.\n"))
+$data_charending[11] = ending
+
+# Ryan
+ending = Data_CharEnding.new
+ending.char_id = 58
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"Became official representative of Zelmony in \nthe new Elysium republic, and remained       \npopular until his death.\n"))
+$data_charending[12] = ending
+
+# Erin
+ending = Data_CharEnding.new
+ending.char_id = 18
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"Stayed at Ryan's side as Captain of the      \nMatrech Guard.\n"))
+$data_charending[13] = ending
+
+# Jasper
+ending = Data_CharEnding.new
+ending.char_id = 27
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"Worked within the Matrech Guard for closer   \ncooperation with the old Kirgard army, marked\nby his marriage not long after...\n"))
+$data_charending[14] = ending
+
+# Merrick
+ending = Data_CharEnding.new
+ending.char_id = 41
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"Lost his temper one time too many and was    \nlaid off. Now spends his days writing        \ndepressing poetry.    \n"))
+$data_charending[15] = ending
+
+# Cid
+ending = Data_CharEnding.new
+ending.char_id = 10
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"Wrote an epic ballad about his adventures.   \nDeparted on an equally epic journey to find  \nsomeone who cared.\n"))
+$data_charending[16] = ending
+
+# Teej
+ending = Data_CharEnding.new
+ending.char_id = 68
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"Propelled by his connection to the Elysium   \narmy, went on a massively succesful tour and \nattained instant stardom.\n", 369))
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"Attempted a solo career, but ended up as a   \nbartender at the last place he performed.\n"))
+$data_charending[17] = ending
+
+# Tiffany
+ending = Data_CharEnding.new
+ending.char_id = 69
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"Stuck with Teej and finally achieved world   \nfame.\n"))
+$data_charending[18] = ending
+
+# Klaus
+ending = Data_CharEnding.new
+ending.char_id = 33
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"Tried to start a feline rebellion, but failed\nand proclaimed himself 'misunderstood'. Wrote\nan unsuccessful book about it.     \n"))
+$data_charending[19] = ending
+
+# Luther
+ending = Data_CharEnding.new
+ending.char_id = 35
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"Settled down in Kirgard and turned the old   \nLevier orphanage into a school.\n"))
+$data_charending[20] = ending
+
+# Vanrushal
+ending = Data_CharEnding.new
+ending.char_id = 71
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"Volunteered as part-time teacher at Luther's \nschool... but his subject matter is          \nquestionable.\n"))
+$data_charending[21] = ending
+
+# Bartolli
+ending = Data_CharEnding.new
+ending.char_id = 5
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"Opened up a whole chain of item stores all   \nover the country and inadvertedly became one \nof the richest men in the world.   \n"))
+$data_charending[22] = ending
+
+# Meiko
+ending = Data_CharEnding.new
+ending.char_id = 40
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"Briefly worked on a book about the war, but  \nreturned home to report on a rebellion within\nthe Fairwind Republic.\n"))
+$data_charending[23] = ending
+
+# Carson
+ending = Data_CharEnding.new
+ending.char_id = 9
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"Became the youngest minister in the Elysium  \nparliament, and went on to have a highly     \nsuccessful political career.           \n"))
+$data_charending[24] = ending
+
+# Sally
+ending = Data_CharEnding.new
+ending.char_id = 59
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"Used her savings to buy a merchant vessel and\ngrew up to become a crafty maritime trader,  \noften doing good business in war zones.\n"))
+$data_charending[25] = ending
+
+# Outsider
+ending = Data_CharEnding.new
+ending.char_id = 50
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"Using the money he earned during the war, he \nretired from the mercenary business and      \nopened a restaurant in Mayfall City instead. \n"))
+$data_charending[26] = ending
+
+# Mike
+ending = Data_CharEnding.new
+ending.char_id = 43
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"Became a cook in Outsider's new restaurant.  \nHis Mercenary Steak is now renowned all over \nthe country.\n", 350))
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"Left to seek a new job with his old friend   \nOutsider. \n"))
+$data_charending[27] = ending
+
+# Alex
+ending = Data_CharEnding.new
+ending.char_id = 1
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"Returned to the sacred circle, where he was  \nchosen as the new elder druid. \n"))
+$data_charending[28] = ending
+
+# Richard
+ending = Data_CharEnding.new
+ending.char_id = 54
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"Enjoys a quiet life at the forest once again.\n"))
+$data_charending[29] = ending
+
+# Naja
+ending = Data_CharEnding.new
+ending.char_id = 45
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"With Ljusalf's help, managed to restore the  \nwater spirits and continued living at the    \nlake.        \n"))
+$data_charending[30] = ending
+
+# Hawk
+ending = Data_CharEnding.new
+ending.char_id = 25
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"Gave up his farmer's life and decided to try \nstudying linguistics instead.   \n"))
+$data_charending[31] = ending
+
+# Harvey
+ending = Data_CharEnding.new
+ending.char_id = 24
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"Started a profitable business as private     \nmilitary consultant. His first client was  \nnone other than Pereious.     \n"))
+$data_charending[32] = ending
+
+# Shadfork
+ending = Data_CharEnding.new
+ending.char_id = 61
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"Set off on a pilgrimage to become an even    \ngreater warrior.\n"))
+$data_charending[33] = ending
+
+# Tong Wu
+ending = Data_CharEnding.new
+ending.char_id = 70
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"Left in the opposite direction of Shadfork on\na quest to improve his skills.            \n"))
+$data_charending[34] = ending
+
+# Sormaus
+ending = Data_CharEnding.new
+ending.char_id = 64
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"Currently practices his eccentric martial    \narts on the peak of Mt. Ea.     \n"))
+$data_charending[35] = ending
+
+# Stromgaard
+ending = Data_CharEnding.new
+ending.char_id = 66
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"Having finished his exploration of the       \nElysium republic's territory, he moved       \nwestwards into Cayeska.\n"))
+$data_charending[36] = ending
+
+# Mandala
+ending = Data_CharEnding.new
+ending.char_id = 37
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"Annoyed with the lack of decent treasure left\nin these lands, she travelled onwards.     \n"))
+$data_charending[37] = ending
+
+# Johnny
+ending = Data_CharEnding.new
+ending.char_id = 29
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"Opened a casino in Matrech and amassed a     \nfortune.          \n"))
+$data_charending[38] = ending
+
+# King
+ending = Data_CharEnding.new
+ending.char_id = 32
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"Never left his master's side ever again.\n"))
+$data_charending[39] = ending
+
+# Nomad
+ending = Data_CharEnding.new
+ending.char_id = 48
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"Anxious to get back to work, he began\ninvestigating a city reported to have sunk\ninto the ocean.\n"))
+$data_charending[40] = ending
+
+# Marian
+ending = Data_CharEnding.new
+ending.char_id = 39
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"Resumed her activities as headmistress of    \nFaraday University, but takes some time off  \nto help her brother every now and then.\n", 348))
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"Resumed her activities as headmistress of    \nFaraday University.        \n"))
+$data_charending[41] = ending
+
+# Darwin
+ending = Data_CharEnding.new
+ending.char_id = 13
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"Finished his thesis and became professor of  \nthe magical arts at Faraday University.\n"))
+$data_charending[42] = ending
+
+# Venkal
+ending = Data_CharEnding.new
+ending.char_id = 72
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"Continued painting, but refused to sell any  \nof his works, instead giving them away for   \nfree to charities.\n"))
+$data_charending[43] = ending
+
+# Deus
+ending = Data_CharEnding.new
+ending.char_id = 16
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"Returned to Cento temple, where one day he   \nwould succeed Galius as head priest.    \n"))
+$data_charending[44] = ending
+
+# Orlando
+ending = Data_CharEnding.new
+ending.char_id = 49
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"Reluctantly moved in at Cento temple and     \nbecame an instructor for young warrior monks.\n"))
+$data_charending[45] = ending
+
+# Ice
+ending = Data_CharEnding.new
+ending.char_id = 26
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"Considerably shocked by his encounter, he    \ndisappeared only to emerge years later as a  \ngrizzled dragon hunter.\n"))
+$data_charending[46] = ending
+
+# Avelion
+ending = Data_CharEnding.new
+ending.char_id = 3
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"Took on his original form again and became   \nguardian of Valduz.   \n"))
+$data_charending[47] = ending
+
+# Sef
+ending = Data_CharEnding.new
+ending.char_id = 60
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"Embarked on a journey to the Holy Empire of  \nRocaine, where he would play a significant   \nrole in a later war.\n"))
+$data_charending[48] = ending
+
+# Soth
+ending = Data_CharEnding.new
+ending.char_id = 65
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"Stayed at Cento temple in an attempt to      \ncleanse himself of his sins.\n"))
+$data_charending[49] = ending
+
+# Shin
+ending = Data_CharEnding.new
+ending.char_id = 62
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"Vanished from the face of the earth the day  \nthe war ended.         \n"))
+$data_charending[50] = ending
+
+# Francesca
+ending = Data_CharEnding.new
+ending.char_id = 20
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"Grew out of her gothic phase and started     \ndressing casually again. Since then, no one  \nrecognized her anymore.\n"))
+$data_charending[51] = ending
+
+# Frore
+ending = Data_CharEnding.new
+ending.char_id = 21
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"Stayed in Elysium for a few years before     \nreturning to Issuria on a quest to find Kella\nand destroy the Brotherhood.\n"))
+$data_charending[52] = ending
+
+# Griever
+ending = Data_CharEnding.new
+ending.char_id = 23
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"Came to terms with her past, and started     \ncalling herself Freya again. Worked          \ntirelessly to restore peace in Almenga.\n", 281))
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"After rumours about her true identity started\nspreading, she vanished without a trace.\n"))
+$data_charending[53] = ending
+
+# Tarlia
+ending = Data_CharEnding.new
+ending.char_id = 67
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"Agreed to become official representative of  \nAlmenga in the Elysium Republic.         \n"))
+$data_charending[54] = ending
+
+# Bruce
+ending = Data_CharEnding.new
+ending.char_id = 8
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"Took Leonius' place as general of the royal  \nfourth legion.     \n"))
+$data_charending[55] = ending
+
+# Deke
+ending = Data_CharEnding.new
+ending.char_id = 14
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"Attempted to combine his teleporter and the  \nportal key, but his first experiment         \ntransported him to another continent.\n"))
+$data_charending[56] = ending
+
+# Marcello
+ending = Data_CharEnding.new
+ending.char_id = 38
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"Discreetly moved his activities abroad after \nhe became the target of a police             \ninvestigation.\n"))
+$data_charending[57] = ending
+
+# Myst
+ending = Data_CharEnding.new
+ending.char_id = 44
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"Shifted his focus onto the secret of         \nimmortality, and would not be seen again for \nfifteen years.\n"))
+$data_charending[58] = ending
+
+# Derek
+ending = Data_CharEnding.new
+ending.char_id = 15
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"Wrote a bestselling novel about being dead,  \nbut disintegrated into dust before he could  \nreap the rewards.\n"))
+$data_charending[59] = ending
+
+# Rock
+ending = Data_CharEnding.new
+ending.char_id = 55
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"After some negotiation, Highland joined the  \nElysium republic, with him as its            \nrepresentative.     \n"))
+$data_charending[60] = ending
+
+# Paris
+ending = Data_CharEnding.new
+ending.char_id = 51
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"Stayed with the Highland division of the     \nElysium army.\n"))
+$data_charending[61] = ending
+
+# Nikolai
+ending = Data_CharEnding.new
+ending.char_id = 47
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"As head blacksmith for the Elysium army, he  \nwould ensure the country had the best        \npossible equipment for decades to come.\n"))
+$data_charending[62] = ending
+
+# Petra
+ending = Data_CharEnding.new
+ending.char_id = 52
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"Disgusted by the fact that a man was chosen  \nas president, she moved out of the country.  \n"))
+$data_charending[63] = ending
+
+# Gilbert
+ending = Data_CharEnding.new
+ending.char_id = 22
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"Rebuilt his ninja school somewhere, but its  \nexact location is a closely guarded secret.  \n     \n"))
+$data_charending[64] = ending
+
+# Rorschach
+ending = Data_CharEnding.new
+ending.char_id = 56
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"Is rumoured to have returned to his old ninja\nclan.\n", 322))
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"Unable to rescue his captive master, he still\nwanders around the world.\n", 280))
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"Set off to seek forgiveness from his clan.   \n \n"))
+$data_charending[65] = ending
+
+# Yomiko
+ending = Data_CharEnding.new
+ending.char_id = 75
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"Disappeared together with Gilbert and        \nRorschach, somewhere in Kirgard.\n"))
+$data_charending[66] = ending
+
+# Reod
+ending = Data_CharEnding.new
+ending.char_id = 53
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"Said something about 'owing a lot of people' \nand ran off.        \n"))
+$data_charending[67] = ending
+
+# Mai
+ending = Data_CharEnding.new
+ending.char_id = 36
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"Founded a new magic school, but felt that her\nabilities were not sufficiently appreciated  \nand left it behind in a huff.\n"))
+$data_charending[68] = ending
+
+# Wilona
+ending = Data_CharEnding.new
+ending.char_id = 73
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"Stayed in the employment of the Elysium      \nrepublic, where she worked on holding an     \nannual census.\n"))
+$data_charending[69] = ending
+
+# Midian
+ending = Data_CharEnding.new
+ending.char_id = 42
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"Tired with the restless life in the army, he \nreturned to his island to spend his final    \ndays.  \n"))
+$data_charending[70] = ending
+
+# Royston
+ending = Data_CharEnding.new
+ending.char_id = 57
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"Remained at Elysium Castle for the rest of   \nhis life and regularly leads tourists around.\n \n"))
+$data_charending[71] = ending
+
+# Yan Angwa
+ending = Data_CharEnding.new
+ending.char_id = 74
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"Left the Elysium republic with an unknown    \ndestination, and would not resurface for     \nalmost three decades.\n"))
+$data_charending[72] = ending
+
+# Nashal
+ending = Data_CharEnding.new
+ending.char_id = 46
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"Returned to her native country of Gojistan   \nand served the khan until an invasion by the \nRocaine Holy Empire, fifteen years later.\n"))
+$data_charending[73] = ending
+
+# Daniel
+ending = Data_CharEnding.new
+ending.char_id = 12
+ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(
+"Accompanied Nashal to see her homeland and   \nthen travelled further west on his own. All  \ncontact with him ceased not much later...\n"))
+$data_charending[74] = ending
+

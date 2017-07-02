@@ -1,0 +1,196 @@
+#==============================================================================
+# ** Scene_Blackjack 1
+#------------------------------------------------------------------------------
+# Johnny's blackjack game
+#==============================================================================
+
+class Scene_Blackjack
+  #--------------------------------------------------------------------------
+  # * Main Processing
+  #--------------------------------------------------------------------------
+  def main    
+    # Start music
+    $game_temp.map_bgm = $game_system.playing_bgm
+    $game_system.bgm_play(RPG::AudioFile.new("Blackjack", 100, 100))
+    # Make title graphic
+    @sprite = Sprite.new
+    @sprite.bitmap = RPG::Cache.picture("Backgrounds/Blackjack")    
+    # Determine maximum bet 
+    @max_bet = $game_switches[274] ? 100000 : 
+                            $game_switches[236] ? 10000 : 
+                          1000
+    # Windows
+    @help_window = Window_Help.new
+    @help_window.visible = false
+    @balance_window = Window_BJBalance.new
+    @currentbet_window = Window_BJCurrentBet.new
+    @gold_window = Window_Gold.new
+    @gold_window.x = 395
+    @gold_window.y = 24
+    @gold_window.windowskin_suffix = "_right"
+    @bet_window = Window_BJBet.new(@max_bet)
+    @gamecommand_window = Window_Command.new(150, ["Hit", "Stand", "Double Down"])
+    @gamecommand_window.x = 450
+    @gamecommand_window.y = 175
+    @gamecommand_window.visible = false
+    @gamecommand_window.active = false
+    @wait = 0
+    @draw_wait = 0
+    $game_temp.blackjack_result = 0
+    @hand_dealer = []
+    @hand_player = []
+    start_phase1_select_bet
+    # Execute transition
+    Graphics.transition
+    # Main loop
+    loop do
+      # Update game screen
+      Graphics.update
+      # Update input information
+      Input.update
+      # Frame update
+      update
+      # Abort loop if screen is changed
+      if $scene != self
+        break
+      end
+    end
+    # Prepare for transition
+    Graphics.freeze
+    # Dispose of windows
+    @help_window.dispose
+    @gold_window.dispose
+    @balance_window.dispose
+    @currentbet_window.dispose
+    @gamecommand_window.dispose
+    @sprite.bitmap.dispose
+    @sprite.dispose
+  end
+  #--------------------------------------------------------------------------
+  # * Frame Update
+  #--------------------------------------------------------------------------
+  def update
+    if @wait > 0
+      @wait -= 1      
+      return
+    end    
+    if @phase == 0
+      update_phase0_quit
+    elsif @phase == 1
+      update_phase1_select_bet
+    elsif @phase == 2
+      update_phase2_game
+    elsif @phase == 3
+      update_phase3_broke
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Start quitting phase
+  #--------------------------------------------------------------------------
+  def start_phase0_quit
+    @help_window.set_text("Really quit?")    
+    # Make command window
+    @command_window = Window_Command.new(150, ["Yes", "No"])
+    @command_window.x = 180
+    @command_window.y = 190        
+  end
+  #--------------------------------------------------------------------------
+  # * Update quitting phase
+  #--------------------------------------------------------------------------
+  def update_phase0_quit
+    @command_window.update
+    # If B button was pressed
+    if Input.trigger?(Input::B)
+      $game_system.se_play($data_system.cancel_se)
+      end_phase0_quit
+      start_phase1_select_bet
+      @phase = 1
+      return
+    end
+    # If C button was pressed
+    if Input.trigger?(Input::C)
+      $game_system.se_play($data_system.decision_se)
+      end_phase0_quit
+      if @command_window.index == 1
+        # Continue
+        start_phase1_select_bet
+        return
+      else
+        # Quit        
+        $game_system.bgm_play($game_temp.map_bgm)
+        $scene = Scene_Map.new
+      end
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * End quitting phase
+  #--------------------------------------------------------------------------
+  def end_phase0_quit
+    @help_window.visible = false
+    @command_window.dispose 
+  end
+  #--------------------------------------------------------------------------
+  # * Start betting phase
+  #--------------------------------------------------------------------------
+  def start_phase1_select_bet
+    if $game_party.gold < @max_bet / 100
+      # Player is broke
+      @help_window.set_text("You don't have enough money left to play!")    
+      @phase = 3
+      return
+    end
+    @bet_window.check_money
+    @help_window.set_text("Place your bet, or press cancel to exit")    
+    @bet_window_text2 = Window_Base.new(150, 200-16, 90, 64)
+    @bet_window_text2.set_standard_bitmap
+    @bet_window_text2.draw_text(0, 0, 58, 32, "Bet: ", 1)
+    @bet_window_text3 = Window_Base_Short.new(150, 200+48, 300, 48)
+    @bet_window_text3.set_standard_bitmap
+    @bet_window_text3.draw_text(16, 8, 400, 32, "Maximum bet: " + @max_bet.to_s + " Arn")
+    @bet_window.visible = true
+    @bet_window.active = true
+    @phase = 1
+  end
+  #--------------------------------------------------------------------------
+  # * Update betting phase
+  #--------------------------------------------------------------------------
+  def update_phase1_select_bet    
+    @bet_window.update
+    # If B button was pressed
+    if Input.trigger?(Input::B)
+      $game_system.se_play($data_system.cancel_se)
+      end_phase1_select_bet
+      start_phase0_quit
+      @phase = 0
+      return
+    end
+    # If C button was pressed
+    if Input.trigger?(Input::C)
+      $game_system.se_play($data_system.decision_se)
+      end_phase1_select_bet
+      @phase = 2
+      @step = 1
+      @wait = 10
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * End betting phase
+  #--------------------------------------------------------------------------
+  def end_phase1_select_bet
+    @help_window.visible = false    
+    @bet_window.visible = false
+    @bet_window.active = false
+    @bet_window_text2.dispose
+    @bet_window_text3.dispose    
+  end
+  #--------------------------------------------------------------------------
+  # * Update broke player
+  #--------------------------------------------------------------------------
+  def update_phase3_broke
+    if Input.trigger?(Input::B) or Input.trigger?(Input::C)
+      $game_system.se_play($data_system.decision_se)
+      $game_system.bgm_play($game_temp.map_bgm)
+      $scene = Scene_Map.new
+    end
+  end 
+end

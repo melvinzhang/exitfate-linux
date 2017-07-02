@@ -1,0 +1,422 @@
+#==============================================================================
+# ** Scene_War
+#------------------------------------------------------------------------------
+#  This class handles war battles
+#
+#  Main stuff from Game_Map
+#==============================================================================
+
+class Scene_War
+  #--------------------------------------------------------------------------
+  # * Initialize
+  #--------------------------------------------------------------------------
+  def initialize(id)
+    @battle_id = id
+    data = Data_WarBattles.new.setup(@battle_id)
+    $game_temp.war_units = data[0]
+    $game_temp.war_casualties = []
+    @score_turn_limit = data[1]
+    @player_name = data[2]
+    @enemy_name = data[3]
+    @player_flag = data[4]
+    @enemy_flag = data[5]
+    @battle_name = data[6]
+    @victory_item_a = [data[7], data[8]]
+    @victory_item_b = [data[9], data[10]]
+    @victory_item_c = [data[11], data[12]]
+    @victory_item_d = [data[13], data[14]]
+    @berserk_mode = false
+    $game_temp.war_is_icemap = [16, 107].include?(@battle_id)
+    # Total movement grids
+    @movement_grids = {}
+    # Meiko war switch
+    $game_switches[26] = false
+    # Count starting men    
+    p_men = 0
+    e_men = 0    
+    for unit in $game_temp.war_units
+      if unit.player_side
+        p_men += unit.men
+      else
+        e_men += unit.men
+      end
+    end        
+    $game_variables[18] = p_men
+    $game_variables[19] = e_men
+    # Determine starting position
+    for unit in $game_temp.war_units
+      if unit.player_side
+        @cursor_x = unit.x
+        @cursor_y = unit.y
+        break
+      end
+    end        
+  end  
+  #--------------------------------------------------------------------------
+  # * Main Processing
+  #--------------------------------------------------------------------------
+  def main    
+    # Make sprite set
+    @spriteset = Spriteset_War.new
+    # Make message windows
+    @message_window = Window_Message.new
+    @message_window_small = Window_Message_Small.new
+    $game_switches[5] = false
+    $game_temp.war_result = 0
+    @turn = 0
+    $game_temp.war_turn = 0
+    @phase = 0
+    @wait = 0
+    @move_wait = 0
+    @cursor_sprite = Sprite_WarCursor.new(@cursor_x, @cursor_y, @spriteset.viewport1)
+    @cursor_sprite.bitmap = RPG::Cache.picture("War_Cursor")    
+    @cursor_sprite.ox = 2
+    @cursor_sprite.oy = 2
+    @cursor_sprite.visible = false    
+    @cursor_sel_sprite = Sprite_WarCursor.new(0, 0, @spriteset.viewport1, true)
+    @cursor_sel_sprite.bitmap = RPG::Cache.picture("War_Cursor_Select")    
+    @cursor_sel_sprite.ox = 2
+    @cursor_sel_sprite.oy = 2
+    @cursor_sel_sprite.visible = false
+    @command_window = Window_Command.new(100, ["Attack", "Wait"])
+    @command_window.z = 6000
+    @command_window.visible = false
+    @command_window.active = false
+    @menu_window = Window_Command.new(200, ["Finish Turn", "Quit"])
+    @menu_window.x = 320 - @menu_window.width / 2
+    @menu_window.y = 200
+    @menu_window.visible = false
+    @menu_window.active = false
+    if $game_temp.war_is_sim
+      @menu_confirm_window = Window_Command.new(200, ["End Simulation", "Return to title", "Quit Game", "Cancel"])
+    else       
+      @menu_confirm_window = Window_Command.new(200, ["Return to title", "Quit Game", "Cancel"])
+    end
+    @menu_confirm_window.x = 320 - @menu_confirm_window.width / 2
+    @menu_confirm_window.y = 200
+    @menu_confirm_window.active = false
+    @menu_confirm_window.visible = false
+    @analyze_window = Window_WarAnalyze.new
+    @move_sprites = []
+    @attack_sprites = []
+    # Transition run
+    Graphics.transition
+    # Main loop
+    loop do
+      # Update game screen
+      Graphics.update
+      # Update input information
+      Input.update
+      # Frame update
+      update
+      # Abort loop if screen is changed
+      if $scene != self
+        break
+      end
+    end
+    # Prepare for transition
+    Graphics.freeze
+    # Dispose of sprite set
+    @cursor_sprite.dispose
+    @cursor_sel_sprite.dispose
+    for sprite in @move_sprites + @attack_sprites
+      sprite.dispose
+    end
+    @analyze_window.dispose
+    @top_sprite.dispose if @top_sprite != nil
+    @unitinfo_window.dispose if @unitinfo_window != nil
+    @spriteset.dispose    
+    @sprite_victory.dispose if @sprite_victory != nil
+    @background_sprite.dispose if @background_sprite != nil
+    @score_sprite.dispose if @score_sprite != nil
+    @score2_sprite.dispose if @score2_sprite !=nil
+    @rating_sprite.dispose if @rating_sprite != nil
+    @victory_item_sprite.dispose if @victory_item_sprite != nil
+    # Dispose of message window
+    @message_window.dispose
+    @message_window_small.dispose
+    @menu_window.dispose
+    @menu_confirm_window.dispose
+    @reward_window.dispose if @reward_window != nil
+    # If switching to title screen
+    if $scene.is_a?(Scene_Title)
+      # Fade out screen
+      Graphics.transition
+      Graphics.freeze
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Frame Update
+  #--------------------------------------------------------------------------
+  def update
+    loop do
+      # Update map, interpreter, and player order
+      # (this update order is important for when conditions are fulfilled 
+      # to run any event, and the player isn't provided the opportunity to
+      # move in an instant)
+      $game_map.update
+      $game_system.map_interpreter.update
+      #$game_player.update
+      # Update system (timer), screen
+      $game_system.update
+      $game_screen.update    
+      # Abort loop if player isn't place moving
+      unless $game_temp.player_transferring
+        break
+      end
+      # Run place move
+      transfer_player
+      # Abort loop if transition processing
+      if $game_temp.transition_processing
+        break
+      end
+    end    
+    # Update sprite set
+    @spriteset.update
+    @cursor_sprite.x = @cursor_x
+    @cursor_sprite.y = @cursor_y
+    @cursor_sprite.update        
+    @cursor_sel_sprite.update
+    for sprite in @move_sprites + @attack_sprites
+      sprite.update
+    end
+    if @unitinfo_window != nil
+      @unitinfo_window.x = @cursor_sprite.x > 320 - 64 ? 0 : 640-@unitinfo_window.width
+    end
+    # Update message window
+    @message_window.update
+    @message_window_small.update    
+    # If game over
+    if $game_temp.gameover
+      # Switch to game over screen
+      $scene = Scene_Gameover.new
+      return
+    end
+    # If returning to title screen
+    if $game_temp.to_title
+      # Change to title screen
+      $scene = Scene_Title.new
+      return
+    end
+    # If transition processing
+    if $game_temp.transition_processing
+      # Clear transition processing flag
+      $game_temp.transition_processing = false
+      # Execute transition
+      if $game_temp.transition_name == ""
+        Graphics.transition(20)
+      else
+        Graphics.transition(40, "Graphics/Transitions/" +
+          $game_temp.transition_name)
+      end
+    end
+    # If showing message window
+    if $game_temp.message_window_showing
+      return
+    end
+    if $game_system.map_interpreter.running?      
+      return
+    end
+    # Wait
+    if @move_wait > 0
+      @move_wait -= 1
+    end    
+    if @wait > 0
+      @wait -= 1
+      return
+    end    
+    # Return if a sprite effect is being displayed
+    return if @spriteset.effect?    
+    # If debug mode is ON and F6 key was pressed
+    if $DEBUG and Input.trigger?(Input::F6)
+      @debugsprites = []
+      for x in 0...$game_map.width
+        for y in 0...$game_map.height
+          t = $game_map.terrain_tag(x, y)
+          s = Sprite.new
+          s.bitmap = Bitmap.new(32, 32)
+          case t
+            when 0 
+              c = Color.new(255, 0, 0, 128)
+            when 1 
+              c = Color.new(255, 255, 255, 128)
+            when 2
+              c = Color.new(0, 255, 0, 128)
+            when 3
+              c = Color.new(255, 255, 0, 128)
+            else
+              c = Color.new(0, 0, 255, 128)              
+          end
+          s.bitmap.fill_rect(0, 0, 32, 32, c)
+          s.x = (128 * x - $game_map.display_x + 3) / 4
+          s.y = (128 * y - $game_map.display_y + 3) / 4
+          @debugsprites.push(s)
+        end               
+      end
+    end    
+    # If debug mode is ON and F7 key was pressed
+    if $DEBUG and Input.trigger?(Input::F7)
+      $game_temp.war_result == 1
+    end    
+    # Menu windows
+    if @menu_confirm_window.active
+      @menu_confirm_window.update
+      update_confirm_menu
+      return
+    end    
+    if @menu_window.active
+      @menu_window.update
+      update_menu
+      return
+    end
+    # Victory
+    if $game_temp.war_result == 1 and @phase != 5
+      start_phase5
+      return
+    end
+    # Defeat
+    if $game_temp.war_result == 2
+      if $game_temp.war_is_sim
+        # End battle
+        end_battle
+      else        
+        $scene = Scene_Gameover.new
+      end
+      return
+    end    
+    # Retreat
+    if $game_temp.war_result == 3
+      end_battle
+      return
+    end
+    # Update according to phase
+    if @phase == 0
+      update_phase0
+    elsif @phase == 1
+      update_phase1
+    elsif @phase == 2
+      update_phase2
+    elsif @phase == 3
+      update_phase3
+    elsif @phase == 4
+      update_phase4
+    elsif @phase == 5
+      update_phase5
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Update phase 0: pre-battle
+  #--------------------------------------------------------------------------
+  def update_phase0
+    if @sprite_battletitle == nil      
+      # Prepare title sprite
+      @sprite_battletitle = Sprite.new
+      @sprite_battletitle.bitmap = Bitmap.new(640, 105)
+      @sprite_battletitle.bitmap.font.name = ["Georgia", "Times New Roman"]
+      @sprite_battletitle.bitmap.font.size = 40
+      @sprite_battletitle.bitmap.font.bold = true
+      w = @sprite_battletitle.bitmap.text_size(@battle_name).width + 30
+      @sprite_battletitle.bitmap.fill_rect(320-w/2, 0, w, 105, Color.new(0, 0, 0))
+      @sprite_battletitle.bitmap.font.color = Color.new(255, 255, 255)
+      @sprite_battletitle.bitmap.draw_text(0, 10, 640, 40, "Battle at", 1)   
+      @sprite_battletitle.bitmap.draw_text(0, 55, 640, 40, @battle_name, 1)   
+      @sprite_battletitle.x = 0
+      @sprite_battletitle.y = 480 + @sprite_battletitle.bitmap.height
+      @step = 0
+      return  
+    end    
+    @sprite_battletitle.y -= 10
+    if @step == 0 and @sprite_battletitle.y < 240 - @sprite_battletitle.bitmap.height/2
+      @step = 1
+      @wait = 75
+    end    
+    if @sprite_battletitle.y < -@sprite_battletitle.bitmap.height
+      # Start battle
+      @sprite_battletitle.dispose
+      @step = 0
+      @top_sprite = Sprite_WarTop.new(@player_name, @enemy_name, @player_flag, @enemy_flag)
+      @unitinfo_window = Window_WarUnitInfo.new
+      @player_turn = false
+      start_phase1      
+      @wait = 20
+    end      
+  end
+  #--------------------------------------------------------------------------
+  # * Player Place Move
+  #--------------------------------------------------------------------------
+  def transfer_player
+    # Clear player place move call flag
+    $game_temp.player_transferring = false
+    # Set up player position
+    $game_player.moveto($game_temp.player_new_x, $game_temp.player_new_y)
+    # Set player direction
+    case $game_temp.player_new_direction
+    when 2  # down
+      $game_player.turn_down
+    when 4  # left
+      $game_player.turn_left
+    when 6  # right
+      $game_player.turn_right
+    when 8  # up
+      $game_player.turn_up
+    end
+    # Update map (run parallel process event)
+    $game_map.update
+    # If processing transition
+    if $game_temp.transition_processing
+      # Clear transition processing flag
+      $game_temp.transition_processing = false
+      # Execute transition
+      Graphics.transition(20)
+    end
+    # Frame reset
+    Graphics.frame_reset
+    # Update input information
+    Input.update
+  end
+  #--------------------------------------------------------------------------
+  # * Player Place Move
+  #--------------------------------------------------------------------------
+  def return_to_map
+    # Clear player place move call flag
+    $game_temp.player_transferring = false
+    # If move destination is different than current map
+    if $game_map.map_id != $game_temp.player_new_map_id
+      # Set up a new map
+      $game_map.setup($game_temp.player_new_map_id)
+    end
+    # Set up player position
+    $game_player.moveto($game_temp.player_new_x, $game_temp.player_new_y)
+    # Set player direction
+    case $game_temp.player_new_direction
+    when 2  # down
+      $game_player.turn_down
+    when 4  # left
+      $game_player.turn_left
+    when 6  # right
+      $game_player.turn_right
+    when 8  # up
+      $game_player.turn_up
+    end
+    # Straighten player position
+    $game_player.straighten
+    # Update map (run parallel process event)
+    $game_map.update
+    # Remake sprite set
+    @spriteset.dispose
+    @spriteset = Spriteset_Map.new
+    # If processing transition
+    if $game_temp.transition_processing
+      # Clear transition processing flag
+      $game_temp.transition_processing = false
+      # Execute transition
+      Graphics.transition(20)
+    end
+    # Run automatic change for BGM and BGS set on the map
+    $game_map.autoplay
+    # Frame reset
+    Graphics.frame_reset
+    # Update input information
+    Input.update
+  end
+end

@@ -1,0 +1,652 @@
+#==============================================================================
+# ** Game_Temp
+#------------------------------------------------------------------------------
+#  This class handles temporary data that is not included with save data.
+#  Refer to "$game_temp" for the instance of this class.
+#==============================================================================
+
+class Game_Temp
+  #--------------------------------------------------------------------------
+  # * Public Instance Variables
+  #--------------------------------------------------------------------------
+  attr_accessor :map_bgm                  # map music (for battle memory)
+  attr_accessor :message_text             # message text
+  attr_accessor :message_proc             # message callback (Proc)
+  attr_accessor :choice_start             # show choices: opening line
+  attr_accessor :choice_max               # show choices: number of items
+  attr_accessor :choice_cancel_type       # show choices: cancel
+  attr_accessor :choice_proc              # show choices: callback (Proc)
+  attr_accessor :num_input_start          # input number: opening line
+  attr_accessor :num_input_variable_id    # input number: variable ID
+  attr_accessor :num_input_digits_max     # input number: digit amount
+  attr_accessor :message_window_showing   # message window showing
+  attr_accessor :common_event_id          # common event ID
+  attr_accessor :in_battle                # in-battle flag
+  attr_accessor :battle_calling           # battle calling flag
+  attr_accessor :battle_troop_id          # battle troop ID
+  attr_accessor :battle_can_escape        # battle flag: escape possible
+  attr_accessor :battle_can_lose          # battle flag: losing possible
+  attr_accessor :battle_proc              # battle callback (Proc)
+  attr_accessor :battle_turn              # number of battle turns
+  attr_accessor :battle_event_flags       # battle event flags: completed
+  attr_accessor :battle_abort             # battle flag: interrupt
+  attr_accessor :battle_main_phase        # battle flag: main phase
+  attr_accessor :battleback_name          # battleback file name
+  attr_accessor :forcing_battler          # battler being forced into action
+  attr_accessor :shop_calling             # shop calling flag
+  attr_accessor :shop_goods               # list of shop goods
+  attr_accessor :name_calling             # name input: calling flag
+  attr_accessor :name_actor_id            # name input: actor ID
+  attr_accessor :name_max_char            # name input: max character count
+  attr_accessor :menu_calling             # menu calling flag
+  attr_accessor :menu_beep                # menu: play sound effect flag
+  attr_accessor :save_calling             # save calling flag
+  attr_accessor :debug_calling            # debug calling flag
+  attr_accessor :player_transferring      # player place movement flag
+  attr_accessor :player_new_map_id        # player destination: map ID
+  attr_accessor :player_new_x             # player destination: x-coordinate
+  attr_accessor :player_new_y             # player destination: y-coordinate
+  attr_accessor :player_new_direction     # player destination: direction
+  attr_accessor :transition_processing    # transition processing flag
+  attr_accessor :transition_name          # transition file name
+  attr_accessor :gameover                 # game over flag
+  attr_accessor :to_title                 # return to title screen flag
+  attr_accessor :last_file_index          # last save file no.
+  attr_accessor :debug_top_row            # debug screen: for saving conditions
+  attr_accessor :debug_index              # debug screen: for saving conditions  
+  
+  attr_accessor :dialogue_name            # name to display on top of text box
+  attr_accessor :dialogue_portrait        # portrait to display on text box
+  attr_accessor :last_item_name         # name of the last item obtained, used for messages
+  attr_accessor :savepoint_name       # name to show on save file at current location
+  attr_accessor :dialogue_fadefast            # quick fade for character dialogue
+  attr_accessor :message_text_small             # message text
+  attr_accessor :location_name            # Name displayed when entering places  
+  attr_accessor :location_was_shown  # Name has already been shown once
+  attr_accessor :blackjack_result         # Balance from last Blackjack game
+  
+  attr_accessor :war_units                    # array of war units
+  attr_accessor :war_units_extra         # array of reinforcement units (special)
+  attr_accessor :war_casualties           # array of units who died during this battle
+  attr_accessor :war_result                  # set externally to determine war battle result
+  attr_accessor :war_turn                    # Current turn number in war
+  attr_accessor :war_is_sim                    # War battle is in simulation mode
+  attr_accessor :war_is_icemap        # Ice map for warbattles
+  #--------------------------------------------------------------------------
+  # * Object Initialization
+  #--------------------------------------------------------------------------
+  def initialize
+    @map_bgm = nil
+    @message_text = nil
+    @message_proc = nil
+    @choice_start = 99
+    @choice_max = 0
+    @choice_cancel_type = 0
+    @choice_proc = nil
+    @num_input_start = 99
+    @num_input_variable_id = 0
+    @num_input_digits_max = 0
+    @message_window_showing = false
+    @common_event_id = 0
+    @in_battle = false
+    @battle_calling = false
+    @battle_troop_id = 0
+    @battle_can_escape = false
+    @battle_can_lose = false
+    @battle_proc = nil
+    @battle_turn = 0
+    @battle_event_flags = {}
+    @battle_abort = false
+    @battle_main_phase = false
+    @battleback_name = ''
+    @forcing_battler = nil
+    @shop_calling = false
+    @shop_id = 0
+    @name_calling = false
+    @name_actor_id = 0
+    @name_max_char = 0
+    @menu_calling = false
+    @menu_beep = false
+    @save_calling = false
+    @debug_calling = false
+    @player_transferring = false
+    @player_new_map_id = 0
+    @player_new_x = 0
+    @player_new_y = 0
+    @player_new_direction = 0
+    @transition_processing = false
+    @transition_name = ""
+    @gameover = false
+    @to_title = false
+    @last_file_index = 0
+    @debug_top_row = 0
+    @debug_index = 0
+    @dialogue_portrait = ""
+    @dialogue_name = ""
+    @last_item_name = ""
+    @savepoint_name = ""
+    @dialogue_fadefast = false
+    @message_text_small = nil
+    @location_name = nil
+    @location_was_shown = false
+    @blackjack_result = 0
+    @war_units = nil
+    @war_units_extra = nil
+    @war_casualties = nil
+    @war_result = -1
+    @war_turn = 0
+    @destination_calling = false
+    @destination_mode = 0
+    @war_is_sim = false
+    @war_is_icemap = false
+  end
+  #--------------------------------------------------------------------------
+  # * Set portrait var (shortened)
+  #--------------------------------------------------------------------------
+  def d_p=(str)
+    @dialogue_portrait = str
+  end
+  #--------------------------------------------------------------------------
+  # * Set name var (shortened)
+  #--------------------------------------------------------------------------
+  def d_n=(str)
+    @dialogue_name = str
+  end
+  #--------------------------------------------------------------------------
+  # * Write troop info to file
+  #--------------------------------------------------------------------------    
+  def write_troop_info
+    return if not $DEBUG    
+    file = open("../info_troop.txt", "w")
+    i = 1
+    while $exdata_troops[i] != nil
+      troop = $exdata_troops[i]
+      string = $data_troops[i].name
+      string = string[0, [string.length, 29].min]
+      string = addspaces(string, string.length, 30)
+      exp = 0
+      gold = 0
+      for e in troop.enemies
+        enemy = $data_enemies[e[0]]
+        gold += enemy.gold
+      end      
+      string = addspaces(string,  gold.to_s.length, 10)
+      string += gold.to_s
+      string = addspaces(string,  (gold/4).to_s.length, 10)
+      string += (gold/4).to_s
+      file.write(string + "\n")    
+      i += 1
+    end 
+  end
+  #--------------------------------------------------------------------------
+  # * Write char info to file
+  #--------------------------------------------------------------------------    
+  def write_char_info
+    return if not $DEBUG
+    file = open("../info_chars.txt", "w")
+    chars = []
+    for i in 1..75      
+      chars.push($game_actors[i])
+    end
+    write_char_info_aux(chars, file)
+    chars.sort!{|a, b| b.battles - a.battles}
+    write_char_info_aux(chars, file)
+    chars.sort!{|a, b| b.kills - a.kills}
+    write_char_info_aux(chars, file)
+    chars.sort!{|a, b| b.deaths - a.deaths}
+    write_char_info_aux(chars, file)
+  end
+  #--------------------------------------------------------------------------
+  # * Write char info to file (Aux function)
+  #-------------------------------------------------------------------------- 
+  def write_char_info_aux(chars, file)
+    return if not $DEBUG
+    for a in chars   
+      string = a.name
+      string = addspaces(string, string.length, 12)      
+      string += a.joined ? "X " : "  "
+      string = addspaces(string, a.battles.to_s.length, 4)
+      string += a.battles.to_s
+      string = addspaces(string, a.kills.to_s.length, 4)
+      string += a.kills.to_s
+      string = addspaces(string, a.deaths.to_s.length, 4)
+      string += a.deaths.to_s
+      file.write(string + "\n")    
+    end 
+    file.write("\n\n\n")    
+  end
+  #--------------------------------------------------------------------------
+  # * Write char info to file
+  #--------------------------------------------------------------------------    
+  def write_char_info2
+    return if not $DEBUG
+    file = open("../info_chars_dmg.txt", "w")
+    chars = []
+    for i in 1..75      
+      chars.push($game_actors[i])
+    end
+    enemy =  Game_Enemy.new(0, 25, 0, 0)    
+    skill = $data_skills[31]
+    chars.sort!{|a, b| enemy.pdamage(b.str, 5, false, false, 100, 100, false)  - enemy.pdamage(a.str, 5, false, false, 100, 100, false)}
+    write_char_info2_aux(chars, file, enemy, skill)
+    chars.sort!{|a, b| enemy.skill_mdamage(skill, b, false, false) - enemy.skill_mdamage(skill, a, false, false)}
+    write_char_info2_aux(chars, file, enemy, skill)
+  end
+  #--------------------------------------------------------------------------
+  # * Write char info to file (Aux function)
+  #-------------------------------------------------------------------------- 
+  def write_char_info2_aux(chars, file, enemy, skill)
+    return if not $DEBUG
+    for a in chars   
+      string = a.name
+      string = addspaces(string, string.length, 12)      
+      string += a.joined ? "X " : "  "
+      dmg = enemy.pdamage(a.str, 5, false, false, 100, 100, false)
+      string = addspaces(string, dmg.to_s.length, 5)
+      string += dmg.to_s
+      dmg = enemy.skill_mdamage(skill, a, false, false) 
+      string = addspaces(string, dmg.to_s.length, 5)
+      string += dmg.to_s
+      file.write(string + "\n")    
+    end 
+    file.write("\n\n\n")    
+  end
+  #--------------------------------------------------------------------------
+  # * Write status info to file 
+  #-------------------------------------------------------------------------- 
+  def write_status_info
+    return if not $DEBUG
+    status = []
+    for i in 1...$data_states.size
+      status[i] = []
+    end    
+    file = open("../info_status.txt", "w")    
+    for i in 1...$data_enemies.size      
+      e = $data_enemies[i]
+      wrote_name = false
+      for j in 0...e.actions.size
+        a = e.actions[j]
+        if a.kind == 1
+          sk = $data_skills[a.skill_id]
+          info = SkillInfo.new(sk)
+          st = info.status_effect
+          for k in st.keys
+            if not wrote_name
+              file.write(e.name + "\n")              
+              wrote_name = true
+            end
+            string = sk.name[0, 14]
+            string = addspaces(string, string.length, 15)
+            string += $data_states[k].name
+            string = addspaces(string, string.length, 30)
+            string = addspaces(string, st[k].to_s.length, 3)
+            string += st[k].to_s
+            status[k].push(e.name)
+            file.write("    "  + string + "\n")                          
+          end          
+          for k in 0...sk.plus_state_set.size
+            if not wrote_name
+              file.write(e.name + "\n")              
+              wrote_name = true
+            end
+            string = sk.name[0, 14]
+            string = addspaces(string, string.length, 15)
+            string += $data_states[sk.plus_state_set[k]].name
+            string = addspaces(string, string.length, 30)
+            string = addspaces(string, sk.int_f.to_s.length, 3)
+            string += sk.int_f.to_s
+            status[sk.plus_state_set[k]].push(e.name)
+            file.write("    "  + string + "\n")              
+          end
+        end
+      end
+      if wrote_name
+        file.write("\n")
+      end
+    end
+    file.write("===========\n")
+    for i in 1...$data_states.size
+      file.write($data_states[i].name + "\n")   
+      for name in status[i]
+        file.write("   " + name + "\n")
+      end
+    end        
+  end
+  #--------------------------------------------------------------------------
+  # * Write troop info to file
+  #--------------------------------------------------------------------------    
+  def write_relation_info
+    return if not $DEBUG
+    file = open("../info_relation.txt", "w")
+    data = []
+    for i in 1..75
+      data[i] = []
+    end
+    for i in 1..75
+      a = $exdata_actors[i]
+      for r in a.relation
+        data[r[0]].push([a.name, r[1]])
+      end
+    end
+    for i in 1..75
+      a = $exdata_actors[i]
+      file.write(a.name + "\n")
+      for r in data[i]
+        string = r[0]
+        string = addspaces(string,  string.length, 20)
+        file.write("       " + string + r[1] + "\n")
+      end
+      file.write("\n")
+    end    
+  end
+  #--------------------------------------------------------------------------
+  # * Write war info to file
+  #--------------------------------------------------------------------------    
+  def write_war_info
+    return if not $DEBUG
+    file = open("../info_war.txt", "w")
+    win_str = ["A", "B", "C", "D"]
+    for i in 1..999
+      data = Data_WarBattles.new.setup(i)
+      if data == nil
+        if (i < 100)
+          i = 99
+          next
+        else          
+          break
+        end
+      end
+      war_units = data[0]
+      p_men = 0
+      e_men = 0
+      for j in 0...war_units.size
+        if war_units[j].player_side
+          p_men += war_units[j].men
+        else
+          e_men += war_units[j].men
+        end
+      end
+      score_turn_limit = data[1]
+      player_name = data[2]
+      enemy_name = data[3]
+      battle_name = data[6]
+      victory_item = []
+      victory_item[0] = [data[7], data[8]]
+      victory_item[1] = [data[9], data[10]]
+      victory_item[2] = [data[11], data[12]]
+      victory_item[3] = [data[13], data[14]]           
+      file.write("=========================\n")
+      file.write(i.to_s + ". " + battle_name + "\n")
+      file.write("=========================\n")
+      file.write(player_name + " vs. " + enemy_name + "\n")
+      str = p_men.to_s
+      str = addspaces(str, str.length, player_name.length)
+      file.write(str + " vs. " + e_men.to_s + "\n")
+      file.write("Turn limit: " + score_turn_limit.to_s + "\n")      
+      file.write("Win items: \n" )
+      for j in 0..3
+        if victory_item[j][0] == 0
+          item = $data_items[victory_item[j][1]]
+        elsif victory_item[j][0] == 1
+          item = $data_weapons[victory_item[j][1]]
+        else
+          item = $data_armors[victory_item[j][1]]
+        end      
+        file.write(win_str[j] + ": " + item.name + "\n" )
+      end
+      file.write("\n")
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Write all switches to file
+  #--------------------------------------------------------------------------    
+  def write_switch_info
+    return if not $DEBUG
+    file = open("../info_switch.txt", "w")
+    i = 1
+    while FileTest.exists?(sprintf("Data/Map%03d.rxdata", i)) 
+      # Print map name
+      map_name = load_data("Data/MapInfos.rxdata")[i].name
+      # Load map data
+      map = load_data(sprintf("Data/Map%03d.rxdata", i))
+      # Check commands in all pages in all events :gonk:
+      for event in map.events.values      
+        for page in event.pages
+          for command in page.list
+            if command.code == 121
+              id = command.parameters[0]
+              on = (command.parameters[2] == 0) ? "ON" : "OFF"
+              file.write(i.to_s + ". " + id.to_s + " " + on + "     " + map_name + "\n")
+            end
+          end
+        end        
+      end
+      i += 1
+      if i % 100 == 0
+        p map_name
+      end
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Check all doors
+  #--------------------------------------------------------------------------    
+  def write_door_info
+    return if not $DEBUG
+    file = open("../info_door.txt", "w")
+    i = 1
+    while FileTest.exists?(sprintf("Data/Map%03d.rxdata", i)) 
+      string = i.to_s + " " + load_data("Data/MapInfos.rxdata")[i].name      
+      string2 = ""
+      # Load map data
+      map = load_data(sprintf("Data/Map%03d.rxdata", i))
+      numdoors = 0
+      for event in map.events.values      
+        if event.name.scan(/DOOR/).size > 0
+          numdoors += 1
+          for page in event.pages
+            event2 = nil
+            for command in page.list
+              if command.code == 209
+                if (command.parameters[0] > 0)
+                  # Door moves something else, find this event
+                  event2 = map.events[command.parameters[0]]                  
+                  if event2 == nil
+                    string2 += "Could not find partner for door " + event.name + "\n"
+                  end
+                end
+              end
+              if command.code == 201
+                # Teleport. Compare to event2
+                success = false
+                if (event2 != nil)
+                  for page2 in event2.pages
+                    for command2 in page2.list
+                      if command2.code == 201
+                        if command.parameters[1] == command2.parameters[1] and
+                           command.parameters[2] == command2.parameters[2] and
+                           command.parameters[3] == command2.parameters[3] and
+                          success = true
+                        end
+                      end
+                    end
+                  end                  
+                  if not success
+                    string2 += "Incorrect teleport for door " + event.name + "\n"
+                  end
+                end
+              end
+            end
+          end        
+        end
+      end
+      string += " Doors: " + numdoors.to_s + "\n"
+      file.write(string)
+      file.write(string2)
+      i += 1
+      if i % 200 == 0
+        p string
+      end
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Process character ending data
+  #--------------------------------------------------------------------------    
+  def write_charending_info
+    return if not $DEBUG
+    file = File.open("../ending.txt", "r")
+    lines = file.readlines("\n")
+    file = open("../info_charending.txt", "w")
+    i = 0
+    # Find the start
+    while lines[i][0, 9] != "### START"
+      i += 1
+    end    
+    # Process all characters    
+    ending_id = 0
+    first = true
+    text = ""
+    while i < lines.size
+      # Skip guidelines
+      if lines[i].scan(/__/).size > 0
+        i += 1
+      end
+      # End
+      if  lines[i][0, 7] == "### END"
+        break
+      end
+      # Try reading switch
+      if lines[i][0, 1] == "#"
+        switch = lines[i][1, 3].to_i
+      else
+        switch = -1
+      end
+      # Read character id
+      char_id = lines[i][0, 3].to_i
+      # Read text
+      old_text = text
+      text = ""
+      if lines[i].size > 11        
+        text = text + lines[i][11, 45] + "\\n"
+      end
+      if lines[i].size > 57
+        text = text + lines[i][57, 45] + "\\n"
+      end
+      if lines[i].size > 103
+        text = text + lines[i][103, 45] + "\\n"
+      end      
+      text.gsub!("\n") {|s| "" }
+      # Write output
+      if switch > -1                
+        # Add additional line for character        
+        file.write("ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(\n")
+        file.write("\"" + old_text + "\", " + switch.to_s + "))\n")        
+      else
+        #Finish previous character
+        if not first
+          file.write("ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(\n")
+          file.write("\"" + old_text + "\"))\n")
+          file.write("$data_charending[" + ending_id.to_s + "] = ending\n\n")
+          ending_id += 1        
+        end
+        # Start new one
+        file.write("# " + $game_actors[char_id].name + "\n")
+        file.write("ending = Data_CharEnding.new\n")
+        file.write("ending.char_id = " + char_id.to_s + "\n")
+        first = false
+      end
+      i += 1
+    end
+    #Finish last character
+    file.write("ending.lines.push(Data_CharEnding::Data_CharEnding_Line.new(\n")
+    file.write("\"" + text + "\"))\n")
+    file.write("$data_charending[" + ending_id.to_s + "] = ending\n\n")
+    file.close
+  end
+  #--------------------------------------------------------------------------
+  # * Write enemy info to file
+  #--------------------------------------------------------------------------    
+  def write_enemy_info
+    return if not $DEBUG
+    file = open("../info_enemy.txt", "w")
+    enemylist = []
+    for i in 1...$data_enemies.size
+       enemylist.push($data_enemies[i])
+    end
+    #enemylist.sort!{|a, b| b.atk - a.atk}
+    for enemy in enemylist
+      string = enemy.name[0, [enemy.name.length, 19].min]
+      string = [4, 5].include?(enemy.dex) ? "[B]" + string : string
+      string = addspaces(string, string.length, 23)
+      string = addspaces(string, enemy.maxhp.to_s.length, 10)
+      string += enemy.maxhp.to_s
+      string = addspaces(string, enemy.gold.to_s.length, 8)
+      string += enemy.gold.to_s
+      # Win item
+      if enemy.item_id > 0 or enemy.armor_id > 0 or enemy.weapon_id > 0
+        item = enemy.item_id > 0 ? $data_items[enemy.item_id] : 
+                    enemy.armor_id> 0 ? $data_armors[enemy.armor_id] : 
+                    $data_weapons[enemy.weapon_id]
+        string = addspaces(string, enemy.treasure_prob.to_s.length, 5)      
+        string += enemy.treasure_prob.to_s + "%  "
+        string += item.name[0, [item.name.length, 14].min]
+      string = addspaces(string, item.name.length, 16)        
+      else
+        string = addspaces(string, 0, 6 + 18)        
+      end      
+      # Steal item
+      if $exdata_enemies[enemy.id].steal_id > -1
+        item = $exdata_enemies[enemy.id].steal_type == 0 ? $data_items[$exdata_enemies[enemy.id].steal_id] : 
+                    $exdata_enemies[enemy.id].steal_type == 2 ? $data_armors[$exdata_enemies[enemy.id].steal_id] : 
+                    $data_weapons[$exdata_enemies[enemy.id].steal_id]        
+        string = addspaces(string, $exdata_enemies[enemy.id].steal_chance.to_s.length, 5)      
+        string += $exdata_enemies[enemy.id].steal_chance.to_s + "%  "
+        string += item.name[0, [item.name.length, 14].min]
+        string = addspaces(string, item.name.length, 16)        
+      else
+        string = addspaces(string, 0, 6 + 18)        
+      end            
+      file.write(string + "\n")    
+      i += 1
+    end 
+  end
+  #--------------------------------------------------------------------------
+  # * Write char info to file
+  #--------------------------------------------------------------------------    
+  def write_char_stats
+    return if not $DEBUG
+    file = open("../info_char_stats.txt", "w")
+    for i in 1...75          
+      file.write(
+      $exdata_actors[i].name + "," + 
+      $exdata_actors[i].base_hp.to_s + "," +
+      $exdata_actors[i].base_mp.to_s + "," +
+      $exdata_actors[i].base_str.to_s + "," +
+      $exdata_actors[i].base_mag.to_s + "," +
+      $exdata_actors[i].base_pdf.to_s + "," +
+      $exdata_actors[i].base_mdf.to_s + "," +
+      $exdata_actors[i].base_acc.to_s + "," +
+      $exdata_actors[i].base_dex.to_s + "," +
+      $exdata_actors[i].base_skl.to_s + "," +
+      $exdata_actors[i].base_spd.to_s + "\n")
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Log to file
+  #--------------------------------------------------------------------------    
+  def log(string)
+    if $DEBUG
+      file = open("../__debug_log.txt", "a")
+      file.write(string)
+      file.close
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Add spaces
+  #--------------------------------------------------------------------------      
+  def addspaces(string, length, totallength)    
+    for x in length...totallength
+      string += " "
+    end
+    return string
+  end
+end

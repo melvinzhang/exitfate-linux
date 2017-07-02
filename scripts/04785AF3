@@ -1,0 +1,198 @@
+#==============================================================================
+# ** Scene_Intro
+#------------------------------------------------------------------------------
+#  Shows the introduction text
+#==============================================================================
+class Scene_Intro
+  #--------------------------------------------------------------------------
+  # * Main Processing
+  #--------------------------------------------------------------------------
+  def main
+    # Execute transition
+    Graphics.transition
+    # Main loop
+    loop do
+      # Update game screen
+      Graphics.update
+      # Update input information
+      Input.update
+      # Frame update
+      update
+      # Abort loop if screen is changed
+      if $scene != self
+        break
+      end
+    end
+    @textsprite.dispose
+    # Prepare for transition
+    Graphics.freeze
+  end
+  #--------------------------------------------------------------------------
+  # * Initialize
+  #
+  # Section:  0 - Intro
+  #                  1 - Five days before attack
+  #--------------------------------------------------------------------------
+  def initialize(section = 0)
+    @wait = 0
+    @part = 1
+    @charwidth = 0
+    # Make the text sprite
+    @textsprite = Sprite.new
+    @textsprite.bitmap = Bitmap.new(640, 480) 
+    @textsprite.bitmap.font.size = 19
+    @row_index = -1
+    @text = [
+    "It is the year 1545. A long period of peace between the Kirgard",
+    "kingdom and the State Union of Zelmony is about to come to an",
+    "end. Despite efforts from Chancellor Ryan of Zelmony to maintain",
+    "good relations, there is a mutual sense of distrust running",
+    "deep through both countries, making diplomatic action difficult.",
+    "",
+    "The point of conflict: Helman Island, a disputed area in a",
+    "strategic position between the two enemies. Claimed by both",
+    "nations, ownership of the island has changed repeatedly over the",
+    "centuries. Soon, the past 21 years of Zelmony control will end",
+    "as well.",
+    "",
+    "But this time, Kirgard will not be satisfied with the island",
+    "alone. Plans for a full-scale invasion are ready, and the royal",
+    "army is stronger than ever.",
+    "",
+    "Under the command of the Red General, Jovian Knight, a surprise",
+    "attack is carried out on the port city of Jargo. This is where",
+    "everything begins."]
+    
+    # Other sections
+    if section == 1
+      @text = [
+          "St. Reinard, capital of the Kirgard kingdom",
+          "Five days before the battle at Jargo Port City"]
+      @part = 3
+    elsif section == 2
+      @text = [
+          "Royal navy harbour, Ashton",
+          "Two days before the battle at Jargo Port City"]
+      @part = 3
+    elsif section == 3
+      @text = [
+          "Elysium Castle, formerly Credence Castle",
+          "Two months later"]
+      @no_fade = true
+      @part = 3
+    end
+    prepare_next_row
+  end
+  #--------------------------------------------------------------------------
+  # * Prepare next row
+  #--------------------------------------------------------------------------
+  def prepare_next_row
+    @row_index += 1
+    @cur_text = @text[@row_index].clone
+    @cur_index = 0 
+  end
+  #--------------------------------------------------------------------------
+  # * Frame Update
+  #--------------------------------------------------------------------------
+  def update
+    if @wait > 0
+      @wait -= 1
+      return
+    end
+    
+    if @part == 1
+      update_1
+    elsif @part == 2
+      @textsprite.opacity -= 10
+      if @textsprite.opacity <= 0
+        @textsprite.bitmap.clear
+        @textsprite.opacity = 255
+        @text = [
+          "St. Reinard, capital of the Kirgard kingdom",
+          "Four weeks before the battle at Jargo Port City"]
+        @row_index = -1
+        prepare_next_row
+        @part = 3
+        @wait = 40
+      end
+    elsif @part == 3
+      update_3
+    elsif @part == 4
+      @textsprite.opacity -= 10
+      if @textsprite.opacity <= 0
+        $scene = Scene_Map.new
+      end
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Frame Update - Intro text
+  #--------------------------------------------------------------------------
+  def update_1  
+    # Draw the next character   
+    @wait = 1
+    if @cur_text.length > 0
+      c = @cur_text.slice!(/./m)
+      x = 40 + @cur_index * 530 / @text[@row_index].length
+      if @text[@row_index].length < 40
+        x = 40 + @cur_index * 10
+      end
+      draw_text_new(x, 40 + @row_index*20, c)
+      draw_text_new(x, 40 + @row_index*20, c)
+      if c == "."      
+        @wait =10
+      elsif c == "," or c == ":"
+        @wait = 5
+      end
+    end
+    @cur_index += 1
+    if @cur_text.length == 0
+      if @row_index < @text.size - 1
+        prepare_next_row
+      else
+        @wait = 180
+        @part = 2
+      end
+    end
+  end    
+  #--------------------------------------------------------------------------
+  # * Frame Update - Intro text 2
+  #--------------------------------------------------------------------------
+  def update_3
+    # Draw the next character   
+    if @cur_text.length > 0
+      c = @cur_text.slice!(/./m)
+      # Fixed width so it doesn't matter which character we use
+      if @charwidth == 0
+        @charwidth = @textsprite.bitmap.text_size(c).width
+      end      
+      w = @text[@row_index].length * @charwidth
+      x = 320 - w / 2 + @cur_index * @charwidth
+      draw_text_new(x, 200 + @row_index*30, c)
+    end    
+    @cur_index += 1
+    @wait =1
+    if @cur_text.length == 0
+      if @row_index < @text.size - 1
+        prepare_next_row
+        @wait = 40
+      else
+        $game_system.bgm_fade(6) if not @no_fade
+        @wait = 20
+        @part = 4
+      end
+    end
+  end    
+  #--------------------------------------------------------------------------
+  # * Draw Text New (with shadow)
+  #--------------------------------------------------------------------------
+  def draw_text_new(x, y, text, align = 0, sprite = @textsprite)
+    width = 25#640
+    height = 50
+    tempc = sprite.bitmap.font.color.clone
+    sprite.bitmap.font.color = Color.new(0, 0, 0, 192)
+    sprite.bitmap.draw_text(x + 1, y + 1, width, height, text, align)
+    sprite.bitmap.font.color = tempc
+    sprite.bitmap.draw_text(x, y, width, height, text, align)  
+    sprite.bitmap.draw_text(x, y, width, height, text, align)  
+  end
+end

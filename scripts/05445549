@@ -1,0 +1,59 @@
+#==============================================================================
+# ** Sprite_WarCursor
+#------------------------------------------------------------------------------
+#  Simple square covering a tile on the war field
+#==============================================================================
+
+class Sprite_WarCursor < RPG::Sprite
+  #--------------------------------------------------------------------------
+  # * Object Initialization
+  #     viewport  : viewport
+  #     character : character (Game_Character)
+  #--------------------------------------------------------------------------
+  def initialize(x, y, viewport, flash = false)
+    super(viewport)
+    @grid_x = x
+    @grid_y = y
+    self.z = 0
+    @flash = flash
+    @flash_forward = false
+    update
+  end
+  #--------------------------------------------------------------------------
+  # * Set position
+  #--------------------------------------------------------------------------  
+  def x=(v)
+    @grid_x = v
+    nx = (128 * @grid_x - $game_map.display_x + 3) / 4
+    super(nx)
+  end
+  #--------------------------------------------------------------------------
+  # * Set position
+  #--------------------------------------------------------------------------  
+  def y=(v)
+    @grid_y = v
+    ny = (128 * @grid_y - $game_map.display_y + 3) / 4
+    super(ny)
+  end
+  #--------------------------------------------------------------------------
+  # * Frame Update
+  #--------------------------------------------------------------------------
+  def update
+    super
+    self.x = @grid_x
+    self.y = @grid_y
+    if @flash
+      if @flash_forward
+        self.opacity += 5
+        if self.opacity >= 255
+          @flash_forward = false
+        end
+      else
+        self.opacity -= 5
+        if self.opacity <= 128
+          @flash_forward = true
+        end        
+      end
+    end
+  end
+end

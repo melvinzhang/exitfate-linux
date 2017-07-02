@@ -1,0 +1,100 @@
+#==============================================================================
+# ** Sprite_BattleTurnOrder
+#------------------------------------------------------------------------------
+#  Displays turn order in battle
+#==============================================================================
+
+class Sprite_BattleTurnOrder < Sprite
+  #--------------------------------------------------------------------------
+  # * Object Initialization
+  #--------------------------------------------------------------------------
+  def initialize
+    super
+    self.bitmap = Bitmap.new(640, 64)
+    self.x = 0
+    self.y = 480-64
+    self.z = 500
+  end
+  #--------------------------------------------------------------------------
+  # * Dispose
+  #--------------------------------------------------------------------------
+  def dispose
+    if self.bitmap != nil
+      self.bitmap.dispose
+    end
+    super
+  end
+  #--------------------------------------------------------------------------
+  # * Refresh
+  #   Should only be called after each turn
+  #   Returns the next battle in order
+  #--------------------------------------------------------------------------
+  def refresh
+    self.bitmap.clear
+    turn_list = []
+    battlers = []
+    # Find all non-dead battlers
+    for b in $game_party.actors + $game_troop.enemies
+        if b.exist?
+          battlers.push(b)
+        end
+    end
+    # Store turns 
+    time = {}
+    for b in battlers
+      time[b] = b.battle_time
+    end
+    # Check the next 10 turns
+    for i in 0...10           
+      battlers.sort! {|a, b| compare(a, b, time[a], time[b])}
+      turn_list.push(battlers[0])
+      diff = battlers[0].turn_wait - time[battlers[0]]
+      time[battlers[0]]  -= battlers[0].turn_wait
+      for b in battlers
+        time[b] += diff
+      end
+    end    
+    # Draw the icons
+    color_actor = Color.new(85, 130, 200)      
+    color_enemy = Color.new(120, 120, 120)            
+    for i in 0...10
+      b = turn_list[i]
+      tempbitmap = RPG::Cache.picture("Battle Portraits/" + b.battle_icon)
+      bitmap = Bitmap.new(tempbitmap.width, tempbitmap.height)
+      bitmap.blt(0, 0, tempbitmap, Rect.new(0, 0, 64, 64))
+      bitmap.hue_change(b.battler_hue)      
+      if i == 0
+        tempbitmap = RPG::Cache.picture("Battle Portraits/_Selected")
+        bitmap.blt(0, 0, tempbitmap, Rect.new(0, 0, 64, 64))
+      end      
+      c = b.is_a?(Game_Actor) ? color_actor : color_enemy            
+      self.bitmap.fill_rect(i*64, 0, 64, 64, c)
+      self.bitmap.blt(i*64, 0, bitmap, Rect.new(0, 0, 64, 64))
+    end    
+    # Return the first battler in the list
+    return turn_list[0]
+  end
+  #--------------------------------------------------------------------------
+  # * Compare two battles to see who goes first
+  #--------------------------------------------------------------------------  
+  def compare(b1, b2, t1, t2)
+    time1 = b1.turn_wait - t1
+    time2 = b2.turn_wait - t2
+    # If times are different, it's trivial
+    if (time1 != time2)
+      return time1-time2
+    end
+    # If one is an actor and the other is not, the actor goes first
+    if b1.is_a?(Game_Actor) and b2.is_a?(Game_Enemy) 
+      return -1
+    elsif b1.is_a?(Game_Enemy) and b2.is_a?(Game_Actor) 
+      return 1
+    end
+    # If they are both the same class, just use the index
+    if b1.is_a?(Game_Actor) 
+      return b1.index > b2.index ? 1 : -1
+    elsif b1.is_a?(Game_Enemy) 
+      return b1.name <=> b2.name ? 1 : -1
+    end    
+  end
+end

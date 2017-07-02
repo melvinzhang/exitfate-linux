@@ -1,0 +1,297 @@
+#==============================================================================
+# ** Scene_Battle (part 2)
+#------------------------------------------------------------------------------
+#  This class performs battle screen processing.
+#==============================================================================
+
+class Scene_Battle
+  #--------------------------------------------------------------------------
+  # * Start Pre-Battle Phase
+  #--------------------------------------------------------------------------
+  def start_phase1
+    # Shift to phase 1
+    @phase = 1
+    # Clear all party member actions
+    $game_party.clear_actions
+    # Set battle time for all battles
+    for b in $game_party.actors + $game_party.entourage + $game_troop.enemies
+        b.battle_time = 0
+        b.mp = b.mpregen
+        b.battle_turn = 0
+    end      
+    @spriteset.refresh_turnorder
+    # Set up battle event
+    setup_battle_event    
+  end
+  #--------------------------------------------------------------------------
+  # * Frame Update (pre-battle phase)
+  #--------------------------------------------------------------------------
+  def update_phase1
+    # Determine win/loss situation
+    if judge
+      # If won or lost: end method
+      return
+    end
+    # Start party command phase
+    start_phase3
+  end
+  #--------------------------------------------------------------------------
+  # * Frame Update (party command phase: escape)
+  #--------------------------------------------------------------------------
+  def attempt_escape
+    if not $game_temp.battle_can_escape
+      return false
+    end    
+    # Calculate enemy average level
+    enemies_level = 0
+    enemies_number = 0
+    for enemy in $game_troop.enemies
+      if enemy.exist?
+        enemies_level += enemy.level
+        enemies_number += 1
+      end
+    end
+    if enemies_number > 0
+      enemies_level /= enemies_number
+    end
+    # Determine if escape is successful
+    success = rand(100) < [75 + 5 * (@active_battler.level - enemies_level), 25].max
+    # If escape is successful
+    if success
+      # Play escape SE
+      $game_system.se_play($data_system.escape_se)
+      # Return to BGM before battle started
+      $game_system.bgm_play($game_temp.map_bgm)
+      # Battle ends
+      battle_end(1)
+      return true
+    # If escape is failure
+    else
+      #@help_window.visible = true      
+      #@help_window.set_text("Failed to escape")
+      return false
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Start After Battle Phase
+  #--------------------------------------------------------------------------
+  def start_phase5
+    # Shift to phase 5
+    @phase = 5
+    if $game_system.battle_end_me != nil and $game_system.battle_end_me.name != ""
+      # Fade out music
+      $game_system.bgm_fade(1)
+    end    
+    # Remove battle states (and revive dead characters)
+    for actor in $game_party.actors + $game_party.entourage
+      actor.remove_states_battle
+    end    
+    # Initialize EXP, amount of gold, and treasure
+    enemy_levels = []
+    gold = 0
+    treasures = []
+    # Loop
+    for enemy in $game_troop.enemies
+      # If enemy is not hidden
+      unless enemy.hidden
+        # Add EXP and amount of gold obtained
+        enemy_levels.push(enemy.level)
+        gold += enemy.gold
+        # Determine if treasure appears
+        if rand(100) < enemy.treasure_prob
+          if enemy.item_id > 0
+            treasures.push($data_items[enemy.item_id])
+          end
+          if enemy.weapon_id > 0
+            treasures.push($data_weapons[enemy.weapon_id])
+          end
+          if enemy.armor_id > 0
+            treasures.push($data_armors[enemy.armor_id])
+          end
+        end
+      end
+    end
+    # Obtaining gold
+    $game_party.gain_gold(gold)
+    # Obtaining treasure
+    for item in treasures
+      case item
+      when RPG::Item
+        $game_party.gain_item(item.id, 1)
+      when RPG::Weapon
+        $game_party.gain_magic(item.id, 1)
+      when RPG::Armor
+        $game_party.gain_armor(item.id, 1)
+      end
+    end
+    # Heal characters
+    healing = @magic_window.get_remaining_healing
+    healing_used = []
+    mp_vals = []
+    actors_healed = {}
+    actors = $game_party.actors.clone
+    for a in $game_party.actors
+      mp_vals.push(a.mp)
+    end
+    for i in 0...healing.length
+      while (healing[i][0] > 0)
+        mp_vals.sort!{|a, b| b - a}
+        # Make sure anyone has enough MP
+        skill = $data_skills[healing[i][1]]
+        if mp_vals[0] < skill.sp_cost
+          # Stop
+        else
+          # See if there is anyone to heal
+          actors.sort!{|a, b| (b.maxhp - b.hp) - (a.maxhp - a.hp)}
+          if actors[0].hp == actors[0].maxhp
+            # Stop
+            i = healing.length
+            break
+          end
+          # Heal
+          mp_vals[0] -= skill.sp_cost 
+          if skill.scope == 4
+            # Heal all
+            for a in actors
+              actors_healed[a] = true
+              a.skill_effect_nobattle(skill)
+            end          
+          else
+            # Heal single
+            actors_healed[actors[0]] = true
+            actors[0].skill_effect_nobattle(skill)
+          end
+          healing_used.push([skill.name, SkillInfo.new(skill).element])
+        end
+        healing[i][0] -= 1
+      end            
+    end    
+    # Make battle result windows
+    @result_windows = []
+    # Label for items
+    w_label_i = Window_Label.new("Items found")
+    w_label_i.x = -4
+    w_label_i.y = 0
+    w_label_i.z += 10
+    # Items screen
+    w_items = Window_Base.new(-4, 30, 250, 32+5*24)
+    w_items.set_standard_bitmap
+    w_items.windowskin_suffix = "_left"
+    y = 0
+    for item in treasures
+      w_items.draw_item_name(item, 0, y)
+      y += 24
+    end
+    # Label for healing
+    w_label_h = Window_Label.new("Healing used")
+    w_label_h.x = -4
+    w_label_h.y = 195
+    w_label_h.z += 10
+    # Healing screen
+    w_healing = Window_Base.new(-4, 225, 250, 32+4*24)
+    w_healing.set_standard_bitmap
+    w_healing.windowskin_suffix = "_left"
+    w_healing.contents.font.color = w_healing.normal_color
+    y = 0
+    for skill in healing_used
+      bitmap = RPG::Cache.icon("Element_" + skill[1].to_s)
+      w_healing.contents.blt(0, y + 6, bitmap, Rect.new(0, 0, 24, 24))
+      w_healing.draw_text(28, y, 212, 32, skill[0])    
+      y += 24
+    end
+    # Gold window
+    w_gold = Window_Gold.new
+    w_gold.windowskin_suffix = "_left"
+    w_gold.x = -4
+    w_gold.y = 400
+    # New gold window
+    w_newgold = Window_Base_Short.new(-4, 400-32, 250, 48)
+    w_newgold.windowskin_suffix = "_left"
+    w_newgold.set_standard_bitmap    
+    w_newgold.contents.font.color = w_newgold.normal_color
+    w_newgold.draw_text(0, 8, 250-16, 32, "+" + gold.to_s + " Arn", 2)       
+    @result_windows.push(w_label_i)
+    @result_windows.push(w_label_h)
+    @result_windows.push(w_items)
+    @result_windows.push(w_gold)
+    @result_windows.push(w_newgold)   
+    @result_windows.push(w_healing)
+    @exp_windows = []    
+    y = 0
+    for actor in $game_party.actors
+      w = Window_Experience.new(actor, enemy_levels, actors_healed[actor] == true)
+      w.y = y
+      @exp_windows.push(w)
+      y += 76
+    end    
+    for w in @result_windows
+      w.visible = false
+    end
+    # Set wait count    
+    @phase5_wait_count = 40       
+  end
+  #--------------------------------------------------------------------------
+  # * Frame Update (after battle phase)
+  #--------------------------------------------------------------------------
+  def update_phase5
+    # If wait count is larger than 0
+    if @phase5_wait_count > 0
+      @phase5_wait_count -= 1
+      if @phase5_wait_count == 0
+        # Play battle end ME
+        $game_system.me_play($game_system.battle_end_me)
+        $game_temp.battle_main_phase = false
+        @status_window.visible = false
+        @actor_command_window.visible = false
+        @help_window.visible = false
+        @phase5_wait_sound = 10
+        @spriteset.remove_turnorder
+        for w in @result_windows + @exp_windows
+          w.visible = true
+        end
+      end
+      return
+    end
+    # Click sound
+    if @phase5_wait_sound > 0
+      @phase5_wait_sound -= 1
+      if @phase5_wait_sound == 0
+        for w in @exp_windows
+          if not w.finished?
+            $game_system.se_play(RPG::AudioFile.new("032-Switch01", 80, 75))
+            @phase5_wait_sound = 2
+            break
+          end
+        end
+      end
+    end
+    # Level up sound
+    for w in @exp_windows
+      if w.leveled_up
+        $game_system.se_play(RPG::AudioFile.new("116-Raise02", 100, 125))
+        break
+      end
+    end    
+    # If C button was pressed
+    if Input.trigger?(Input::C)
+      # Check if the exp windows finished yet
+      finished = true
+      for w in @exp_windows
+        if not w.finished?
+          finished = false
+          break
+        end
+      end
+      if finished      
+        # Battle ends
+        $game_system.me_fade(3)
+        battle_end(0)
+      else
+        # Finish giving Exp        
+        for w in @exp_windows
+          w.stop
+        end
+      end
+    end
+  end
+end

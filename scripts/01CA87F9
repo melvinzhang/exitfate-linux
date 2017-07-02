@@ -1,0 +1,165 @@
+#==============================================================================
+# ** Sprite_WarUnit
+#------------------------------------------------------------------------------
+#  This sprite is used to display the war unit.It observes the Game_WarUnit
+#  class and automatically changes sprite conditions.
+#==============================================================================
+
+class Sprite_WarUnit < RPG::Sprite
+  #--------------------------------------------------------------------------
+  # * Public Instance Variables
+  #--------------------------------------------------------------------------
+  attr_accessor :unit                # character
+  #--------------------------------------------------------------------------
+  # * Object Initialization
+  #     viewport  : viewport
+  #     character : character (Game_Character)
+  #--------------------------------------------------------------------------
+  def initialize(viewport, unit)
+    super(viewport)
+    @unit = unit    
+    # Determine sprite name
+    bm = "007-War_"
+    case @unit.unit_type
+      when UNIT_INFANTRY
+        bm += "Infantry"
+      when UNIT_CAVALRY
+        bm += "Cavalry"
+      when UNIT_SCOUT
+        bm += "Scout"
+      else
+        bm += "Sorcery"
+    end
+    bm += "_" + @unit.side.to_s 
+    self.bitmap = RPG::Cache.character(bm, 0)
+    @cw = bitmap.width / 4
+    @ch = bitmap.height / 4
+    self.ox = @cw / 2
+    self.oy = @ch
+    @pattern = 0
+    @pattern_wait = 4
+    @move_wait = 0
+    # Leader unit flag
+    if @unit.leader_unit
+      @flag_sprite = RPG::Sprite.new(viewport)
+      @flag_sprite.bitmap = RPG::Cache.picture("War_Flag_" + unit.side.to_s)
+      @flag_sprite.ox = 10
+      @flag_sprite.oy = 72
+    end    
+    @oldmen = -1
+    update
+  end
+  #--------------------------------------------------------------------------
+  # * Visible
+  #--------------------------------------------------------------------------
+  def visible=(v)
+    super
+    if v 
+      @old_men = -1
+    else
+      hide_men
+    end
+    @flag_sprite.visible = v if @flag_sprite != nil
+  end
+  #--------------------------------------------------------------------------
+  # * Dispose
+  #--------------------------------------------------------------------------
+  def dispose
+    @flag_sprite.dispose if @flag_sprite != nil
+    super
+  end
+  #--------------------------------------------------------------------------
+  # * Effect?
+  #--------------------------------------------------------------------------
+  def effect?
+    return true if @unit.move_route != nil
+    return super
+  end
+  #--------------------------------------------------------------------------
+  # * Frame Update
+  #--------------------------------------------------------------------------
+  def update
+    super
+    # Set visibility
+    if self.visible != @unit.visible
+      self.visible = @unit.visible
+    end    
+    # Sprite movement
+    if @move_wait > 0
+      @move_wait -= 1
+      if @move_wait == 0
+        newpos = @unit.move_route.shift
+        @unit.x = newpos[0]
+        @unit.y = newpos[1]
+        if @unit.move_route.empty?
+          @unit.move_route = nil
+        else
+          @move_wait = 4
+        end
+      end
+    elsif @unit.move_route != nil
+      # New route 
+      @move_wait = 2
+    end    
+    # Set rectangular transfer
+    @pattern_wait -= 1
+    if @pattern_wait == 0
+      @pattern_wait = 16      
+      @pattern = (@pattern + 1) % 4
+    end    
+    if @unit.has_turn
+      sx = @pattern * @cw
+    else
+      sx = 0
+    end
+    sy = (@unit.sprite_direction) * @ch
+    self.src_rect.set(sx, sy, @cw, @ch)
+    # Set sprite coordinates
+    self.x = (128 * @unit.x - $game_map.display_x + 3) / 4 + 16
+    self.y = (128 * @unit.y - $game_map.display_y + 3) / 4 + 32
+    self.z = self.y
+    # Blink
+    if @unit.blink
+      blink_on
+    else
+      blink_off
+    end
+    # Blink
+    if @unit.show_death
+      @unit.show_death = false
+      self.collapse
+      if @flag_sprite != nil
+        @flag_sprite.collapse
+      end
+    end
+    # Number of men
+    if not @unit.visible
+      hide_men
+      @oldmen = -1
+    else
+      if @unit.men != @oldmen
+        @oldmen = @unit.men
+        if @unit.men == 0
+          hide_men
+        else
+          show_men(@unit.men)
+        end
+      end
+    end
+    # Animation
+    if @unit.animation_id != 0
+      animation = $data_animations[@unit.animation_id]
+      animation(animation, true)
+      @unit.animation_id = 0
+    end
+    if @flag_sprite != nil
+      @flag_sprite.update
+      @flag_sprite.x = self.x
+      @flag_sprite.y = self.y
+      @flag_sprite.z = self.z - 1
+      if @pattern % 2 == 1 and @unit.has_turn
+        @flag_sprite.y += 2
+      end
+    end
+  end
+end

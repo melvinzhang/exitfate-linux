@@ -1,0 +1,52 @@
+#==============================================================================
+# ** Sprite_WarSetupLeader
+#------------------------------------------------------------------------------
+#  Displays war unit leader selection box on setup screen
+#==============================================================================
+
+class Sprite_WarSetupLeader < Sprite
+  #--------------------------------------------------------------------------
+  # * Object Initialization
+  #--------------------------------------------------------------------------
+  def initialize(id)
+    super()
+    self.bitmap = Bitmap.new(32, 32)
+    @selected = false
+    @id = id
+    refresh
+  end
+  #--------------------------------------------------------------------------
+  # * Dispose
+  #--------------------------------------------------------------------------
+  def dispose
+    if self.bitmap != nil
+      self.bitmap.dispose
+    end
+    super
+  end
+  #--------------------------------------------------------------------------
+  # * Set selected
+  #--------------------------------------------------------------------------
+  def selected=(v)
+    @selected = v
+    refresh
+  end
+  #--------------------------------------------------------------------------
+  # * Refresh
+  #--------------------------------------------------------------------------
+  def refresh
+    self.bitmap.clear
+    return if @id == nil
+    leader = $data_warleaders[@id]
+    bitmap = RPG::Cache.picture("Battle Portraits/" + $data_warleaders[@id].name)
+    w = 25
+    if @selected
+      self.bitmap.fill_rect(0, 0, w, w, Color.new(255, 0, 0))
+      self.bitmap.fill_rect(1, 1, w-2, w-2, Color.new(0, 0, 0))
+      self.bitmap.stretch_blt(Rect.new(1, 1, w-2, w-2), bitmap, Rect.new(0, 0, 64, 64))    
+    else
+      self.bitmap.fill_rect(0, 0, w, w, Color.new(0, 0, 0))
+      self.bitmap.stretch_blt(Rect.new(0, 0, w, w), bitmap, Rect.new(0, 0, 64, 64))    
+    end
+  end
+end

@@ -1,0 +1,94 @@
+#==============================================================================
+# ** Window_ShopEffect
+#------------------------------------------------------------------------------
+#  This window displays a party member's status on the menu screen.
+#==============================================================================
+
+class Window_ShopEffect < Window_Base_Short
+  attr_reader :actor  
+  #--------------------------------------------------------------------------
+  # * Object Initialization
+  #--------------------------------------------------------------------------
+  def initialize(actor)
+    super(465-75, 0, 80, 40)
+    self.contents = Bitmap.new(width, height)
+    @actor = actor
+    @item = nil
+    refresh
+  end
+  #--------------------------------------------------------------------------
+  # * Change actor
+  #--------------------------------------------------------------------------
+  def actor=(a)
+    @actor = a
+    refresh
+  end
+  #--------------------------------------------------------------------------
+  # * Change item
+  #--------------------------------------------------------------------------
+  def item=(i)
+    unless @item == i
+      @item = i
+      refresh
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Refresh
+  #--------------------------------------------------------------------------
+  def refresh
+    self.contents.clear
+    if @actor == nil or @item == nil
+      self.visible = false
+      return
+    end    
+    self.visible = true
+    # Calculate effect
+    case @item
+    when RPG::Item
+      self.visible = false
+      return
+    when RPG::Weapon
+      # Magic. Show the user's element
+      bitmap = RPG::Cache.icon("Element_" + actor.element.to_s)
+      self.contents.blt(32, 8, bitmap, Rect.new(0, 0, 20, 20))
+      return
+    when RPG::Armor
+      # Check if character can equip this
+      if not @actor.equippable?(@item)
+        self.visible = false
+        return        
+      end
+      case @item.kind
+      when 0
+        if @actor.boots_id > 0
+          old_item = $data_armors[@actor.boots_id]
+          diff = @item.pdef - old_item.pdef
+        else
+          diff = @item.pdef
+        end
+      when 1
+        if @actor.helmet_id > 0
+          old_item = $data_armors[@actor.helmet_id]
+          diff = @item.pdef - old_item.pdef
+        else
+          diff = @item.pdef
+        end        
+      when 2
+        if @actor.armor_id > 0
+          old_item = $data_armors[@actor.armor_id]
+          diff = @item.pdef - old_item.pdef
+        else
+          diff = @item.pdef
+        end        
+      when 3
+        self.visible = false
+        return
+      end
+    end    
+    if diff != 0
+      bitmap = diff > 0 ? RPG::Cache.icon("Stat_Up") : RPG::Cache.icon("Stat_Down")
+      self.contents.blt(8, 8, bitmap, Rect.new(0, 0, 24, 24))    
+    end
+    self.draw_text(0, 4, self.width-16, 32, diff.abs.to_s, 2)    
+  end
+end

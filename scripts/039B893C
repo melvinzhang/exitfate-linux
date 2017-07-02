@@ -1,0 +1,200 @@
+#==============================================================================
+# ** Scene_Battle (part 5)
+#------------------------------------------------------------------------------
+#  This class performs battle screen processing.
+#==============================================================================
+
+class Scene_Battle
+  #--------------------------------------------------------------------------
+  # * Refresh Equipment windows
+  #--------------------------------------------------------------------------
+  def start_change_equip
+    @actor_command_window.active = false        
+    # Make windows
+    @equip_window = Window_Equip.new
+    @equip_window.z = 1000
+    @equipstats_window =Window_EquipStats.new
+    @equipstats_window.x = @equip_window.x - @equipstats_window.width    
+    @equipstats_window.z = 1000
+    @item_windows = []
+    @item_windows[0] = Window_EquipItem.new(0)
+    @item_windows[1] = Window_EquipItem.new(1)
+    @item_windows[2] = Window_EquipItem.new(2)
+    @item_windows[3] = Window_EquipItem.new(3)
+    @item_windows[4] = Window_EquipItem.new(4)    
+    @equip_window.help_window = @help_window
+    for w in @item_windows
+      w.help_window = @help_window
+      w.height = 32+42*3
+      w.z = 1000
+    end    
+    # Enable windows
+    @equip_window.actor = @active_battler
+    @equip_window.select_all = false
+    @equip_window.visible = true
+    @equip_window.active = true
+    @equipstats_window.visible = true
+    @equipstats_window.actor = @active_battler
+    @equipstats_window.set_old_parameters      
+    @equipment_changed = false
+    equip_refresh
+  end
+  #--------------------------------------------------------------------------
+  # * Refresh Equipment windows
+  #--------------------------------------------------------------------------
+  def equip_refresh
+    # Set item window to visible
+    for w in @item_windows
+      w.visible = false
+    end    
+    @item_windows[0].visible = (@equip_window.index == 0) 
+    @item_windows[1].visible = (@equip_window.index == 1)
+    @item_windows[2].visible = (@equip_window.index == 2)
+    @item_windows[3].visible = ([3, 4, 5].include?(@equip_window.index))
+    @item_windows[4].visible = ([6, 7].include?(@equip_window.index))
+    @cur_item_window = nil
+    for w in @item_windows
+      if w.visible
+        @cur_item_window = w
+      end
+    end
+    @cur_item_window.refresh if @cur_item_window != nil
+    @equipstats_window.set_new_parameters
+    if @cur_item_window != nil
+      if @cur_item_window.active
+        id = @equip_window.index
+        item_type =  id >= 6 ? 4 : 
+                              id  >= 3 ? 3 : 
+                              id 
+        item_slot  =  id >= 6 ? id-6 : 
+                              id  >= 3 ? id-3 : 
+                              0     
+        old_item = item_type == 0 ? @active_battler.helmet_id :
+                           item_type == 1 ? @active_battler.armor_id :
+                           item_type == 2 ? @active_battler.boots_id :
+                           item_type == 3 ? @active_battler.acc_ids[item_slot] :
+                           @active_battler.item_ids[item_slot]      
+        id = @cur_item_window.item == nil ? 0 : @cur_item_window.item.id
+        @active_battler.equip(item_type, id, item_slot)
+        @equipstats_window.set_new_parameters
+        @active_battler.equip(item_type, old_item, item_slot)
+      end
+    end
+    @equip_window.refresh
+  end
+  #--------------------------------------------------------------------------
+  # * Frame Update
+  #--------------------------------------------------------------------------
+  def update_phase3_change_equip
+    # Update windows
+    @help_window.update
+    @equip_window.update
+    @equipstats_window.update
+    for w in @item_windows
+      w.update
+    end    
+    
+    if @equip_window.active
+      update_equip
+      return
+    end   
+    if @cur_item_window != nil
+      if @cur_item_window.active
+        update_item
+        return
+      end
+    end   
+  end
+  #--------------------------------------------------------------------------
+  # * Frame Update (when equip window is active)
+  #--------------------------------------------------------------------------
+  def update_equip
+    if Input.trigger?(Input::B)
+      $game_system.se_play($data_system.cancel_se)
+      end_change_equip      
+      # If the equipment changed, turn ends
+      if @equipment_changed      
+        @wait_count = 10
+        end_battler_turn
+      end
+      return
+    end
+    if @equip_window.index_changed
+      equip_refresh
+    end    
+    # If C button was pressed
+    if Input.trigger?(Input::C)
+      if @active_battler.fixed_equip
+        $game_system.se_play($data_system.buzzer_se)
+        return
+      end
+      # Equip
+      if @equip_window.index <= 2 and $exdata_actors[@active_battler.id].no_armour
+        $game_system.se_play($data_system.buzzer_se)          
+        return
+      end
+      $game_system.se_play($data_system.decision_se)
+      @cur_item_window.active = true
+      @cur_item_window.index = 0
+      @equip_window.active = false
+      equip_refresh
+      return
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Frame Update (when selecting new equipment)
+  #--------------------------------------------------------------------------
+  def update_item
+    # If B button was pressed
+    if Input.trigger?(Input::B)
+      $game_system.se_play($data_system.cancel_se)
+      @cur_item_window.active = false
+      @cur_item_window.index = -1
+      @equip_window.active = true
+      equip_refresh
+      return
+    end
+    if @cur_item_window.index_changed       
+      equip_refresh
+    end
+    # If C button was pressed
+    if Input.trigger?(Input::C)
+      $game_system.se_play($data_system.decision_se)
+      id = @equip_window.index
+      item_type =  id >= 6 ? 4 : 
+                            id  >= 3 ? 3 : 
+                            id 
+      item_slot  =  id >= 6 ? id-6 : 
+                            id  >= 3 ? id-3 : 
+                            0      
+      id = @cur_item_window.item == nil ? 0 : @cur_item_window.item.id
+      equip_changed = @active_battler.equip(item_type, id, item_slot)
+      @equipstats_window.set_old_parameters
+      @cur_item_window.active = false
+      @cur_item_window.index = -1
+      @equip_window.active = true
+      if equip_changed
+        @equipment_changed = true
+      end
+      equip_refresh
+      return
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * End change equip
+  #--------------------------------------------------------------------------
+  def end_change_equip
+    # Dispose of windows
+    for w in @item_windows
+      w.dispose
+    end   
+    @equip_window.dispose
+    @equip_window = nil
+    @equipstats_window.dispose
+    # Hide help window
+    @help_window.visible = false
+    # Enable actor command window
+    @actor_command_window.active = true
+    @actor_command_window.visible = true
+  end
+end 

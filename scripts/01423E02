@@ -1,0 +1,77 @@
+#==============================================================================
+# ** Window_CharEnding
+#------------------------------------------------------------------------------
+#  This window displays amount of gold and EXP acquired at the end of a battle.
+#==============================================================================
+
+class Window_CharEnding < Window_Base
+  #--------------------------------------------------------------------------
+  # * Object Initialization
+  #--------------------------------------------------------------------------
+  def initialize(y, actor, text)
+    super(0, y, 640, 120)
+    self.contents = Bitmap.new(width - 32, height - 32)
+    self.opacity = 0
+    self.contents_opacity = 0
+    @phase = 1    
+    @pause = 225
+    # Picture
+    bitmap = RPG::Cache.picture("Menu Portraits/" + actor.name)      
+    cw = bitmap.width
+    ch = bitmap.height
+    if not actor.joined
+      #Convert to bw
+      for x in 0...cw
+        for y in 0...ch
+          c = bitmap.get_pixel(x, y)
+          max = [c.red, c.blue, c.green].max
+          c.red = max
+          c.blue = max
+          c.green = max
+          c.alpha *= 0.75
+          bitmap.set_pixel(x, y, c)
+        end
+      end
+    end
+    src_rect = Rect.new(0, 0, cw, ch)
+    self.contents.blt(0, 0, bitmap, src_rect)     
+    # Name
+    self.contents.font.color = actor.joined ? system_color : normal_color
+    self.draw_text(0, 60, 140, 32, actor.name, 1)
+    if not actor.joined
+      return
+    end
+    # Text
+    self.contents.font.color = normal_color
+    lines = text.scan(/.*\n/)  
+    y = 0
+    for line in lines
+      self.draw_text(150, y, 500, 32, line)
+      y += 24
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Update
+  #--------------------------------------------------------------------------
+  def update
+    if @phase == 1
+      self.opacity += 3
+      self.contents_opacity += 3
+      if self.opacity >= 255
+        @phase = 2
+      end
+    elsif @phase == 2
+      @pause  -= 1
+      if @pause == 0
+        @phase = 3
+      end
+    elsif @phase == 3
+      self.opacity -= 3
+      self.contents_opacity -= 3
+      if self.opacity <= 0
+        self.dispose
+        @phase = -1
+      end
+    end
+  end
+end

@@ -1,0 +1,93 @@
+#==============================================================================
+# ** Window_BattleScan
+#------------------------------------------------------------------------------
+#  Shows a battler's scan info
+#==============================================================================
+
+class Window_BattleScan < Window_Base
+  #--------------------------------------------------------------------------
+  # * Object Initialization
+  #     actor : actor
+  #--------------------------------------------------------------------------
+  def initialize(battler)
+    super(320, 32, 300, 338)
+    self.z += 5000
+    @battler = battler
+    self.contents = Bitmap.new(width - 32, height - 32)
+    self.back_opacity = 200
+    refresh
+  end  
+  #--------------------------------------------------------------------------
+  # * Refresh
+  #--------------------------------------------------------------------------
+  def refresh
+    self.contents.clear
+    self.contents.font.color = normal_color   
+    
+    bitmap = RPG::Cache.icon("Element_" + @battler.element.to_s)
+    self.contents.blt(0, 4, bitmap, Rect.new(0, 0, 20, 20))
+    self.draw_text(25, 0, 150, 32, @battler.name, 0)          
+    self.contents.font.color = system_color
+    self.draw_text(0, 30, 80, 32, "LVL")
+    self.draw_text(0, 50, 75, 32, "HP", 0)
+    self.contents.font.color = normal_color
+    self.draw_text(35, 30, 36, 32, @battler.level.to_s, 2)    
+    self.draw_text(0, 50, 91, 32, @battler.hp.to_s + "/", 2)
+    self.draw_text(65, 50, 95, 32, @battler.maxhp.to_s, 2)    
+    self.contents.font.color = system_color
+    self.draw_text(0, 70, 100, 32, "ARN")
+    self.contents.font.color = normal_color
+    self.draw_text(50, 70, 250, 32, $data_enemies[@battler.id].gold.to_s)        
+    x = 0
+    y = 100
+    for s in STAT_STR..STAT_DEX
+      self.draw_actor_parameter(@battler, x, y, s)
+      y += 20
+      if y > 170
+        y = 100
+        x += 100
+      end
+    end            
+    ysp = 15
+    # Win item
+    self.contents.font.color = system_color
+    draw_text(0, 200, 200, 32, "Win:")
+    self.contents.font.color = normal_color   
+    if $data_enemies[@battler.id].item_id > 0
+      draw_item_name($data_items[$data_enemies[@battler.id].item_id], 0 + ysp, 224)
+    elsif $data_enemies[@battler.id].weapon_id > 0
+      draw_item_name($data_weapons[$data_enemies[@battler.id].weapon_id], 0 + ysp, 224)
+    elsif $data_enemies[@battler.id].armor_id > 0
+      draw_item_name($data_armors[$data_enemies[@battler.id].armor_id], 0 + ysp, 224)
+    else
+      draw_text(0 + ysp, 224, 194, 32, "Nothing")      
+    end    
+    # Steal
+    self.contents.font.color = system_color
+    draw_text(0, 250, 200, 32, "Steal:")
+    self.contents.font.color = normal_color   
+    if @battler.can_steal?
+      case @battler.steal_type
+      when 0
+        item = $data_items[@battler.steal_id]
+      when 1
+        item = $data_weapons[@battler.steal_id]
+      when 2
+        item = $data_armors[@battler.steal_id]
+      end            
+      draw_item_name(item, 0 + ysp, 274)
+      # Draw stealing chance
+      self.contents.font.color = system_color
+      case @battler.steal_chance
+      when STEAL_COMN
+        draw_text(0, 250, 200, 32, "(Common)", 2)        
+      when STEAL_UNCM
+        draw_text(0, 250, 200, 32, "(Uncommon)", 2)                
+      when STEAL_RARE
+        draw_text(0, 250, 200, 32, "(Rare)", 2)                        
+      end
+    else
+      draw_text(0 + ysp, 274, 100, 32, "Nothing")      
+    end
+  end
+end

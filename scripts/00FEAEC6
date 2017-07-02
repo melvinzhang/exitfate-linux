@@ -1,0 +1,110 @@
+#==============================================================================
+# ** Window_HelpScreen
+#------------------------------------------------------------------------------
+#  This window displays help
+#==============================================================================
+
+class Window_HelpScreen < Window_Base
+  attr_reader :node   # Current node being displayed
+  #--------------------------------------------------------------------------
+  # * Object Initialization
+  #--------------------------------------------------------------------------
+  def initialize
+    super(160, 0, 640, 480)
+    self.contents = Bitmap.new(width - 32, height - 32)
+    self.windowskin_suffix = "_right"
+    @node = nil
+    refresh
+  end
+  #--------------------------------------------------------------------------
+  # * Set node
+  #--------------------------------------------------------------------------
+  def node=(n)
+    @node = n
+    refresh
+  end
+  #--------------------------------------------------------------------------
+  # * Update
+  #--------------------------------------------------------------------------  
+  def update
+    super
+    if self.active 
+      # If pressing down on the directional buttons
+      if Input.repeat?(Input::DOWN)
+        $game_system.se_play($data_system.cursor_se)
+        self.oy =  [[self.oy + 20, self.contents.height - self.height + 32 ].min, 0].max
+      end
+      # If the up directional button was pressed
+      if Input.repeat?(Input::UP)
+        $game_system.se_play($data_system.cursor_se)
+        self.oy =  [self.oy - 20, 0].max
+      end
+    end
+  end  
+  #--------------------------------------------------------------------------
+  # * Refresh
+  #--------------------------------------------------------------------------
+  def refresh(height = -1)
+    self.contents.clear
+    return if @node == nil
+    return if @node.contents == nil
+    
+    self.contents.font.color = normal_color
+    
+    # Quick and dirty way to make the sprite the right height
+    if height != -1
+      self.contents = Bitmap.new(width - 32, height)
+    end   
+    
+    self.oy = 0
+    display_x = 0
+    display_y = 0
+    text = @node.contents.clone
+    color = false
+    ysp = 20
+    next_y = ysp
+    # Draw text
+    while text.length > 0
+      # Get the next character
+      c = text.slice!(/./m)
+      # Change colour
+      if c == "@"
+        color = !color
+        self.contents.font.color = color ? system_color : normal_color
+        next
+      end
+      # For e-mail
+      if c == "^"
+        c = "@"
+      end      
+      # Newline
+      if c == "\n"
+        display_x = 0
+        display_y += next_y
+        next_y = ysp
+        next
+      end
+      # Picture
+      if c == "["
+        c = text.slice!(/[^\]]*\]/m)
+        c = c[0, c.size - 1] 
+        bitmap = RPG::Cache.graphic(c)
+        cw = bitmap.width
+        ch = bitmap.height
+        src_rect = Rect.new(0, 0, cw, ch)        
+        self.contents.blt(display_x, display_y, bitmap, src_rect)       
+        display_x += cw
+        next_y = ch > ysp ? ch + 4 : ysp
+      else
+        # Draw text
+        draw_text(4 + display_x, display_y, 40, ysp, c)
+        # Add x to drawn text width
+        display_x += self.contents.text_size(c).width
+      end
+    end    
+    
+    if height == -1
+      refresh(display_y + next_y + ysp)
+    end
+  end
+end

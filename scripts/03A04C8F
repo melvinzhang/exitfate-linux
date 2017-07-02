@@ -1,0 +1,37 @@
+#==============================================================================
+# ** Window_BJBalance
+#------------------------------------------------------------------------------
+#  This window displays current Blackjack balance
+#==============================================================================
+
+class Window_BJBalance < Window_Base_Short
+  attr_reader :balance
+  #--------------------------------------------------------------------------
+  # * Object Initialization
+  #--------------------------------------------------------------------------
+  def initialize
+    super(395, 64, 250, 48)
+    self.contents = Bitmap.new(width, height)
+    self.windowskin_suffix = "_right"
+    @balance = 0
+    refresh
+  end
+  #--------------------------------------------------------------------------
+  # * Set balance
+  #--------------------------------------------------------------------------
+  def balance=(x)
+    @balance = x
+    refresh
+  end
+  #--------------------------------------------------------------------------
+  # * Refresh
+  #--------------------------------------------------------------------------
+  def refresh
+    self.contents.clear
+    prefix = @balance > 0 ? "+" : ""
+    cx = contents.text_size("Balance: ").width
+    self.contents.font.color = normal_color
+    self.draw_text(16, 8, cx, 32, "Balance: ", 0)    
+    self.draw_text(16+cx, 8, self.contents.width-32-cx, 32, prefix + @balance.to_s + " Arn", 2)    
+  end
+end

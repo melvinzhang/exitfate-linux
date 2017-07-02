@@ -1,0 +1,371 @@
+#==============================================================================
+# ** Scene_War
+#------------------------------------------------------------------------------
+#  This class handles war battles
+#
+# AI
+#==============================================================================
+
+class Scene_War      
+    #--------------------------------------------------------------------------
+    # * Start phase 4: Determine AI action
+    #--------------------------------------------------------------------------
+    def start_phase4
+#      $game_temp.log("Start AI for " + @current_unit.name + "\n")
+      if not @berserk_mode
+        count_p = 0
+        count_e = 0
+        for unit in $game_temp.war_units
+          if unit.player_side
+            count_p += 1
+          else
+            count_e += 1
+          end
+        end 
+        if count_p == 1 or count_e == 1
+          @berserk_mode = true
+        end
+      end      
+      @ai_move_x = 0
+      @ai_move_y = 0
+      @ai_target = nil            
+      if @current_unit.wait_turns > 0
+        # Stay in place
+        @current_unit.wait_turns -= 1
+        @ai_move_x = @current_unit.x
+        @ai_move_y = @current_unit.y
+      else
+        if not ai_find_attack_target
+          ai_find_move_target
+        end
+      end
+      @phase = 4
+      @step = 1
+    end
+    #--------------------------------------------------------------------------
+    # * Determine Attack Target
+    #--------------------------------------------------------------------------
+    def ai_find_attack_target
+      #$game_temp.log("- ai_find_attack_target" + "\n")
+      atk_grid = generate_attack_potential_grid
+      # ==
+      # Find all enemies that can be attacked
+      # ==
+      targets = []
+      for unit in $game_temp.war_units
+        if unit.player_side != @current_unit.player_side and atk_grid[unit.x][unit.y].size > 0
+          targets.push(unit)
+        end
+      end
+      if targets.size == 0
+        # No targets found. 
+        return false
+      end      
+      # ==
+      # For each unit. determine the optimal kills-losses and find the best  target
+      # ==
+      best_target = [nil, -99999, 0, 0]
+      for unit in targets
+        # Determine the maximum distance at which can be attacked
+        best = [0, 0, -1]
+        for src in atk_grid[unit.x][unit.y]
+          if src[2] > best[2]
+            best = src
+          end
+        end
+        kills = calc_damage(@current_unit, unit, false)
+        if kills >= unit.men or best[2] > unit.attack_range or not unit.can_counter?
+          losses = 0
+        else
+          tmp = unit.men
+          unit.men -= kills
+          losses = calc_damage(unit, @current_unit, false)
+          unit.men = tmp
+        end
+        # For long range units, acceptable damage is more strict when attacking units 
+        # with less range, since they can move out of said units' ranges.
+        # Leader units are also more careful
+        if (@current_unit.attack_range > 1 and unit.attack_range < @current_unit.attack_range) or
+            @current_unit.leader_unit
+          acceptable = (kills > losses)
+        else
+          acceptable = (2 * kills > losses)
+        end                
+        # If in berserk mode, attack whenever possible
+        acceptable = true if @berserk_mode
+        if acceptable and (kills - losses > best_target[1] - best_target[2])
+          best_target = [unit, kills, losses, best[2]]
+        end
+      end 
+      if best_target[0] == nil
+        # No targets found. 
+        return false
+      end      
+      @ai_target = best_target[0]
+      dist = best_target[3]
+      # ==
+      # Target found. Determine best attack position
+      # ==
+      # If it's possible to stay out of counter range, ignore other possibilties
+      moves = []
+      for src in atk_grid[@ai_target.x][@ai_target.y]
+        if src[2] > @ai_target.attack_range or dist <= @ai_target.attack_range
+          moves.push(src)
+        end
+      end
+      # Pick the square that maximizes the average distance to all enemies
+      bestmove = [-1, 0, 0]
+      for move in moves
+        for unit in $game_temp.war_units
+          dist = (unit.x - move[0]).abs + (unit.x - move[1]).abs
+          if dist > bestmove[0]
+            bestmove = [dist, move[0], move[1]]
+          end
+        end
+      end  
+      @ai_move_x = bestmove[1]
+      @ai_move_y = bestmove[2]
+      return true
+    end
+    #--------------------------------------------------------------------------
+    # * Find move target, if not attacking
+    #--------------------------------------------------------------------------
+    def ai_find_move_target
+      #$game_temp.log("- ai_find_move_target" + "\n")
+      # Generate empty grid
+      grid =  generate_movement_grid
+      targ_grid = []
+      for x in 0...$game_map.width
+        targ_grid[x] = []
+        for y in 0...$game_map.height
+          if grid[x][y] > -1
+            targ_grid[x][y] = [nil, 0]
+            # See if this square is occupied            
+            for unit in $game_temp.war_units
+              if unit.x == x and unit.y == y and unit != @current_unit
+                targ_grid[x][y] = [nil, -9999]
+                break
+              end               
+            end            
+          else
+            targ_grid[x][y] = [nil, -9999]
+          end
+        end      
+      end        
+      # ===
+      # Clustering
+      # ===
+      #$game_temp.log("- start clustering" + "\n")
+      if not @berserk_mode
+        # Create a temporary grid
+        cluster_grid = []
+        for x in 0...$game_map.width
+          cluster_grid[x] = []
+          for y in 0...$game_map.height
+            cluster_grid[x][y] = 0
+          end
+        end
+        # Cycle through all units within the cluster
+        for unit in $game_temp.war_units        
+          if unit != @current_unit  and unit.player_side == @current_unit.player_side and
+              unit.cluster_id == @current_unit.cluster_id
+            # Generate the unit's total movement grid
+            if @movement_grids[unit] == nil
+              @movement_grids[unit] = generate_total_movement_grid(unit)
+            end
+            move_grid = @movement_grids[unit] 
+            for x in 0...$game_map.width
+              for y in 0...$game_map.height
+                # Look at all possible movement positions
+                # Store the highest amount of turns required for another unit in the cluster to
+                # move to the unit's location
+                if grid[x][y] > -1 
+                  move_turns = move_grid[x][y] / unit.move_dist.to_f
+                  cluster_grid[x][y] = [cluster_grid[x][y], move_turns].max
+                end
+              end
+            end          
+          end
+        end
+        # Look through the entire cluster grid and find the lowest value
+        min = 99999
+        for x in 0...$game_map.width
+          for y in 0...$game_map.height
+            if targ_grid[x][y][1] > -9999 #grid[x][y] > -1 
+              min = [cluster_grid[x][y], min].min
+            end
+          end
+        end
+        for x in 0...$game_map.width
+          for y in 0...$game_map.height
+            if grid[x][y] > -1 
+              # If there is at least one square below the maximum treshold, then
+              # all squares below the treshold are acceptable. Otherwise, the square
+              # with the lowest value must be picked.
+              if min <= 2.5
+                targ_grid[x][y] = [nil, -9999] if cluster_grid[x][y] > 2.5
+              else
+                targ_grid[x][y] = [nil, -9999] if cluster_grid[x][y] != min
+              end
+            end
+          end
+        end
+      end     
+      # ===
+      # End clustering
+      # ===
+      #$game_temp.log("- end clustering" + "\n")
+      # Determine value of each square
+      for unit in $game_temp.war_units
+        if unit.player_side != @current_unit.player_side
+          # cull the list by disregarding any that can't possibly hit the current unit
+          dist = (unit.x - @current_unit.x).abs + (unit.y - @current_unit.y).abs
+          if dist < @current_unit.move_dist + unit.move_dist + unit.attack_range
+            # Generate attack potential
+            tmp = @current_unit
+            @current_unit = unit
+            atk_grid = generate_attack_potential_grid
+            @current_unit = tmp
+            for x in 1...$game_map.width
+              for y in 1...$game_map.height
+                if targ_grid[x][y][1] > -9999 and grid[x][y] > -1 and atk_grid[x][y].size > 0 
+                  # Unit can attack this square. Find attack distance
+                  maxdist = -1
+                  for src in atk_grid[x][y]
+                    if src[2] > maxdist
+                      maxdist = src[2]
+                    end
+                  end
+                  # Determine attack effect from the enemy's perspective
+                  kills = calc_damage(unit, @current_unit, false)
+                  if kills >= @current_unit.men or maxdist > @current_unit.attack_range or not @current_unit.can_counter?
+                    losses = 0
+                  else
+                    tmp = @current_unit.men
+                    @current_unit.men -= kills
+                    losses = calc_damage(@current_unit, unit, false)
+                    @current_unit.men = tmp
+                  end
+                  # Give melee units an incentive to chase after long-range units
+                  if @current_unit.attack_range == 1 and not @current_unit.leader_unit
+                    effect = (kills - losses) - 2000
+                  else
+                    effect = kills - losses
+                  end
+                  # Berserk mode - don't care about damage
+                  effect = [0, effect].max if @berserk_mode
+                  if targ_grid[x][y][1] < effect
+                    targ_grid[x][y] = [unit, effect]
+                  end
+                end
+              end
+            end
+          end          
+        end
+      end            
+      # Determine the square(s) with the lowest damage
+      moves = []
+      lowest = 9999
+      for x in 1...$game_map.width
+        for y in 1...$game_map.height
+          if targ_grid[x][y][1] > -9999
+            if targ_grid[x][y][1] < lowest
+              moves.clear
+              moves.push([x, y])
+              lowest = targ_grid[x][y][1]
+            elsif targ_grid[x][y][1] == lowest
+              moves.push([x, y])
+            end
+          end          
+        end
+      end
+      # If there is more than one square, pick the one closest to the closest enemy
+      if moves.size == 1
+        @ai_move_x = moves[0][0]
+        @ai_move_y = moves[0][1]   
+      else 
+        best_move = [0, 0, 9999]
+        for move in moves
+          best_dist = 9999
+          for unit in $game_temp.war_units
+            if unit.player_side != @current_unit.player_side
+              dist = (unit.x - move[0]).abs + (unit.y - move[1]).abs
+              if dist < best_dist
+                best_dist = dist
+              end         
+            end
+          end    
+          if best_dist < best_move[2]
+            best_move = [move[0], move[1], best_dist]
+          end
+        end        
+        @ai_move_x = best_move[0]
+        @ai_move_y = best_move[1]   
+      end      
+    end
+    #--------------------------------------------------------------------------
+    # * Update phase 4
+    #--------------------------------------------------------------------------
+    def update_phase4
+      if @step == 1
+        update_phase4_step1
+      elsif @step == 2
+        update_phase4_step2
+      elsif @step == 3
+        update_phase4_step3
+      end      
+    end      
+    #--------------------------------------------------------------------------
+    # * Update phase 4 Step 1 : Show unit
+    #--------------------------------------------------------------------------
+    def update_phase4_step1
+      @cursor_x = @current_unit.x
+      @cursor_y = @current_unit.y
+      check_scroll
+      update_unitinfo
+      @wait = 10
+      @step = 2
+    end
+    #--------------------------------------------------------------------------
+    # * Update phase 4 Step 2 : Move
+    #--------------------------------------------------------------------------
+    def update_phase4_step2  
+      @cursor_x = @ai_move_x
+      @cursor_y = @ai_move_y
+      check_scroll
+      update_unitinfo
+      # Recalculate movement grid
+      if @ai_move_x != @current_unit.x or @ai_move_y != @current_unit.y  
+        @movement_grids[@current_unit] = generate_total_movement_grid
+      end      
+      @current_unit.move_route =  find_route(generate_movement_grid, @current_unit.x, 
+                                                                                    @current_unit.y, @cursor_x, @cursor_y)
+      @step = 3
+    end
+    #--------------------------------------------------------------------------
+    # * Update phase 4 Step 3 : Attack
+    #--------------------------------------------------------------------------
+   def update_phase4_step3
+      if @ai_target == nil
+        # Wait   
+        end_phase2_step4          
+        @current_unit.has_turn = false
+        @current_unit.blink = false
+        @current_unit = nil
+        @phase = 2
+        @step = 1
+      else
+        # Attack
+        $game_system.se_play($data_system.decision_se)           
+        @cursor_sprite.visible = false
+        @current_unit.blink = false
+        @battle_target = @ai_target
+        @cursor_x = @battle_target.x
+        @cursor_y = @battle_target.y
+        check_scroll
+        update_unitinfo
+        end_phase2_step5
+        start_phase3
+      end
+    end
+end

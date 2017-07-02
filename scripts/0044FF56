@@ -1,0 +1,46 @@
+#==============================================================================
+# ** Window_WarSetupMember
+#------------------------------------------------------------------------------
+#  Displays member info on war setup screen
+#==============================================================================
+
+class Window_WarSetupMember < Window_Base  
+  #--------------------------------------------------------------------------
+  # * Object Initialization
+  #--------------------------------------------------------------------------
+  def initialize
+    super(40, 280, 280, 130)    
+    self.contents = Bitmap.new(self.width - 32, self.height - 32)    
+    @id = 0
+  end
+  #--------------------------------------------------------------------------
+  # * Change the selected index
+  #--------------------------------------------------------------------------
+  def id=(id)
+    @id = id
+    refresh
+  end
+  #--------------------------------------------------------------------------
+  # * Refresh
+  #--------------------------------------------------------------------------
+  def refresh
+    self.contents.clear
+    return if @id == 0
+    m = $data_warmembers[@id]
+    # Draw Stats               
+    self.contents.font.color = system_color    
+    draw_text(0, 25, 80, 25, "Men")   
+    draw_text(0, 45, 80, 25, "Atk")   
+    draw_text(0, 65, 80, 25, "Def")   
+    self.contents.font.color = normal_color
+    draw_text(0, 0, 300, 25, m.name)
+    draw_text(0, 25, 80, 25, m.men.to_s, 2)       
+    string = m.attack == 0 ? "0" : m.attack > 0 ? "+" + m.attack.to_s : m.attack.to_s
+    draw_text(0, 45, 80, 25, string, 2)   
+    string = m.defence == 0 ? "0" : m.defence > 0 ? "+" + m.defence.to_s : m.defence.to_s
+    draw_text(0, 65, 80, 25, string, 2)   
+    if m.ability > 0
+      draw_text(100, 25, 200, 25, $data_war_ability_names[m.ability])    
+    end
+  end
+end

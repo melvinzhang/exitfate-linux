@@ -1,0 +1,240 @@
+#==============================================================================
+# ** Scene_Stats
+#------------------------------------------------------------------------------
+#  Wilona's statistics screen
+#==============================================================================
+
+class Scene_Stats
+  #--------------------------------------------------------------------------
+  # * Main Processing
+  #--------------------------------------------------------------------------
+  def main        
+    # Make title graphic
+    @sprite = Sprite.new
+    @sprite.bitmap = RPG::Cache.picture("Backgrounds/Menu" + $game_system.windowskin_id.to_s)    
+    # Make label window
+    @label_window = Window_Label.new("Statistics")
+    # Make help window
+    @help_window = Window_Help.new
+    @help_window.set_text("Press L/R to change list sorting variable.")
+    # Main stat windows    
+    @index = 0
+    @sort_index = 0
+    @sort_items = ["Battles", "Kills", "Deaths", "Level", "HP", "MP+", "STR", 
+                                "MAG", "PDF", "MDF", "SPD", "DEX", "SKL"]
+    @sort_title_window = Window_Base_Short.new(200, 80, 150, 48)
+    @sort_title_window.set_standard_bitmap
+    @sort_title2_window = Window_Base_Short.new(200, 80 - 32, 150, 48)
+    @sort_title2_window.set_standard_bitmap
+    @sort_title2_window.contents.font.color = @sort_title2_window.system_color
+    @sort_title2_window.draw_text(16, 2, 150, 48, "Sort by:")
+    setup_general
+    generate_ranking
+    # Execute transition
+    Graphics.transition
+    # Main loop
+    loop do
+      # Update game screen
+      Graphics.update
+      # Update input information
+      Input.update
+      # Frame update
+      update
+      # Abort loop if screen is changed
+      if $scene != self
+        break
+      end
+    end
+    # Prepare for transition
+    Graphics.freeze
+    @general_window.dispose
+    @general_title_window.dispose
+    @ranking_sprite.dispose
+    @sort_title_window.dispose
+    @sort_title2_window.dispose
+    @help_window.dispose
+    @label_window.dispose
+    @sprite.bitmap.dispose
+    @sprite.dispose
+  end
+  #--------------------------------------------------------------------------
+  # * Frame Update
+  #--------------------------------------------------------------------------
+  def update
+    # Update windows
+    @help_window.update
+    # If B button was pressed
+    if Input.trigger?(Input::B)
+      $game_system.se_play($data_system.cancel_se)
+      $scene = Scene_Map.new
+      return
+    end
+    if Input.trigger?(Input::L)
+      $game_system.se_play($data_system.cursor_se)
+      @sort_index = (@sort_index - 1) % @sort_items.size
+      generate_ranking
+    end
+    if Input.trigger?(Input::R)
+      $game_system.se_play($data_system.cursor_se)
+      @sort_index = (@sort_index + 1) % @sort_items.size
+      generate_ranking
+    end
+    if Input.repeat?(Input::UP)
+      $game_system.se_play($data_system.cursor_se)
+      @index = [@index - 1, 0].max
+      draw_ranking
+    end
+    if Input.repeat?(Input::DOWN)
+      $game_system.se_play($data_system.cursor_se)
+      @index = [[@index + 1, @actors.length - 15].min, 0]. max
+      draw_ranking
+    end
+    if Input.repeat?(Input::LEFT)
+      $game_system.se_play($data_system.cursor_se)
+      @index = [@index - 15, 0].max
+      draw_ranking
+    end
+    if Input.repeat?(Input::RIGHT)
+      $game_system.se_play($data_system.cursor_se)
+      @index = [[@index + 15, @actors.length - 15].min, 0]. max
+      draw_ranking
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Set up general stats window
+  #--------------------------------------------------------------------------  
+  def setup_general    
+    @general_title_window = Window_Base_Short.new(15, 175, 275, 48)
+    @general_title_window.set_standard_bitmap
+    @general_title_window.draw_text(16, 12, 275, 24, "General Statistics")
+    @general_window = Window_Base.new(15, 175+48, 275, 160)
+    @general_window.set_standard_bitmap      
+    # Calculate time
+    w = 275 - 32
+    total_sec = Graphics.frame_count / Graphics.frame_rate
+    hour = total_sec / 60 / 60
+    min = total_sec / 60 % 60
+    text = sprintf("%02d:%02d", hour, min)    
+    # Calculate kills      
+    kills = 0
+    recruits = 0
+    for a in $game_actors.actors
+      kills += a.kills
+      if a.joined
+        recruits += 1
+      end
+    end
+    # Draw stats    
+    @general_window.contents.font.color = @general_window.system_color
+    @general_window.draw_text(0, 0, w, 24, "Play Time:")
+    @general_window.draw_text(0, 24, w, 24, "Chars Recruited:")
+    @general_window.draw_text(0, 48, w, 24, "Battles Fought:")
+    @general_window.draw_text(0, 72, w, 24, "Enemies Killed:")
+    @general_window.draw_text(0, 96, w, 24, "Times Saved:")
+    @general_window.contents.font.color = @general_window.normal_color
+    @general_window.draw_text(0, 0, w, 24, text, 2)
+    @general_window.draw_text(0, 24, w, 24, recruits.to_s + "/75", 2)    
+    @general_window.draw_text(0, 48, w, 24, $game_party.battles.to_s, 2)    
+    @general_window.draw_text(0, 72, w, 24, kills.to_s, 2)    
+    @general_window.draw_text(0, 96, w, 24, $game_system.save_count.to_s, 2)       
+  end
+  #--------------------------------------------------------------------------
+  # * Generate ranking
+  #--------------------------------------------------------------------------  
+  def generate_ranking
+    @actors = []
+    for a in $game_actors.get_joined_characters
+      case @sort_index
+      when 0
+        val = a.battles
+      when 1
+        val = a.kills
+      when 2
+        val = a.deaths
+      when 3
+        val = a.level        
+      when 4
+        val = a.maxhp
+      when 5
+        val = a.mpregen
+      when 6
+        val = a.str
+      when 7
+        val = a.mag
+      when 8
+        val = a.pdf
+      when 9
+        val = a.mdf
+      when 10
+        val = a.spd
+      when 11
+        val = a.dex
+      when 12
+        val = a.skl        
+      end
+      @actors.push([a, val])
+    end
+    @actors.sort!{|a, b| b[1] - a[1]}
+    draw_ranking
+    @sort_title_window.contents.clear
+    @sort_title_window.draw_text(16, 2, 150, 48, @sort_items[@sort_index])
+  end
+  #--------------------------------------------------------------------------
+  # * Draw ranking
+  #--------------------------------------------------------------------------  
+  def draw_ranking
+    # Create sprite
+    if @ranking_sprite != nil
+      @ranking_sprite.dispose
+    end
+    @ranking_sprite = Sprite.new
+    @ranking_sprite.bitmap = Bitmap.new(350, 400)
+    @ranking_sprite.bitmap.font.color = Color.new(255, 255, 255, 230)
+    @ranking_sprite.x = 350
+    @ranking_sprite.y = 25    
+    @ranking_sprite.z = 1000
+    # Draw ranking    
+    y = 12
+    for i in @index...[@index + 15, @actors.length]. min
+      draw_ranking_row(y, @actors[i][0], @actors[i][1], i + 1)
+      y += 24
+    end
+    # Arrows
+    windowskin = RPG::Cache.windowskin($game_system.windowskin_name)
+    if @index > 0
+      @ranking_sprite.bitmap.blt(102, 0, windowskin, Rect.new(152, 16, 16, 8))
+    end
+    if @index < @actors.length - 15
+      @ranking_sprite.bitmap.blt(102, 15*24+16, windowskin, Rect.new(152, 40, 16, 8))
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Draw ranking row
+  #--------------------------------------------------------------------------  
+  def draw_ranking_row(y, actor, value, rank)
+    w = 220
+    bgcolor = rank == 1 ? Color.new (200, 200, 0, 128) : 
+                  rank == 2 ? Color.new (200, 100, 0, 128) : 
+                  rank == 3 ? Color.new (200, 0, 0, 128) : 
+                  rank <= 10 ? Color.new (140, 65, 65, 128) : 
+                  Color.new(128, 128, 128, 128)
+    @ranking_sprite.bitmap.fill_rect(0, y, w, 23, bgcolor)
+    prefix = rank.to_s + ". "
+    if rank < 10
+      prefix += " "
+    end    
+    draw_text_new(5, y, w - 10, 24, prefix + actor.name)
+    draw_text_new(5, y, w - 10, 24, value.to_s, 2)
+  end
+  #--------------------------------------------------------------------------
+  # * Draw Text New (with shadow)
+  #--------------------------------------------------------------------------
+  def draw_text_new(x, y, width, height, text, align = 0)
+    sprite = @ranking_sprite
+    tempc = sprite.bitmap.font.color.clone
+    sprite.bitmap.font.color = Color.new(0, 0, 0, 192)
+    sprite.bitmap.draw_text(x + 1, y + 1, width, height, text, align)
+    sprite.bitmap.font.color = tempc
+    sprite.bitmap.draw_text(x, y, width, height, text, align)  
+  end
+end

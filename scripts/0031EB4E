@@ -1,0 +1,227 @@
+#==============================================================================
+# ** Scene_Options
+#------------------------------------------------------------------------------
+#  Options screen
+#==============================================================================
+
+class Scene_Options
+  #--------------------------------------------------------------------------
+  # * Main Processing
+  #--------------------------------------------------------------------------
+  def main        
+    # Make title graphic
+    @sprite = Sprite.new
+    @sprite.bitmap = RPG::Cache.picture("Backgrounds/Menu" + $game_system.windowskin_id.to_s)    
+    # Make label window
+    @label_window = Window_Label.new("Settings")
+    # Make windows
+    @help_window = Window_Help.new
+    @name_windows = []
+    @setting_windows = []
+    names = ["Music Volume", "SFX Volume", "Battle Cursor", "Magic Select"]#, "Auto-Heal"]
+    for i in 0...names.size
+      @name_windows[i] = Window_Base.new(40, 75 + i*56, 168, 64)
+      @name_windows[i].set_standard_bitmap
+      @name_windows[i].draw_text(4, 0, 200, 32, names[i])
+    end
+    for i in 0...names.size
+      @setting_windows[i] = Window_Base.new(200, 75 + i*56, 360, 64)
+      @setting_windows[i].set_standard_bitmap
+    end      
+    refresh_volume_window(@setting_windows[0], $game_system.volume_music)
+    refresh_volume_window(@setting_windows[1], $game_system.volume_sfx)    
+    @setting_windows[2].draw_text(0, 0, 328/2, 32, "Reset", 1)
+    @setting_windows[2].draw_text(328/2, 0, 328/2, 32, "Memorize", 1)
+    @setting_windows[3].draw_text(0, 0, 328/3, 32, "All", 1)
+    @setting_windows[3].draw_text(328/3, 0, 328/3, 32, "Element", 1)
+    @setting_windows[3].draw_text(2*328/3, 0, 328/3, 32, "Memorize", 1)
+#    @setting_windows[4].draw_text(0, 0, 328/2, 32, "Single", 1)
+    #@setting_windows[4].draw_text(328/2, 0, 328/2, 32, "All", 1)    
+    update_cursor(@setting_windows[2], $game_system.battle_cursor_type, 2)
+    update_cursor(@setting_windows[3], $game_system.battle_magic_selection, 3)
+#    update_cursor(@setting_windows[4], $game_system.autoheal_priority, 2)      
+    @sfx_playing_timer = 0
+    @index = 0
+    update_active_window
+    update_help
+    # Execute transition
+    Graphics.transition
+    # Main loop
+    loop do
+      # Update game screen
+      Graphics.update
+      # Update input information
+      Input.update
+      # Frame update
+      update
+      # Abort loop if screen is changed
+      if $scene != self
+        break
+      end
+    end
+    # Prepare for transition
+    Graphics.freeze
+    # Dispose of windows
+    for w in @setting_windows + @name_windows
+      w.dispose
+    end
+    @help_window.dispose
+    @label_window.dispose
+    @sprite.bitmap.dispose
+    @sprite.dispose
+  end
+  #--------------------------------------------------------------------------
+  # * Frame Update
+  #--------------------------------------------------------------------------
+  def update
+    # Update windows
+    for w in @setting_windows + @name_windows
+      w.update
+    end      
+    # If B button was pressed
+    if Input.trigger?(Input::B)
+      $game_system.se_play($data_system.cancel_se)
+      $scene = Scene_Menu.new(6)
+      return
+    end        
+    if Input.repeat?(Input::DOWN)
+      $game_system.se_play($data_system.cursor_se)
+      @index = (@index + 1) % 4#5
+      update_active_window
+      update_help
+      return
+    end
+    if Input.repeat?(Input::UP)
+      $game_system.se_play($data_system.cursor_se)
+      @index =(@index - 1) % 4#5
+      update_active_window
+      update_help
+      return
+    end    
+    if Input.repeat?(Input::LEFT)
+      $game_system.se_play($data_system.cursor_se)
+      change_setting(-1)
+      update_help
+      return
+    end
+    if Input.repeat?(Input::RIGHT)
+      $game_system.se_play($data_system.cursor_se)
+      change_setting(1)
+      update_help
+      return
+    end          
+  end
+  #--------------------------------------------------------------------------
+  # * Change setting
+  #--------------------------------------------------------------------------    
+  def change_setting(val)
+    case @index
+    when 0, 1
+      # Change volume
+      change_volume(@index, 4 * val)
+    when 2
+      $game_system.battle_cursor_type = ($game_system.battle_cursor_type + val) % 2
+      update_cursor(@setting_windows[2], $game_system.battle_cursor_type, 2)
+    when 3
+      $game_system.battle_magic_selection = ($game_system.battle_magic_selection + val) % 3      
+      update_cursor(@setting_windows[3], $game_system.battle_magic_selection, 3)
+    when 4
+      $game_system.autoheal_priority = ($game_system.autoheal_priority + val) % 2
+      update_cursor(@setting_windows[4], $game_system.autoheal_priority, 2)
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Change Volume
+  #--------------------------------------------------------------------------
+  def change_volume(index, val)
+    if @index == 0
+      $game_system.volume_music = [[$game_system.volume_music + val, 0].max, 100].min
+      $game_system.bgm_update
+      refresh_volume_window(@setting_windows[0], $game_system.volume_music)
+    elsif @index == 1
+      oldval = $game_system.volume_sfx
+      $game_system.volume_sfx = [[$game_system.volume_sfx + val, 0].max, 100].min
+      if @sfx_playing_timer <= 0 and oldval != $game_system.volume_sfx
+        $game_system.se_play($data_system.cursor_se)
+        @sfx_playing_timer = 2
+      end
+      refresh_volume_window(@setting_windows[1], $game_system.volume_sfx)    
+    end
+  end 
+  #--------------------------------------------------------------------------
+  # * Update cursor
+  #--------------------------------------------------------------------------    
+  def update_cursor(window, val, max)
+    w = window.width - 32
+    window.cursor_rect = Rect.new(val * w/max, 0, w/max, window.height-32)    
+  end    
+  #--------------------------------------------------------------------------
+  # * Update active window display
+  #--------------------------------------------------------------------------  
+  def update_active_window
+    for w in @name_windows
+      w.active = false
+      w.cursor_rect.empty
+    end  
+    for w in @setting_windows
+      w.active = false      
+    end    
+    nw = @name_windows[@index]
+    nw.active = true
+    nw.cursor_rect = Rect.new(0, 0, nw.width-32, nw.height-32)
+    sw = @setting_windows[@index]
+    sw.active = true
+  end  
+  #--------------------------------------------------------------------------
+  # * Refresh Volume Window
+  #--------------------------------------------------------------------------
+  def refresh_volume_window(window, volume)
+    window.contents.clear    
+    #Set background
+    bar = RPG::Cache.picture("Bar_Volume_black")
+    src_rect = Rect.new(0, 0, 250, 32)
+    dest_rect = Rect.new(25, 0, 250, 32)
+    window.contents.stretch_blt(dest_rect, bar, src_rect)    
+    #Set foreground
+    val = volume - ( volume % 4)
+    bar = RPG::Cache.picture("Bar_Volume_full")
+    src_rect = Rect.new(0, 0, 250 * val / 100, 32)
+    dest_rect = Rect.new(25, 0, 250 * val / 100, 32)
+    window.contents.stretch_blt(dest_rect, bar, src_rect)         
+  end
+  #--------------------------------------------------------------------------
+  # * Update help
+  #--------------------------------------------------------------------------  
+  def update_help
+    case @index
+    when 0
+      str = "Change music volume."
+    when 1
+      str = "Change sound effects volume."
+    when 2
+      case $game_system.battle_cursor_type
+      when 0
+        str = "Reset battle command cursor every turn."
+      when 1
+        str = "Retain battle command cursor position."
+      end
+    when 3
+      case $game_system.battle_magic_selection
+      when 0
+        str = "In battle, show all magic by default."
+      when 1
+        str = "In battle, show magic of innate element by default."
+      when 2
+        str = "In battle, retain last active magic page."        
+      end
+    when 4
+      case $game_system.autoheal_priority
+      when 0
+        str = "When healing after battle, use single target healing first."
+      when 1
+        str = "When healing after battle, use all-party healing first."
+      end
+    end
+    @help_window.set_text(str)
+  end    
+end

@@ -1,0 +1,103 @@
+#==============================================================================
+# ** Window_BattleCommand
+#------------------------------------------------------------------------------
+#  This window deals with general command choices.
+#==============================================================================
+
+class Window_BattleCommand < Window_Selectable
+  #--------------------------------------------------------------------------
+  # * Object Initialization
+  #     width    : window width
+  #     commands : command text string array
+  #--------------------------------------------------------------------------
+  def initialize
+    # Compute window height from command quantity
+    super(142, -4, 160, 6*24 + 16)
+    @commands = ["Attack", "Magic", "Special", "Defend", "Use Item", "Equip", "Move", "Switch"]    
+    @item_max = @commands.size
+    @actor = nil
+    self.contents = Bitmap.new(width - 32, @item_max  * @row_height) 
+    refresh
+    self.index = 0
+  end
+  #--------------------------------------------------------------------------
+  # * Refresh
+  #--------------------------------------------------------------------------
+  def refresh
+    self.contents.clear
+    return if @actor == nil    
+    # Check special
+    if @actor.special_skill == 0
+      @commands[2] = "Special"
+    else
+      @commands[2] = $data_skills[@actor.special_skill].name
+    end    
+    # Draw items
+    for i in 0...@item_max
+      if @row_height * i - self.oy < self.height - 32 - 8
+        draw_item(i, normal_color)
+      end
+    end
+    # Silence
+    if @actor.restriction == 1
+      disable_item(1)
+    end
+    # Disable special if there is none
+    if @commands[2] == "Special"    
+      disable_item(2)
+    end
+    # Disable switch if entourage is empty
+    if $game_party.entourage.size == 0
+      disable_item(7)
+    end
+    # Disable items/equip/magic in flashback mode
+    if $game_party.flashback_mode
+      disable_item(4)
+      disable_item(5)
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Set index
+  #--------------------------------------------------------------------------
+  def index=(i)
+    super
+    refresh
+  end  
+  #--------------------------------------------------------------------------
+  # * Set actor
+  #--------------------------------------------------------------------------
+  def actor=(a)
+    @actor = a
+    refresh
+  end  
+  #--------------------------------------------------------------------------
+  # * Update
+  #--------------------------------------------------------------------------
+  def update
+    super
+    if @index_changed
+      refresh
+      @index_changed = false
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Draw Item
+  #     index : item number
+  #     color : text color
+  #--------------------------------------------------------------------------
+  def draw_item(index, color)
+    self.contents.font.color = color
+    rect = Rect.new(4, @row_height * index, self.contents.width - 8, @row_height)
+    self.contents.fill_rect(rect, Color.new(0, 0, 0, 0))
+    self.draw_text_rect(rect, @commands[index])
+  end
+  #--------------------------------------------------------------------------
+  # * Disable Item
+  #     index : item number
+  #--------------------------------------------------------------------------
+  def disable_item(index)
+    if @row_height * index - self.oy < self.height - 32 - 8
+      draw_item(index, disabled_color)
+    end
+  end
+end

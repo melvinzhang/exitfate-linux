@@ -1,0 +1,683 @@
+#==============================================================================
+# ** Game_Actor
+#------------------------------------------------------------------------------
+#  This class handles the actor. It's used within the Game_Actors class
+#  ($game_actors) and refers to the Game_Party class ($game_party).
+#==============================================================================
+
+class Game_Actor < Game_Battler
+  #--------------------------------------------------------------------------
+  # * Public Instance Variables
+  #--------------------------------------------------------------------------
+  attr_reader   :name                     # name
+  attr_reader   :character_name           # character file name
+  attr_reader   :character_hue            # character hue
+  attr_reader   :armor_id                # shield ID
+  attr_reader   :helmet_id                # helmet ID
+  attr_reader   :boots_id                # body armor ID
+  attr_reader   :acc_ids                # accessory ID [x, x, x]
+  attr_reader   :item_ids               # Item ID [x. x]
+  attr_reader   :weapon_atk     # Weapon attack upgrade level
+  attr_reader   :weapon_hit     # Weapon hit upgrade level
+  attr_reader   :weapon_crit     # Weapon crit upgrade level
+  attr_reader   :level                    # level
+  attr_reader   :exp                      # EXP (0-999)
+  attr_reader   :fixed_equip      # Can't remove equipment
+  attr_accessor   :joined           # Officially joined party
+  attr_accessor   :selectable    # Can be selected for party
+  attr_accessor   :required       # Must be in the party/entourage
+  attr_accessor   :interviewed       # Character has been interviewed by Meiko
+  
+  attr_reader   :battles                  # Battles fought with this character
+  attr_reader   :kills                    # Enemies this character finished off
+  attr_reader   :deaths                   # Times died
+  #--------------------------------------------------------------------------
+  # * Object Initialization
+  #     actor_id : actor ID
+  #--------------------------------------------------------------------------
+  def initialize(actor_id)
+    super()
+    setup(actor_id)
+  end
+  #--------------------------------------------------------------------------
+  # * Setup
+  #     actor_id : actor ID
+  #--------------------------------------------------------------------------
+  def setup(actor_id)
+    actor = $exdata_actors[actor_id]
+    @actor_id = actor_id
+    @name = actor.name
+    @character_name = "000-" + actor.name
+    @character_hue = 0
+    @battler_name = "C_" + actor.name
+    @base_battler_name = @battler_name        
+    if actor_id > 75      
+      @battler_name = "C_" + actor.name + "_young"
+      @base_battler_name = @battler_name     
+    end
+    @battler_hue = 0
+    @level = actor.init_level
+    @weapon_atk = actor.weapon_atk
+    @weapon_hit = actor.weapon_hit
+    @weapon_crit = actor.weapon_crit
+    @exp = 0
+    @states = []
+    @states_turn = {}
+    @armor_id = actor.armor
+    @helmet_id = actor.helmet
+    @boots_id = actor.boots
+    @acc_ids = [actor.acc1, actor.acc2, actor.acc3]
+    @item_ids = [actor.item1, actor.item2]
+    @hp = maxhp
+    @fixed_equip = false
+    @joined = false
+    @selectable = false
+    @required = false
+    @interviewed = false
+    @battles = 0
+    @kills = 0
+    @deaths = 0
+    update_auto_state(nil, $data_armors[@armor_id])
+    update_auto_state(nil, $data_armors[@helmet_id])
+    update_auto_state(nil, $data_armors[@boots_id])
+    update_auto_state(nil, $data_armors[@acc_ids[0]])
+    update_auto_state(nil, $data_armors[@acc_ids[1]])
+    update_auto_state(nil, $data_armors[@acc_ids[2]])
+  end
+  #---------------------------------------
+  # * Get Actor ID
+  #--------------------------------------------------------------------------
+  def id
+    return @actor_id
+  end
+  #--------------------------------------------------------------------------
+  # * Get Index
+  #--------------------------------------------------------------------------
+  def index
+    return $game_party.actors.index(self)
+  end
+  #--------------------------------------------------------------------------
+  # * Get Innate Element
+  #--------------------------------------------------------------------------
+  def element
+    return $exdata_actors[@actor_id].element
+  end
+  #--------------------------------------------------------------------------
+  # * Get Attack element
+  #--------------------------------------------------------------------------
+  def attack_element
+    # *Strike status changes attack element
+    if self.state?(21)
+      return ELEM_LIGHT
+    elsif self.state?(22)
+      return ELEM_DARK
+    elsif self.state?(23)
+      return ELEM_FIRE
+    elsif self.state?(24)
+      return ELEM_ICE
+    elsif self.state?(25)
+      return ELEM_WATER
+    elsif self.state?(26)
+      return ELEM_THUNDER
+    end
+    return $exdata_actors[@actor_id].element
+  end
+  #--------------------------------------------------------------------------
+  # * Get Relations
+  #--------------------------------------------------------------------------
+  def relation
+    return $exdata_actors[@actor_id].relation
+  end
+  #--------------------------------------------------------------------------
+  # * Get Weapon name
+  #--------------------------------------------------------------------------
+  def weapon_name
+    return $exdata_actors[@actor_id].weapon_name
+  end
+  #--------------------------------------------------------------------------
+  # * Get Weapon = LongRange
+  #--------------------------------------------------------------------------
+  def weapon_longrange?
+    return $exdata_actors[@actor_id].weapon_longrange
+  end
+  #--------------------------------------------------------------------------
+  # * Get Special skill
+  #--------------------------------------------------------------------------
+  def special_skill
+    return $exdata_actors[@actor_id].special
+  end
+  #--------------------------------------------------------------------------
+  # * Get Join Message
+  #--------------------------------------------------------------------------
+  def join_msg
+    return $exdata_actors[@actor_id].join_msg
+  end
+  #--------------------------------------------------------------------------
+  # * Determine State Guard
+  #     state_id : state ID
+  #--------------------------------------------------------------------------
+  def state_guard?(state_id)
+    # TO DO
+    return false
+    
+    for i in [@armor1_id, @armor2_id, @armor3_id, @armor4_id]
+      armor = $data_armors[i]
+      if armor != nil
+        if armor.guard_state_set.include?(state_id)
+          return true
+        end
+      end
+    end
+    return false
+  end
+  #--------------------------------------------------------------------------
+  # * Get Normal Attack Element
+  #--------------------------------------------------------------------------
+  def element_set
+    return $exdata_actors[actor_id].element
+  end
+  #--------------------------------------------------------------------------
+  # * Get Normal Attack State Change (+)
+  #--------------------------------------------------------------------------
+  def plus_state_set
+    return []
+  end
+  #--------------------------------------------------------------------------
+  # * Get Normal Attack State Change (-)
+  #--------------------------------------------------------------------------
+  def minus_state_set
+    return []
+  end
+  #--------------------------------------------------------------------------
+  # * Reset battler sprite to default
+  #--------------------------------------------------------------------------  
+  def reset_battler_name
+    @battler_name = @base_battler_name
+  end
+  #--------------------------------------------------------------------------
+  # * X-offset to use for determining the target position to move to for an attack
+  #--------------------------------------------------------------------------
+  def weapon_xoffset
+    return $exdata_actors[@actor_id].attack_xoffset
+  end  
+  #--------------------------------------------------------------------------
+  # * Increase Battles
+  #--------------------------------------------------------------------------
+  def increase_battles
+    @battles = [@battles + 1, 9999999].min
+  end
+  #--------------------------------------------------------------------------
+  # * Increase Kills
+  #--------------------------------------------------------------------------
+  def increase_kills
+    @kills = [@kills + 1, 9999999].min
+  end
+  #--------------------------------------------------------------------------
+  # * Increase Deaths
+  #--------------------------------------------------------------------------
+  def increase_deaths
+    @deaths = [@deaths + 1, 9999999].min
+  end
+  #--------------------------------------------------------------------------
+  # * Change HP
+  #--------------------------------------------------------------------------
+  def hp=(hp)
+    # Change sprite in case of revive/death
+    if @hp == 0 and hp > 0
+      @battler_name = @base_battler_name
+    elsif @hp > 0 and hp <= 0
+      self.set_death_sprite
+      self.increase_deaths
+    end    
+    super
+  end
+  #--------------------------------------------------------------------------
+  # * Set death sprite
+  #--------------------------------------------------------------------------
+  def set_death_sprite
+      @battler_name = @base_battler_name + "_dead"
+  end
+  #--------------------------------------------------------------------------
+  # * Get Maximum HP
+  #--------------------------------------------------------------------------
+  def maxhp    
+     return base_maxhp
+  end
+  #--------------------------------------------------------------------------
+  # * Get Basic Maximum HP
+  #--------------------------------------------------------------------------
+  def base_maxhp
+    base = $exdata_actors[@actor_id].base_hp
+    l = 3 * (1.035 ** (@level + 5))
+    b =  (base * l * 2) / 10
+    b += get_all_equip_bonus(STAT_HP)
+    return b.to_i
+  end
+  #--------------------------------------------------------------------------
+  # * Get MP regeneration rate
+  #--------------------------------------------------------------------------
+  def base_mpregen
+    base = $exdata_actors[@actor_id].base_mp    
+    l = 3 * (1.035 ** (@level + 5))
+    b = (base * (l + 5) * 7.5) / 1000
+    b += get_all_equip_bonus(STAT_MP)
+    return b.to_i
+  end
+  #--------------------------------------------------------------------------
+  # * Get Basic Strength
+  #--------------------------------------------------------------------------
+  def base_str
+    base = $exdata_actors[@actor_id].base_str
+    l = 3 * (1.035 ** (@level + 5))
+    b = (base * l / 4) / 10 + weapon_bonus_atk      
+    b += get_all_equip_bonus(STAT_STR)
+    return b.to_i
+  end
+  #--------------------------------------------------------------------------
+  # * Get Basic Magic
+  #--------------------------------------------------------------------------
+  def base_mag
+    base = $exdata_actors[@actor_id].base_mag  
+    l = 3 * (1.035 ** (@level + 5))
+    b = (base * l  / 2) / 10
+    b += get_all_equip_bonus(STAT_MAG)
+    return b.to_i
+  end
+  #--------------------------------------------------------------------------
+  # * Get Basic Vitality
+  #--------------------------------------------------------------------------
+  def base_pdf
+    base = $exdata_actors[@actor_id].base_pdf
+    l = 3 * (1.035 ** (@level + 5))
+    b = (base * l / 4) / 10
+    b += get_all_equip_bonus(STAT_PDF)
+  end
+  #--------------------------------------------------------------------------
+  # * Get Basic Resistance
+  #--------------------------------------------------------------------------
+  def base_mdf
+    base = $exdata_actors[@actor_id].base_mdf
+    l = 3 * (1.035 ** (@level + 5))
+    b = (base * l / 2) / 10
+    b += get_all_equip_bonus(STAT_MDF)
+    return b.to_i
+  end
+  #--------------------------------------------------------------------------
+  # * Get Basic Speed
+  #--------------------------------------------------------------------------
+  def base_spd
+    base = $exdata_actors[@actor_id].base_spd
+    l = 3 * (1.035 ** (@level + 5))
+    b = (base * l / 2) / 10
+    b += get_all_equip_bonus(STAT_SPD)
+    return b.to_i
+  end
+  #--------------------------------------------------------------------------
+  # * Get Basic Accuracy
+  #--------------------------------------------------------------------------
+  def base_acc
+    base = $exdata_actors[@actor_id].base_acc
+    l = 3 * (1.035 ** (@level + 5))
+    b = (base * l / 4) / 10 + weapon_bonus_hit
+    b += get_all_equip_bonus(STAT_ACC)
+    return b.to_i
+  end
+  #--------------------------------------------------------------------------
+  # * Get Basic Dexterity
+  #--------------------------------------------------------------------------
+  def base_dex
+    base = $exdata_actors[@actor_id].base_dex
+    l = 3 * (1.035 ** (@level + 5))
+    b = (base * l / 2) / 10
+    b += get_all_equip_bonus(STAT_DEX)
+    return b.to_i
+  end
+  #--------------------------------------------------------------------------
+  # * Get Basic Skill
+  #--------------------------------------------------------------------------
+  def base_skl
+    base = $exdata_actors[@actor_id].base_skl
+    l = 3 * (1.035 ** (@level + 5))
+    b = (base * l / 4) / 10 + weapon_bonus_crit
+    b += get_all_equip_bonus(STAT_SKL)
+    return b.to_i
+  end
+  #--------------------------------------------------------------------------
+  # * Get Basic Magic
+  #--------------------------------------------------------------------------
+  def mag_multiplier
+    return $exdata_actors[@actor_id].base_mag
+  end
+  #--------------------------------------------------------------------------
+  # * Weapon bonus for ATK
+  #--------------------------------------------------------------------------  
+  def weapon_bonus_atk(level = @weapon_atk)
+    #return 0 if level == 0    
+    base = $exdata_actors[@actor_id].base_str
+    upgrade_level = WEAPON_UPGR_LEVEL[level]        
+    l = 3 * (1.035 ** (upgrade_level + 5))
+    b = (base * l / 4) / 10         
+    return b.to_i
+  end
+  #--------------------------------------------------------------------------
+  # * Weapon bonus for HIT
+  #--------------------------------------------------------------------------  
+  def weapon_bonus_hit(level = @weapon_hit)
+    #return 0 if level == 0
+    base = $exdata_actors[@actor_id].base_acc
+    upgrade_level = WEAPON_UPGR_LEVEL[level]        
+    l = 3 * (1.035 ** (upgrade_level + 5))
+    b = (base * l / 4) / 10          
+    return b.to_i
+  end
+  #--------------------------------------------------------------------------
+  # * Weapon bonus for CRIT
+  #--------------------------------------------------------------------------  
+  def weapon_bonus_crit(level = @weapon_crit)
+    #return 0 if level == 0
+    base = $exdata_actors[@actor_id].base_skl
+    upgrade_level = WEAPON_UPGR_LEVEL[level]       
+    l = 3 * (1.035 ** (upgrade_level + 5)) 
+    b = (base * l / 4) / 10               
+    return b.to_i
+  end
+  #--------------------------------------------------------------------------
+  # * Get stat bonus for all equipment
+  #--------------------------------------------------------------------------
+  def get_all_equip_bonus (stat)
+    b   = get_equip_bonus(@armor_id, stat)
+    b += get_equip_bonus(@helmet_id, stat)
+    b += get_equip_bonus(@boots_id, stat)
+    b += get_equip_bonus(@acc_ids[0], stat)
+    b += get_equip_bonus(@acc_ids[1], stat)
+    b += get_equip_bonus(@acc_ids[2], stat)
+    return b
+  end
+  #--------------------------------------------------------------------------
+  # * Get Equipment stat bonus
+  #--------------------------------------------------------------------------
+  def get_equip_bonus (armor_id, stat)
+    a = $data_armors[armor_id]
+    return 0 if a == nil
+    case stat
+      when STAT_STR
+        return a.str_plus
+      when STAT_MAG
+        return a.int_plus
+      when STAT_PDF
+        return a.pdef
+      when STAT_MDF
+        return a.mdef
+      when STAT_SPD
+        return a.agi_plus * -1  # Weight
+      when STAT_ACC
+        return $exdata_armors[armor_id] == nil ? 0 : $exdata_armors[armor_id].acc
+      when STAT_DEX
+        return $exdata_armors[armor_id] == nil ? 0 : $exdata_armors[armor_id].dex
+      when STAT_SKL
+        return $exdata_armors[armor_id] == nil ? 0 : $exdata_armors[armor_id].skl
+      when STAT_HP
+        return $exdata_armors[armor_id] == nil ? 0 : $exdata_armors[armor_id].hp
+      when STAT_MP
+        return $exdata_armors[armor_id] == nil ? 0 : $exdata_armors[armor_id].mp
+    end
+  end  
+  #--------------------------------------------------------------------------
+  # * Relation effect
+  #--------------------------------------------------------------------------
+  def relation_effect
+    # Find all actors the actor has a relation with
+    n = 100
+    for actor in $game_party.actors
+      for rel in relation
+        # Character with relation is in party
+        # Find stat boost
+        if actor.id == rel[0]
+          dead = actor.dead?
+          if rel[1] == "A"
+            n *= dead ? 112 : 106
+            n /= 100
+          elsif rel[1] == "B"
+            n *= dead ? 108 : 104
+            n /= 100
+          elsif rel[1] == "C"
+            n *= dead ? 104 : 102
+            n /=100
+          elsif rel[1] == "F"
+            n *= dead ? 110 : 95
+            n /= 100
+          end
+        end
+      end
+    end    
+    return n
+  end  
+  #--------------------------------------------------------------------------
+  # * Return true if any ally in the relation set is dead
+  #--------------------------------------------------------------------------  
+  def relation_ally_down?
+    for actor in $game_party.actors
+      for rel in relation
+        if actor.id == rel[0]
+          return true if actor.hp0?
+        end
+      end
+    end    
+    return false
+  end
+  #--------------------------------------------------------------------------
+  # * Set weapon atk
+  #--------------------------------------------------------------------------
+  def weapon_atk=(w)
+    @weapon_atk = [[w,0].max, 15].min
+  end  
+  #--------------------------------------------------------------------------
+  # * Set weapon crit
+  #--------------------------------------------------------------------------
+  def weapon_hit=(w)
+    @weapon_hit = [[w,0].max, 15].min
+  end  
+  #--------------------------------------------------------------------------
+  # * Set weapon hit
+  #--------------------------------------------------------------------------
+  def weapon_crit=(w)
+    @weapon_crit = [[w,0].max, 15].min
+  end  
+  #--------------------------------------------------------------------------
+  # * Get Offensive Animation ID for Normal Attacks
+  #--------------------------------------------------------------------------
+  def animation1_id
+    return 0 #placeholder
+  end
+  #--------------------------------------------------------------------------
+  # * Get Target Animation ID for Normal Attacks
+  #--------------------------------------------------------------------------
+  def animation2_id
+    return @actor_id + 100
+  end
+  #--------------------------------------------------------------------------
+  # * Update Auto State
+  #     old_armor : unequipped armor
+  #     new_armor : equipped armor
+  #--------------------------------------------------------------------------
+  def update_auto_state(old_armor, new_armor)
+    # Forcefully remove unequipped armor's auto state
+    if old_armor != nil and old_armor.auto_state_id != 0
+      remove_state(old_armor.auto_state_id, true, true)
+    end
+    # Forcefully add unequipped armor's auto state
+    if new_armor != nil and new_armor.auto_state_id != 0
+      add_state(new_armor.auto_state_id, true)
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Change Equipment
+  #     equip_type : type of equipment
+  #     id    : weapon or armor ID (If 0, remove equipment)
+  #     slot  : for acc/items
+  #
+  #  Returns 1 if equipment actually changed, 0 otherwise
+  #--------------------------------------------------------------------------
+  def equip(equip_type, id, slot = 0)
+    equip_changed = false
+    case equip_type
+    when 0 #Helmet
+      if id == 0 or $game_party.armor_number(id) > 0
+        update_auto_state($data_armors[@helmet_id], $data_armors[id])
+        $game_party.gain_armor(@helmet_id, 1)
+        equip_changed = @helmet_id != id
+        @helmet_id = id
+        $game_party.lose_armor(id, 1)
+      end
+    when 1 #Armour
+      if id == 0 or $game_party.armor_number(id) > 0
+        update_auto_state($data_armors[@armor_id], $data_armors[id])
+        $game_party.gain_armor(@armor_id, 1)
+        equip_changed = @armor_id != id
+        @armor_id = id
+        $game_party.lose_armor(id, 1)
+      end
+    when 2  # Boots
+      if id == 0 or $game_party.armor_number(id) > 0
+        update_auto_state($data_armors[@boots_id], $data_armors[id])
+        $game_party.gain_armor(@boots_id, 1)
+        equip_changed = @boots_id != id
+        @boots_id = id
+        $game_party.lose_armor(id, 1)
+      end
+    when 3  # Accessory
+      if id == 0 or $game_party.armor_number(id) > 0
+        update_auto_state($data_armors[@acc_ids[slot]], $data_armors[id])
+        $game_party.gain_armor(@acc_ids[slot], 1)
+        equip_changed = @acc_ids[slot] != id
+        @acc_ids[slot] = id
+        $game_party.lose_armor(id, 1)
+      end
+    when 4  # Item
+      if id == 0 or $game_party.item_number(id) > 0
+        $game_party.gain_item(@item_ids[slot], 1)
+        equip_changed = @item_ids[slot] != id
+        @item_ids[slot] = id
+        $game_party.lose_item(id, 1)
+      end
+    end
+    return equip_changed
+  end
+  #--------------------------------------------------------------------------
+  # * Determine if Equippable
+  #     item : item
+  #--------------------------------------------------------------------------
+  def equippable?(item)
+    # False if not an accessory and character has no_armour
+    if item.kind != 3 and $exdata_actors[@actor_id].no_armour
+      return false
+    end
+    if $exdata_armors[item.id].female_only and not self.female?
+      return false
+    end
+    if $exdata_armors[item.id].male_only and self.female?
+      return false
+    end    
+    return true
+  end
+  #--------------------------------------------------------------------------
+  # * Change EXP
+  #     exp : new EXP
+  #--------------------------------------------------------------------------
+  def exp=(exp)
+    @exp = exp#[[exp, 999].min, 0].max
+  end
+  #--------------------------------------------------------------------------
+  # * Change Level
+  #     level : new level
+  #--------------------------------------------------------------------------
+  def level=(level)
+    @level = [[level, 1].max, 99].min
+  end
+  #--------------------------------------------------------------------------
+  # * Change Name
+  #     name : new name
+  #--------------------------------------------------------------------------
+  def name=(name)
+    @name = name
+  end
+  #--------------------------------------------------------------------------
+  # * Long-range projectile sprite
+  #
+  #   For actors, the projectile filename is the actor's name
+  #--------------------------------------------------------------------------
+  def projectile_sprite
+    return self.name
+  end
+  #--------------------------------------------------------------------------
+  # * Returns number of frames for the attack animation (0 = none)
+  #--------------------------------------------------------------------------
+  def attack_sprite_frames
+    #return $exdata_actors[@actor_id].attack_frames
+    return 2 if @actor_id == 77
+    return 3 if @actor_id > 75
+    return 3 if self.name == "Daniel"
+    return 3 if self.name == "Deke"
+    return 3 if self.name == "Derek"
+    return 3 if self.name == "Erin"
+    return 3 if self.name == "Frore"
+    return 3 if self.name == "Gilbert"
+    return 3 if self.name == "Jasper"
+    return 3 if self.name == "Jovian"
+    return 3 if self.name == "Mike"
+    return 3 if self.name == "Nashal"
+    return 3 if self.name == "Nomad"
+    return 3 if self.name == "Tiffany"
+    return 3 if self.name == "Vanrushal"
+    return 4 if self.name == "Ayara"
+    return 2
+  end
+  #--------------------------------------------------------------------------
+  # * Change Graphics
+  #     character_name : new character file name
+  #     character_hue  : new character hue
+  #     battler_name   : new battler file name
+  #     battler_hue    : new battler hue
+  #--------------------------------------------------------------------------
+  def set_graphic(character_name, character_hue, battler_name, battler_hue)
+    @character_name = character_name
+    @character_hue = character_hue
+    @battler_name = battler_name
+    @battler_hue = battler_hue
+  end
+  #--------------------------------------------------------------------------
+  # * Character is female?
+  #--------------------------------------------------------------------------
+  def female?
+    return [2,4,18,20,23,36,37,39,40,45,46,52,59,67,69,73,75].include?(@actor_id) 
+  end  
+  #--------------------------------------------------------------------------
+  # * Portrait name
+  #--------------------------------------------------------------------------  
+  def portrait_name
+    if $game_switches[25]
+      return self.name + "_young"
+    else
+      return self.name
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Battler name
+  #--------------------------------------------------------------------------
+  def battle_icon
+    return self.portrait_name
+  end
+  #--------------------------------------------------------------------------
+  # * Screen x
+  #--------------------------------------------------------------------------
+  def screen_x
+    case @battle_column
+    when 0
+      return 430 + @battle_row * 80
+    when 1
+      return 415 + @battle_row * 75
+    when 2
+      return 400 + @battle_row * 70
+    end
+  end
+end

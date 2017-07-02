@@ -1,0 +1,571 @@
+#==============================================================================
+# ** Scene_Battle (part 4)
+#------------------------------------------------------------------------------
+#  This class performs battle screen processing.
+#==============================================================================
+
+class Scene_Battle
+  #--------------------------------------------------------------------------
+  # * Start Main Phase
+  #--------------------------------------------------------------------------
+  def start_phase4
+    # Shift to phase 4
+    @phase = 4
+    # Search all battle event pages
+    for index in 0...$data_troops[@troop_id].pages.size
+      # Get event page
+      page = $data_troops[@troop_id].pages[index]
+      # If this page span is [turn]
+      if page.span == 1
+        # Clear action completed flags
+        $game_temp.battle_event_flags[index] = false
+      end
+    end
+    # Disable actor command window
+    @actor_command_window.active = false
+    @actor_command_window.visible = false
+    @status_window.unselect
+    # Turn count    
+    @active_battler.battle_turn += 1
+    @active_battler.blink = false    
+    # Set main phase flag
+    $game_temp.battle_main_phase = true
+    # Shift to step 1
+    @phase4_step = 1
+  end
+  #--------------------------------------------------------------------------
+  # * Frame Update (main phase)
+  #--------------------------------------------------------------------------
+  def update_phase4
+    case @phase4_step
+    when 1
+      update_phase4_step1 # Prepare action
+    when 2
+      update_phase4_step2 # Start Action
+    when 3
+      update_phase4_step3 # Animation for action performer
+    when 4
+      update_phase4_step4 # Animation for target
+    when 5
+      update_phase4_step5 # Damage display
+    when 6
+      update_phase4_step6 # Finish
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Frame Update (main phase step 1 : action preparation)
+  #--------------------------------------------------------------------------
+  def update_phase4_step1
+    @help_window.visible = false
+    if judge
+      # If won, or if lost : end method
+      return
+    end
+    # Set up battle event
+    setup_battle_event
+    if $game_system.battle_interpreter.running?
+      return
+    end
+    # Stop updating of status/KO etc information
+    for b in $game_party.actors + $game_troop.enemies
+      b.freeze_sprite = true
+    end
+    # Initialize animation ID and common event ID
+    @animation1_id = 0
+    @animation2_id = 0
+    @common_event_id = 0
+    # Refresh status window
+    @status_window.refresh
+    # Shift to step 2
+    @phase4_step = 2
+  end
+  #--------------------------------------------------------------------------
+  # * Frame Update (main phase step 2 : start action)
+  #--------------------------------------------------------------------------
+  def update_phase4_step2
+    # Clear target battlers
+    @target_battlers = []
+    # Branch according to each action
+    case @active_battler.current_action.kind
+    when 0  # basic
+      make_basic_action_result
+    when 1  # skill
+      make_skill_action_result
+    when 2  # item
+      make_item_action_result
+    end
+    # Shift to step 3
+    if @phase4_step == 2
+      @phase4_step = 3
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Make Basic Action Results
+  #--------------------------------------------------------------------------
+  def make_basic_action_result
+    # If attack
+    if @active_battler.current_action.basic == 0
+      # Set anaimation ID
+      @animation1_id = @active_battler.animation1_id
+      @animation2_id = @active_battler.animation2_id
+      @animation2_element = @active_battler.attack_element
+      if @active_battler.restriction == 3
+        # Chaos. Select a random enemy or ally
+        total = $game_party.actors.size + $game_troop.enemies.size
+        if rand(total) <= $game_party.actors.size
+          # Select an actor
+          lr = @active_battler.weapon_longrange? or @active_battler.is_a?(Game_Actor)
+          target = $game_party.random_target_actor(false, lr)
+        else
+          # Select an enemy
+          lr = @active_battler.weapon_longrange? or @active_battler.is_a?(Game_Enemy)
+          target = $game_troop.random_target_enemy(false, lr)
+        end        
+      elsif @active_battler.is_a?(Game_Enemy)
+        if @active_battler.restriction == 2
+          target = $game_party.random_target_actor(false, @active_battler.weapon_longrange?)
+        else
+          target = @active_battler.current_action.target
+        end
+      elsif @active_battler.is_a?(Game_Actor)
+        if @active_battler.restriction == 2
+          target = $game_troop.random_target_enemy(false, @active_battler.weapon_longrange?)
+        else
+          target = @active_battler.current_action.target
+        end
+      end
+      # Set target in case it was determined above
+      @active_battler.current_action.target = target
+      # Set array of targeted battlers
+      @target_battlers = [target]
+      # Apply normal attack results      
+      for target in @target_battlers      
+        # Quick fix for Freeze
+        if target != nil
+          target.was_frozen = target.state?(10)
+          target.attack_effect(@active_battler, @active_battler.weapon_longrange?)
+        end
+      end
+      return
+    end
+    # If guard
+    if @active_battler.current_action.basic == 1
+      # Display "Guard" in help window
+      @help_window.set_text("Defend")
+      return
+    end
+    # If escape
+    if @active_battler.is_a?(Game_Enemy) and
+       @active_battler.current_action.basic == 2
+      # Display "Escape" in help window
+      @help_window.set_text("Escape")
+      # Escape
+      @active_battler.escape
+      return
+    end
+    # If doing nothing
+    if @active_battler.current_action.basic == 3
+      $game_temp.forcing_battler = nil
+      @phase4_step = 6
+      return
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Set Targeted Battler for Skill or Item
+  #     scope : effect scope for skill or item
+  #     target_type: target type
+  #--------------------------------------------------------------------------
+  def set_target_battlers(hp0, target_type)        
+    # Select target based on target type
+    main_target = @active_battler.current_action.target
+    grid = main_target.is_a?(Game_Enemy) ? $game_troop.enemies_grid : $game_party.actors_grid
+    targets = []
+    row = main_target.battle_row
+    col = main_target.battle_column
+    case target_type
+      when TARG_ONE
+        targets.push(main_target)
+      when TARG_ALL, TARG_SPREAD
+        # Select all
+        for row in grid
+          for b in row
+            targets.push(b) if b != nil
+          end
+        end    
+      when TARG_COLUMN
+        # Select whole column
+        for r in 0..2
+          targets.push(grid[r][col]) if grid[r][col] != nil
+        end
+      when TARG_ROW
+        # Select whole row
+        for c in 0..2
+          targets.push(grid[row][c]) if grid[row][c] != nil
+        end
+      when TARG_ADJACENT
+        # Select target square and adjacent squares
+        set = [[row, col], [row-1, col], [row+1, col], [row, col-1], [row, col+1]]
+        for t in set
+          r = t[0]
+          c = t[1]
+          if r >= 0 and r <= 2 and c >= 0 and c <= 2
+            targets.push(grid[r][c]) if grid[r][c] != nil
+          end
+      end
+    end          
+    # Check for hp0 and add to final list
+    for target in targets
+      if target == main_target or (hp0 or not target.hp0?)
+        @target_battlers.push(target)
+      end
+    end    
+    @active_battler.current_action.num_targets = @target_battlers.size    
+  end
+  #--------------------------------------------------------------------------
+  # * Make Skill Action Results
+  #--------------------------------------------------------------------------
+  def make_skill_action_result
+    # Get skill
+    @skill = $data_skills[@active_battler.current_action.skill_id]
+    info = SkillInfo.new(@skill)
+    # Reduce MP
+    unless @active_battler.current_action.no_mp
+      @active_battler.mp -= info.mp_cost(@active_battler)
+    end
+    # Show skill name on help window
+    if not info.hide_name?
+      @help_window.set_text(@skill.name)
+    end
+    # Set animation ID
+    @animation1_id = @skill.animation1_id
+    @animation2_id = @skill.animation2_id    
+    @animation2_element = info.element
+    # Set command event ID
+    @common_event_id = @skill.common_event_id
+    # Set target battlers
+    info = SkillInfo.new(@skill)
+    set_target_battlers(info.target_hp0?, info.target_type)
+    # Apply skill effect
+    for target in @target_battlers            
+      # Quick fix for Freeze
+      target.was_frozen = target.state?(10)
+      target.skill_effect(@active_battler, @skill)
+    end
+    # Process switches
+    info.check_switches
+  end
+  #--------------------------------------------------------------------------
+  # * Make Item Action Results
+  #--------------------------------------------------------------------------
+  def make_item_action_result
+    # Get item
+    @item = $data_items[@active_battler.current_action.item_id]
+    # Display item name on help window
+    @help_window.set_text(@item.name)
+    # Set animation ID
+    @animation1_id = @item.animation1_id
+    @animation2_id = @item.animation2_id
+    # Set common event ID
+    @common_event_id = @item.common_event_id
+    # Set targeted battlers
+    target_hp0 = [5, 6].include?(@item.scope)
+    target_type = [2, 4, 6].include?(@item.scope) ? TARG_ALL : TARG_ONE    
+    set_target_battlers(target_hp0, target_type)
+    # Apply item effect
+    for target in @target_battlers
+      target.item_effect(@item)
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Frame Update (main phase step 3 : animation for action performer)
+  #--------------------------------------------------------------------------
+  def update_phase4_step3
+    action = @active_battler.current_action
+    if action.kind == 0 and action.basic == 0
+      if @active_battler.weapon_longrange?
+        # Long range - move a little forward
+        update_phase4_step3_move_longrange        
+      else
+        # Regular attack - attacker moves to target
+        update_phase4_step3_movetotarget
+      end
+    elsif action.kind == 1 
+      info = SkillInfo.new($data_skills[action.skill_id])
+      if info.move_to_target
+        update_phase4_step3_movetotarget(info.attack_animation?)
+      elsif info.move_longrange
+        update_phase4_step3_move_longrange(info.attack_animation?)
+      elsif @animation1_id == 0
+      @active_battler.white_flash = true
+      else
+        @active_battler.animation_id = @animation1_id
+        @active_battler.animation_hit = true
+        @active_battler.animation_flip = @active_battler.is_a?(Game_Enemy)
+      end
+    elsif @animation1_id == 0
+      @active_battler.white_flash = true
+    else
+      @active_battler.animation_id = @animation1_id
+      @active_battler.animation_hit = true
+      @active_battler.animation_flip = @active_battler.is_a?(Game_Enemy)
+    end
+    # Shift to step 4
+    @phase4_step = 4
+  end
+  #--------------------------------------------------------------------------
+  # * Frame Update (main phase step 4 : animation for target)
+  #--------------------------------------------------------------------------
+  def update_phase4_step3_move_longrange(showanim = true)
+    action = @active_battler.current_action
+    offset = 25 * (@active_battler.is_a?(Game_Actor) ? -1 : 1)
+    @active_battler.animation_target_x = @active_battler.screen_x + offset
+    @active_battler.animation_target_y = @active_battler.screen_y
+    @active_battler.animation_movespeed = 15
+    @active_battler.freeze_position = true
+    @active_battler.hide_status = true
+    if @active_battler.attack_sprite_frames > 0 and showanim
+      @active_battler.battler_name = @active_battler.base_battler_name + "_attack1"
+      @active_battler.battler_force_switch = true
+    end
+    @wait_count = 8
+  end
+  #--------------------------------------------------------------------------
+  # * Frame Update (main phase step 4 : animation for target)
+  #--------------------------------------------------------------------------
+  def update_phase4_step3_movetotarget(showanim = true)
+    action = @active_battler.current_action
+    @active_battler.animation_target_x = action.target.screen_x + @active_battler.weapon_xoffset
+    @active_battler.animation_target_y = action.target.screen_y
+    @active_battler.animation_movespeed = 30
+    @active_battler.freeze_position = true
+    @active_battler.hide_status = true
+    if @active_battler.attack_sprite_frames > 0 and showanim
+      @active_battler.battler_name = @active_battler.base_battler_name + "_attack1"
+      @active_battler.battler_force_switch = true
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Frame Update (main phase step 4 : animation for target)
+  #--------------------------------------------------------------------------
+  def update_phase4_step4
+    # Change attacker sprite
+    action = @active_battler.current_action
+    if action.kind == 0 and action.basic == 0
+      # Use regular attack animation
+      @active_battler.animation_show_attack = true
+      if @active_battler.weapon_longrange?        
+        # Long range attack
+        offset = (@active_battler.weapon_xoffset + 25) * (@active_battler.is_a?(Game_Actor) ? -1 : 1)
+        @spriteset.show_projectile(@active_battler.screen_x + offset, 
+                                  @active_battler.screen_y, @active_battler.screen_z + 1,
+                                  action.target.screen_x, action.target.screen_y,
+                                  75, @active_battler.projectile_sprite)
+      end
+    elsif @active_battler.current_action.attack_sprite != nil
+      # Use special animation
+      @active_battler.battler_name = action.attack_sprite
+    elsif action.kind == 1 
+      info = SkillInfo.new($data_skills[action.skill_id])
+      if info.attack_animation?
+        @active_battler.animation_show_attack = true
+      end
+    end    
+    # Animation for target
+    for target in @target_battlers
+      target.animation_id = @animation2_id
+      target.animation_id += 100 if target.critical
+      target.animation_element = @animation2_element
+      target.animation_hit = (target.damage != "Miss" and target.damage != "Blink!")
+      target.animation_flip = @active_battler.is_a?(Game_Enemy)
+    end
+    # Shift to step 5
+    @phase4_step = 5
+  end
+  #--------------------------------------------------------------------------
+  # * Frame Update (main phase step 5 : damage display)
+  #--------------------------------------------------------------------------
+  def update_phase4_step5
+    # Change back attacker sprite
+    if @active_battler.current_action.attack_sprite != nil
+      @active_battler.reset_battler_name
+    end    
+    # Move back 
+    if @active_battler.freeze_position      
+      @active_battler.animation_target_x = @active_battler.screen_x
+      @active_battler.animation_target_y = @active_battler.screen_y
+      @active_battler.animation_movespeed = 45
+    end
+    # Resume updating of status/KO etc information
+    for b in $game_party.actors + $game_troop.enemies
+      b.freeze_sprite = false
+    end    
+    # Freeze
+    if @active_battler.current_action.physical?
+      for target in @target_battlers
+        if target.state?(10) and target.was_frozen
+          # Physical hit under freeze -> death        
+          $game_system.se_play(RPG::AudioFile.new("glassbreak", 65, 125))
+          target.hp  = 0
+        end
+      end    
+    end
+    for target in @target_battlers
+      target.was_frozen = false
+    end
+    # Hide help window
+    @help_window.visible = false
+    # Check for special skills
+    if @active_battler.current_action.kind == 1
+      info = SkillInfo.new($data_skills[@active_battler.current_action.skill_id])
+      if info.scan?
+        # Scan
+        @help_window.visible = true      
+        for target in @target_battlers
+          @scan_window = Window_BattleScan.new(target)
+          target.scanned = true
+          target.damage = nil
+        end
+      end
+      if info.steal?
+        # Steal
+        @help_window.visible = true      
+        for target in @target_battlers
+          target.damage = nil
+          update_phase4_step5_steal(target)
+        end
+      end      
+      if info.escape?
+        # Escape
+        for target in @target_battlers
+          target.damage = nil
+        end
+        if attempt_escape
+          return
+        end
+      end            
+    end
+    # Refresh status window
+    @status_window.refresh
+    # Display damage
+    for target in @target_battlers
+      if target.damage != nil
+        target.damage_pop = true
+      end      
+      # Wyvern
+      if target.battler_name == "E_Wyvern" and target.hp <= 0
+        for e in $game_troop.enemies
+          e.hp = 0
+        end
+      end
+    end
+    # Shift to step 6
+    @phase4_step = 6
+  end
+  #--------------------------------------------------------------------------
+  # * Steal
+  #--------------------------------------------------------------------------
+  def update_phase4_step5_steal(target)
+    if target.is_a?(Game_Enemy)      
+      if not target.can_steal?
+        @help_window.set_text("Enemy has nothing")  
+        #if not (target.damage.is_a?(Numeric) and target.damage != 0)
+          target.damage = "Miss"
+        #end
+      else
+        if rand(100) < target.steal_chance
+          case target.steal_type
+          when 0
+            item = $data_items[target.steal_id]
+            $game_party.gain_item(item.id, 1)
+          when 1
+            item = $data_weapons[target.steal_id]
+            $game_party.gain_magic(item.id, 1)
+          when 2
+            item = $data_armors[target.steal_id]
+            $game_party.gain_armor(item.id, 1)
+          end            
+          @help_window.set_text("Stole '" + item.name + "'!")              
+          target.stolen_from = true
+          if target.id == 179
+            $game_switches[442] = true
+          end
+          if target.id == 180
+            $game_switches[443] = true
+          end
+        else
+          @help_window.set_text("Failed to steal")      
+          target.damage = "Miss"
+        end
+      end
+      @wait_count = 25
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Frame Update (Finish)
+  #--------------------------------------------------------------------------
+  def update_phase4_step6
+    # Unfreeze attacker
+    @active_battler.freeze_position = false
+    @active_battler.hide_status = false
+    # Attacker might've killed himself due to chaos. 
+    # This caused a sprite bug because his sprite was frozen 
+    # when he died and then overridden by the regular non-attack sprite
+    if @active_battler.dead?
+      @active_battler.set_death_sprite
+    end    
+    # Clear battler being forced into action
+    $game_temp.forcing_battler = nil
+    # Fukubei
+    for e in $game_troop.enemies
+      if e.id == 173 and e.hp == 0
+        $game_switches[437] = true
+      end
+      if e.id == 174 and e.hp == 0
+        $game_switches[438] = true
+      end
+      if e.id == 175 and e.hp == 0
+        $game_switches[439] = true
+      end
+      if e.id == 176 and e.hp == 0
+        $game_switches[440] = true
+      end
+      if e.id == 177 and e.hp == 0
+        $game_switches[441] = true
+      end      
+    end
+    # If common event ID is valid
+    if @common_event_id > 0
+      # Set up event
+      common_event = $data_common_events[@common_event_id]
+      $game_system.battle_interpreter.setup(common_event.list, 0)
+    end
+    # Continue to next turn
+    end_battler_turn
+    start_phase3
+  end
+  #--------------------------------------------------------------------------
+  # * End battler turn
+  #--------------------------------------------------------------------------
+  def end_battler_turn
+    # Update wait time
+    diff = @active_battler.turn_wait - @active_battler.battle_time 
+    for b in $game_party.actors + $game_troop.enemies
+      if b.hp > 0
+        b.battle_time += diff
+      end
+      # Resume updating of status/KO etc information in case it hasn't already
+      b.freeze_sprite = false
+      b.hide_status = false
+      b.states_changed = true # Force update of status
+    end    
+    @active_battler.battle_time -= @active_battler.turn_wait
+    @active_battler.blink = false
+    @active_battler = nil
+    @status_window.refresh
+    @status_window.unselect
+    if @wait_count > 0
+      @actor_command_window.visible = false
+      @actor_command_window.active = false
+    end
+  end  
+end

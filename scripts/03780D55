@@ -1,0 +1,96 @@
+#==============================================================================
+# ** Window_Bribe
+#------------------------------------------------------------------------------
+#  Shows the bribe amount 
+#==============================================================================
+
+class Window_Bribe < Window_Base_Short
+  attr_reader :amount     # Amount required to bribe
+  #--------------------------------------------------------------------------
+  # * Object Initialization
+  #--------------------------------------------------------------------------
+  def initialize
+    super(0, 0, 250, 150)
+    self.opacity = 0
+    self.visible = false    
+    @sprite = Sprite.new
+    @sprite.x = x
+    @sprite.y = y
+    @sprite.z = 1000
+    @sprite.visible = false
+    @sprite.bitmap = Bitmap.new(500, 150)
+  end
+  #--------------------------------------------------------------------------
+  # * Contents
+  #--------------------------------------------------------------------------
+  def contents
+    return @sprite.bitmap
+  end
+  #--------------------------------------------------------------------------
+  # * Visible
+  #--------------------------------------------------------------------------
+  def visible=(vis)
+    @sprite.visible = vis
+    super(vis)
+  end
+  #--------------------------------------------------------------------------
+  # * Setup for new troop
+  #--------------------------------------------------------------------------
+  def show(troop_id)
+    @troop_id = troop_id
+    # Count the total amount of gold
+    enemies = $exdata_troops[troop_id].enemies
+    gold = 0
+    for e in enemies
+      gold += $data_enemies[e[0]].gold
+    end
+    # Bribe amount is 1/4th
+    @amount = [1, (gold / 4).to_i].max
+    self.visible = true
+    refresh
+  end
+  #--------------------------------------------------------------------------
+  # * Refresh
+  #--------------------------------------------------------------------------
+  def refresh
+    self.contents.clear
+    bitmap = RPG::Cache.picture("Alert")   
+    self.contents.blt(8, 8, bitmap, Rect.new(0, 0, bitmap.width, bitmap.height))       
+    self.contents.font.bold = true
+    self.contents.font.size = 16
+    self.contents.font.color = shadow_color
+    self.draw_text(13+2, 95+2, 100, 32, "Encounter!", 1)
+    self.contents.font.color = normal_color
+    self.draw_text(13, 95, 100, 32, "Encounter!", 1)
+    
+    #self.contents.fill_rect(125, 12, 220, 85, Color.new(0, 0, 0)) 
+    self.contents.font.color = Color.new(255, 255, 255)
+    self.contents.font.size = 40
+    x  =135
+    y = 8
+    self.draw_text_extra(x, y+12, 400, 40, "Bribe: " + @amount.to_s, 0)   
+    x2 = x + 5 + self.contents.text_size("Bribe: " + @amount.to_s).width
+    self.contents.font.size = 28
+    self.draw_text_extra(x2, y+16, 400, 40, "Arn", 0)   
+    self.contents.font.color = normal_color
+    self.contents.font.size = 18
+    self.draw_text_extra(x, y+50, 400, 32, "Money: " + $game_party.gold.to_s + " Arn", 0)
+    #self.draw_text(x, y+46, 200, 32, $game_party.gold.to_s, 2)   
+    #self.contents.font.color = Color.new(255, 255, 150)
+    #self.draw_text(x, 8, 300, 32, "Bribe cost: ", 0)    
+    self.draw_text_extra(x, y+70, 400, 32, "Press cancel to avoid battle", 0)
+  end
+  #--------------------------------------------------------------------------
+  # * Draw Text (with extra shadow)
+  #--------------------------------------------------------------------------
+  def draw_text_extra(x, y, width, height, text, align = 0)
+    tempc = self.contents.font.color.clone
+    self.contents.font.color = shadow_color
+    contents.draw_text(x + 3, y + 3, width, height, text, align)
+    contents.draw_text(x + 2, y + 2, width, height, text, align)
+    contents.draw_text(x + 1, y + 2, width, height, text, align)
+    contents.draw_text(x + 2, y + 1, width, height, text, align)
+    self.contents.font.color = tempc
+    contents.draw_text(x, y, width, height, text, align)  
+  end
+end

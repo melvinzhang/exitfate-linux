@@ -1,0 +1,141 @@
+#==============================================================================
+# ** Scene_Credits
+#------------------------------------------------------------------------------
+#  Credits
+#==============================================================================
+
+class Scene_Credits
+  #--------------------------------------------------------------------------
+  # * Main Processing
+  #--------------------------------------------------------------------------
+  def main
+    # Make title graphic
+    @sprite = Sprite.new
+    @sprite.bitmap = RPG::Cache.picture("Ending_2")            
+    @sprite.opacity = 0    
+    $game_system.me_play(RPG::AudioFile.new("Credits", 100, 100))    
+    @wait  = 0
+    @fade_out = false
+    # Sizes of breaks in lines
+    @break_size = []
+    @break_size[1] = 7
+    @break_size[2] = 11
+    # Font sizes
+    @font_size = []
+    @font_size[1] = 24
+    @font_size[2] = 32     
+    @font_size[3] = 64     
+    # Execute transition
+    Graphics.transition
+    # Main loop
+    loop do
+      # Update game screen
+      Graphics.update
+      # Update input information
+      Input.update
+      # Frame update
+      update
+      # Abort loop if screen is changed
+      if $scene != self
+        break
+      end
+    end
+    # Prepare for transition
+    Graphics.freeze
+    # Dispose of windows
+    @sprite.bitmap.dispose
+    @sprite.dispose
+    @credits_sprite .dispose if @credits_sprite != nil
+  end
+  #--------------------------------------------------------------------------
+  # * Frame Update
+  #--------------------------------------------------------------------------
+  def update    
+    if @wait > 0
+      @wait -= 1
+      return
+    end    
+    if @finished
+      if $game_actors.get_joined_characters.size == 75
+        $scene = Scene_Ending2.new
+      else
+        $scene = Scene_Title.new
+      end
+    end
+    if @fade_out
+      @sprite.opacity -= 1
+      if @sprite.opacity == 0        
+        @finished = true
+        @wait = 30
+      end
+      return
+    end
+    if @sprite.opacity < 255
+      @sprite.opacity += 1
+      if @sprite.opacity == 255
+        @wait = 20
+        self.setup
+      end
+      return
+    end    
+    # Move sprite
+    @credits_sprite.y -= 1
+    @wait = 1
+    if @credits_sprite.y < -@credits_sprite.bitmap.height
+      @wait = 60
+      @fade_out = true
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Set up credits sprite
+  #--------------------------------------------------------------------------
+  def setup
+    @credits_sprite = Sprite.new    
+    @credits_sprite.x = 0
+    @credits_sprite.y = 480
+    # Determine size
+    size = 0
+    for line in $data_credits
+      if line.size == 1
+        # Newlines
+        size += @font_size[1] * @break_size[line[0]]
+      else
+        size += @font_size[line[0]]
+      end
+    end    
+    @credits_sprite.bitmap = Bitmap.new(640, size)
+    @credits_sprite.bitmap.font.name = ["Georgia", "Times New Roman"]
+    @credits_sprite.bitmap.font.bold = true
+    @credits_sprite.bitmap.font.color = Color.new(255,255, 255, 255)
+    # Draw text
+    y = 0
+    for line in $data_credits
+      if line.size == 1
+        # Newlines
+        y += @font_size[1] * @break_size[line[0]]
+      else
+        @credits_sprite.bitmap.font.size = @font_size[line[0]]
+        draw_text_new(y, line[1])
+        y += @font_size[line[0]]
+      end
+    end    
+  end
+  #--------------------------------------------------------------------------
+  # * Draw Text New (with shadow)
+  #--------------------------------------------------------------------------
+  def draw_text_new(y, text)
+    tempc = @credits_sprite.bitmap.font.color.clone
+    x = 0
+    width = 640
+    height = @credits_sprite.bitmap.font.size
+    align = 1
+    @credits_sprite.bitmap.font.color = Color.new(0, 0, 0, 192)
+    @credits_sprite.bitmap.draw_text(x - 1, y - 1, width, height, text, align)
+    @credits_sprite.bitmap.draw_text(x + 1, y - 1, width, height, text, align)
+    @credits_sprite.bitmap.draw_text(x - 1, y + 1, width, height, text, align)
+    @credits_sprite.bitmap.draw_text(x + 1, y + 1, width, height, text, align)
+    @credits_sprite.bitmap.font.color = tempc
+    @credits_sprite.bitmap.draw_text(x, y, width, height, text, align)  
+    @credits_sprite.bitmap.draw_text(x, y, width, height, text, align)  
+  end
+end

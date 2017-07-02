@@ -1,0 +1,73 @@
+#==============================================================================
+# ** Window_ShopOwned
+#------------------------------------------------------------------------------
+#  This window is for showing the amount of items in possession
+#==============================================================================
+
+class Window_ShopOwned < Window_Base
+  #--------------------------------------------------------------------------
+  # * Object Initialization
+  #--------------------------------------------------------------------------
+  def initialize
+    super(465, 330, 640-465, 88)
+    self.contents = Bitmap.new(width - 32, height - 32)
+    self.windowskin_suffix = "_right"
+    self.visible = false
+    @item = nil
+  end
+  #--------------------------------------------------------------------------
+  # * Set Item
+  #--------------------------------------------------------------------------
+  def set(item)
+    unless item == @item
+      @item = item
+      refresh
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Refresh
+  #--------------------------------------------------------------------------
+  def refresh
+    self.contents.clear
+    return if @item == nil
+    actors = $game_actors.get_available_characters
+    case @item
+    when RPG::Weapon
+      num_inv = $game_party.magic_number(@item.id)      
+    when RPG::Item
+      num_inv = $game_party.item_number(@item.id)
+      num_eq = 0
+      for actor in actors
+        if actor.joined or joined.selectable
+          for id in actor.item_ids
+            num_eq += 1 if id == @item.id
+          end
+        end
+      end
+    when RPG::Armor
+      num_inv = $game_party.armor_number(@item.id)
+      num_eq = 0
+      for actor in actors
+        if actor.joined or joined.selectable
+          num_eq += 1 if actor.armor_id == @item.id
+          num_eq += 1 if actor.helmet_id == @item.id
+          num_eq += 1 if actor.boots_id == @item.id
+          for id in actor.acc_ids
+            num_eq += 1 if id == @item.id
+          end
+        end
+      end      
+    end    
+    w = self.contents.width
+    self.contents.font.color = system_color
+    self.draw_text(8, 0, 200, 32, "Owned:")
+    self.contents.font.color = normal_color
+    self.draw_text(8, 0, w-16, 32, num_inv.to_s, 2)
+    # Equipped is meaningless for magic
+    return if @item.is_a?(RPG::Weapon)
+    self.contents.font.color = system_color
+    self.draw_text(8, 24, 200, 32, "Equipped:")
+    self.contents.font.color = normal_color
+    self.draw_text(8, 24, w-16, 32, num_eq.to_s, 2)
+  end
+end

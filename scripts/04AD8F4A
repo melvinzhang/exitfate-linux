@@ -1,0 +1,65 @@
+#==============================================================================
+# ** Window_Battle Help
+#------------------------------------------------------------------------------
+#  This window shows help in battle
+#==============================================================================
+
+class Window_BattleHelp < Window_Base_Short
+  #--------------------------------------------------------------------------
+  # * Object Initialization
+  #--------------------------------------------------------------------------
+  def initialize
+    super(0, 380, 640, 48)
+    self.contents = Bitmap.new(width, height)
+    self.visible = false
+    self.z = 1000
+  end
+  #--------------------------------------------------------------------------
+  # * Set Text
+  #  text  : text string displayed in window
+  #--------------------------------------------------------------------------
+  def set_text(text, battler = nil)
+    # Hide if there is no text
+    if text == ""
+      self.visible = false
+      return
+    end            
+    # If at least one part of text and alignment differ from last time
+    if text != @text or (battler != nil and (battler.scanned or battler.name == "Fukubei"))
+      # Redraw text
+      if battler != nil      
+        if battler.scanned
+          text += " (" + battler.hp.to_s + "/" + battler.maxhp.to_s + ")"
+        end
+        len = self.contents.text_size(text).width
+        self.width = len + 48 + 24
+        self.contents.dispose
+        self.contents = Bitmap.new(self.width, self.height)
+        bitmap = RPG::Cache.icon("Element_" + battler.element.to_s)
+        self.contents.blt(12, 12, bitmap, Rect.new(0, 0, 20, 20))
+        self.draw_text(12, 8, self.width-12, 32, text, 1)
+      else
+        len = self.contents.text_size(text).width
+        self.width = len + 32
+        self.contents.dispose
+        self.contents = Bitmap.new(self.width, self.height)
+        self.draw_text(0, 8, self.width, 32, text, 1)
+      end
+      self.x = 320 - self.width/2
+      @text = text
+    end
+    self.visible = true
+  end
+  #--------------------------------------------------------------------------
+  # * Set Battler
+  #     enemy : name and status displaying enemy
+  #--------------------------------------------------------------------------
+  def set_battler(battler)
+    text = battler.name
+    #state_text = make_battler_state_text(battler, 112, false)
+    #if state_text != ""
+    #  text += "  " + state_text
+    #end
+    set_text(text, battler)
+  end
+end

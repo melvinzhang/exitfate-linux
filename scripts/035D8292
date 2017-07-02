@@ -1,0 +1,986 @@
+#==============================================================================
+# ** Scene_Help
+#------------------------------------------------------------------------------
+#  Help screen
+#==============================================================================
+#--------------------------------------------------------------------------
+# * Auxilary class
+#--------------------------------------------------------------------------
+class Help_Node
+  attr_accessor  :parent    # Parent node. If nil, this is the root
+  attr_accessor  :children  # Child nodes to show when this node is active. If nil, this is a content node
+  attr_accessor  :name      # Node name in list
+  attr_accessor  :contents  # Page content, if any
+  
+  def initialize
+    @children = []
+  end
+  
+  def childIndex(node)
+    for i in 0...@children.size
+      if @children[i] == node
+        return i
+      end
+    end
+    return -1
+  end
+end
+
+class Scene_Help
+  #--------------------------------------------------------------------------
+  # * Initialize
+  #--------------------------------------------------------------------------
+  def initialize
+    if $data_help == nil
+      load_help_data
+    end
+    @current_node = $data_help
+  end
+  #--------------------------------------------------------------------------
+  # * Main Processing
+  #--------------------------------------------------------------------------
+  def main
+    # Make title graphic
+    @sprite = Sprite.new
+    @sprite.bitmap = RPG::Cache.picture("Backgrounds/Menu" + $game_system.windowskin_id.to_s)    
+    @label_window = Window_Label.new("Help")
+    @label_window.x -= 40
+    @help_window = Window_HelpScreen.new
+    @help_window.visible = false
+    @help_window.active = false
+    @help_window_list = Window_HelpScreenList.new(@current_node.children)
+    # Execute transition
+    Graphics.transition
+    # Main loop
+    loop do
+      # Update game screen
+      Graphics.update
+      # Update input information
+      Input.update
+      # Frame update
+      update
+      # Abort loop if screen is changed
+      if $scene != self
+        break
+      end
+    end
+    # Prepare for transition
+    Graphics.freeze
+    # Dispose of windows
+    @help_window.dispose
+    @help_window_list.dispose
+    @label_window.dispose
+    @sprite.bitmap.dispose
+    @sprite.dispose
+  end
+  #--------------------------------------------------------------------------
+  # * Frame Update
+  #--------------------------------------------------------------------------
+  def update
+    @help_window_list.update
+    @help_window.update
+    if @help_window.active
+      # If B button was pressed
+      if Input.trigger?(Input::B)
+        @help_window.active = false
+        @help_window.visible = false
+        @help_window_list.active = true
+        return
+      end      
+      return
+    end   
+    # If B button was pressed
+    if Input.trigger?(Input::B)
+      $game_system.se_play($data_system.cancel_se)      
+      if @current_node.parent == nil
+        $scene = Scene_Menu.new(7)
+      else        
+        @help_window_list.index =  @current_node.parent.childIndex(@current_node)
+        @current_node = @current_node.parent
+        @help_window_list.refresh(@current_node.children)
+      end      
+      return
+    end
+    # If C button was pressed
+    if Input.trigger?(Input::C)
+      $game_system.se_play($data_system.decision_se)      
+      index = @help_window_list.index
+      if not @current_node.children[index].children.empty?
+        @current_node = @current_node.children[index]
+        @help_window_list.refresh(@current_node.children)
+        @help_window_list.index = 0
+      else
+        if @help_window.node != @current_node.children[@help_window_list.index]
+          @help_window.node = @current_node.children[@help_window_list.index]
+        end
+         @help_window.active = true
+         @help_window.visible = true
+         @help_window_list.active = false
+      end      
+      return
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Load game help
+  #--------------------------------------------------------------------------
+  def load_help_data    
+      node_root = Help_Node.new
+      $data_help = node_root
+      
+      # MAIN HELP
+      node_con = Help_Node.new
+      node_con.name = "Controls"
+      node_con.parent = node_root
+      node_root.children.push(node_con)
+      node_con.contents = "@Controls@
+
+The game's main controls consist of the
+directional keys (arrow keys, numpad arrows,
+or gamepad) and the following four buttons:
+
+@B@  Show menu (on map), cancel
+@C@  Confirm, Talk, Select
+@L@  Scroll up one page in a list, or go to 
+    the previous page
+@R@  Scroll down one page in a list, or go to 
+    the next page
+
+Certain keys on the keyboard (or control pad)
+can be mapped to B, C, L and R. Press F1 at 
+any point during the game to bring up the 
+main settings. The other settings are as 
+follows:
+
+@General Options@ 
+
+@Smooth Mode@
+ Recommended setting is on.
+@Reduce Flickering@
+ Reduces flickering effect when moving.
+ Recommended setting is on. 
+@Play BGM/ME@
+ Enables or disables all background music 
+ and music effects. Using the in-game volume 
+ settings is recommended.
+@Play BGS/SE@
+ Enables or disables all sound effects. 
+ Using the  in-game volume settings is 
+ recommended.
+
+The Gamepad and Keyboard tabs allow remapping
+of keys. The remaining buttons (A, X, Y, Z) 
+are not used in Exit Fate.
+
+Additionally, the following function keys 
+exist:
+
+@F1@         Bring up the main settings menu
+@F12@        Return to the title screen.
+@Alt+Enter@  Toggle between full screen and 
+            windowed mode"    
+
+      # MENU HELP
+            
+      node_menu = Help_Node.new
+      node_menu.name = "Main Menu..."
+      node_menu.parent = node_root
+      node_root.children.push(node_menu)
+      
+      node_menu_c = Help_Node.new
+      node_menu_c.name = "Main Menu"
+      node_menu.children.push(node_menu_c)
+      node_menu_c.contents = "
+@Main menu@
+
+@Items@     Use or look at items
+@Equip@     Change character equipment
+@Magic@     Look at available magic
+@Formation@ Change party formation
+@Arrange@   Switch characters between active 
+           party and entourage
+@Settings@  Change game settings
+@Quit@      Quit or return to title screen
+
+
+@Active party@
+ Shows the characters currently in the 
+ active party, along with their current @HP@ 
+ and @max HP@.
+ 
+@Entourage@
+ Shows the characters currently in the 
+ entourage.
+ 
+ 
+The @entourage@ serves the following purposes:
+ Bring along characters with specific
+  abilities (such as @Steal@ or @Scan@) that are 
+  not always useful.
+ Bring along characters with certain 
+  strengths in case a battle asks for them.
+ Removing characters that are required for
+  story reasons from the active party.
+      "
+
+      node_menu_i = Help_Node.new
+      node_menu_i.name = "Items"
+      node_menu.children.push(node_menu_i)
+      node_menu_i.contents = "@Items Screen@
+
+@Items@
+ Shows all items that can be equipped in 
+ characters' item slots. Some healing items
+ can be used directly from this menu, outside 
+ of battle.
+
+@Special@
+ Shows all special/plot items. These items
+ cannot be sold. Some special items can be
+ used from this menu."
+      
+      node_menu_m = Help_Node.new
+      node_menu_m.name = "Magic"
+      node_menu.children.push(node_menu_m)
+      node_menu_m.contents = "@Magic Screen@
+
+The magic screen shows all magic currently
+in your inventory. Use the L/R buttons to 
+scroll between pages and sort magic by 
+element. Magic cannot be used outside of
+battle."
+
+      node_menu_s = Help_Node.new
+      node_menu_s.name = "Stats"
+      node_menu.children.push(node_menu_s)
+      node_menu_s.contents = "@Stats screen@
+
+The stats screen shows information about 
+characters in your party. Use the Left/Right
+or L/R buttons to cycle through your 
+characters.
+
+The screen shows the following information:
+
+@Name@
+@Element@
+ Character's innate element
+@Special Skill@
+ Ability unique to a character. This skill
+ can only be used to battle.
+@Character's stats@
+ See help topic on Stats for more 
+ information.
+@Weapon name and stats@ 
+ See help topic on Weapons for more 
+ information. 
+@Character's relations@
+ See help topic on Relations for more 
+ information." 
+
+      node_menu_f = Help_Node.new
+      node_menu_f.name = "Formation"
+      node_menu.children.push(node_menu_f)
+      node_menu_f.contents = "@Formation screen@
+
+Here you can change your battle formation, 
+which determines where characters are 
+positioned in battle. The further a character
+is to the back, the less damage he will take
+from physical attacks, but the less 
+effective his own physical attacks will be
+(unless the attack is long-range).
+
+Characters can be moved by selecting them,
+and then choosing their destination square. 
+If two characters are selected, they will
+swap positions. "
+
+      node_menu_a = Help_Node.new
+      node_menu_a.name = "Arrange"
+      node_menu.children.push(node_menu_a)
+      node_menu_a.contents = "@Arrange screen@
+
+The arrange screen allows characters to be
+moved between the active party and entourage.
+See the help topic on Main Menu for more
+information about the entourage.
+
+A character can be selected and then moved to
+an empty slot or switched with another 
+character. At all times, at least one 
+character must remain in the active party."
+
+      node_menu_t = Help_Node.new
+      node_menu_t.name = "Settings"
+      node_menu.children.push(node_menu_t)
+      node_menu_t.contents = "@Settings@
+
+This screen allows you to change the music 
+and sound effects volume, as well as the 
+following other options:
+
+@Battle cursor@
+ This decides how the cursor on the main 
+  menu in battle behaves:
+ @Reset@     The cursor will always be on 
+              \"Attack\"
+ @Memorize@  The cursor will remain on the 
+              previous chosen option.
+ 
+@Magic select@
+ This decides what the initial page of the 
+  in-battle magic menu is:
+ @All@       Default page is \"All magic\"
+ @Element@   Default page is the current 
+              character's innate element.
+ @Memorize@  The last chosen page will remain
+              selected."
+
+      # GAMEPLAY HELP
+      
+      node_gp = Help_Node.new
+      node_gp.name = "Gameplay..."
+      node_gp.parent = node_root
+      node_root.children.push(node_gp)
+      
+      node_gp_g = Help_Node.new
+      node_gp_g.name = "General"
+      node_gp.children.push(node_gp_g)
+      node_gp_g.contents = "@General Gameplay@
+
+You control your character (generally Daniel) 
+using the direction keys to navigate the 
+world. You can press C to talk to people, 
+and B to go to the menu (See help topic on 
+Main Menu). During your journey you may end 
+up in forced or random battles (See help 
+topic on Battle and Bribing), or in large-
+scale war battles (See help topic on War 
+Battle). Additional screens and menus that 
+appear in the game should be 
+self-explanatory; in all cases, the B button 
+will cancel the current action or go back, 
+and the C button will confirm the currently
+selected action or menu option."
+
+      node_gp_s = Help_Node.new
+      node_gp_s.name = "Stats"
+      node_gp.children.push(node_gp_s)
+      node_gp_s.contents = "@Stats@
+
+@HP@   Hit Points, a measure of the lifeforce 
+      a character has left. When it reaches 0, 
+      the character is knocked out.
+      
+@MP@   Magic Points. All spells cost a certain 
+      amount of MP to use.
+      
+@MP+@  MP regeneration rate. Each turn, a 
+      character's MP total is increased by 
+      this amount.
+      
+@STR@  Strength. Determines damage done by 
+      physical attacks
+      
+@MAG@  Magic. Determines the strength of 
+      magical spells.
+      
+@PDF@  Physical defence. Higher PDF reduces 
+      physical damage to character.
+      
+@MDF@  Magical defence. Higher MDF reduces
+      magical damage to character, but does 
+      not affect beneficial effects.
+      
+@SPD@  Speed. Characters with higher speed 
+      receive turns more frequently.
+      
+@ACC@  Accuracy. Determines the chance to hit 
+      an enemy with physical attacks.
+      
+@DEX@  Dexterity. Determines the chance to 
+      dodge physical attacks. For enemies, 
+      higher DEX reduces the chance of having 
+      a critical hit inflicted.
+      
+@SKL@  Skill. Determines the chance to inflict 
+      a critical hit."
+      
+      node_gp_m = Help_Node.new
+      node_gp_m.name = "Magic"
+      node_gp.children.push(node_gp_m)
+      node_gp_m.contents = "@Magic@
+      
+Magic spells can be bought, found, dropped 
+by enemies or stolen. They are stored in a 
+general pool for the entire party, and do not
+have to be equipped. Each copy of a spell can
+be used once during a battle, so if you have 
+four Mend spells, it means it can be cast 
+four times during a battle, regardless of 
+who uses them.
+
+Every spell requires a certain amount of @MP@
+to use, and if the spell's element doesn't 
+match the user's innate element there is an 
+additional 20% extra cost (see the help topic
+on Elements for more informaton). Every 
+character's @MP@ rises each turn according 
+to their @MP+@ stat, and each character starts
+a battle with a base @MP@ equal to that value.
+
+At the end of a battle, if there are any 
+unused healing spells available and there is
+a character in the party with sufficient @MP@, 
+it will automatically be used. This is shown 
+under \"Healing Used\" on the after-battle 
+screen. Although the healing effect is lower
+than in-battle, it means unused @MP@ does not
+go to waste."
+
+      node_gp_w = Help_Node.new
+      node_gp_w.name = "Weapons"
+      node_gp.children.push(node_gp_w)
+      node_gp_w.contents = "@Weapons@
+
+Each character has a fixed weapon that can 
+be upgraded at any blacksmith. There are 
+three aspects of a weapon that can be 
+upgraded, up to a maximum level depending 
+on the blacksmith's skill:
+
+@ATK@  Boosts the weapon's attack power 
+        (gives a STR bonus to character)
+@HIT@  Boosts the weapon's hit rate 
+        (gives an ACC bonus to character)
+@CRT@  Boosts the weapon's critical hit rate 
+        (gives a SKL bonus to character)"
+        
+      node_gp_e = Help_Node.new
+      node_gp_e.name = "Elements"
+      node_gp.children.push(node_gp_e)
+      node_gp_e.contents = "@Elements@
+
+Each character, enemy and magic spell 
+possesses an element. There are six elements 
+in total, and each has an opposing element:
+
+[Icons\\Element_1.png]@Light@ <-> [Icons\\Element_2.png]@Dark@ 
+[Icons\\Element_3.png]@Fire@  <-> [Icons\\Element_4.png]@Ice@ 
+[Icons\\Element_5.png]@Water@ <-> [Icons\\Element_6.png]@Thunder@ 
+
+The effects of elements are as follows:
+
+Any physical attack possesses the element 
+ of the user, unless affected by Elemental 
+ Strike spells.
+Any attack of a certain element on a 
+ character of opposing element will do 
+ increased damage.
+Any attack of a certain element on a 
+ character of the same element will do 
+ slightly lower damage.
+Magic spells that are not of the user's 
+ innate element cost 20% more MP to cast."
+      
+      node_gp_r = Help_Node.new
+      node_gp_r.name = "Relations"
+      node_gp.children.push(node_gp_r)
+      node_gp_r.contents = "@Relations@
+
+Each character has a relation with three 
+other characters. Relations can be seen on 
+the Stats screen, but note that relations 
+to characters not yet recruited will not be 
+shown.
+
+If a character has a relation with another
+character in the active party, he will 
+receive a stat bonus or penalty depending 
+on the strength of the relation, denoted by 
+a letter:
+
+@A@  Major stat increase
+@B@  Small stat increase
+@C@  Minor stat increase
+@F@  Small stat penalty
+
+If someone a character has a relation with 
+falls in battle, the [Animations\\Status\\0]icon will show up. 
+Until the character is revived or the battle
+ends, the stat boost will be doubled (except 
+in the case of an @F@-relation, in which the 
+stat penalty is turned into a major stat 
+boost).
+      "
+      # BATTLES HELP
+      
+      node_b = Help_Node.new
+      node_b.name = "Battles..."
+      node_b.parent = node_gp
+      node_gp.children.push(node_b)
+      
+      node_b_ba = Help_Node.new
+      node_b_ba.name = "Battles"
+      node_b.children.push(node_b_ba)
+      node_b_ba.contents = "@Battle@
+
+[Pictures\\Help_1]
+
+@1@ The enemy
+@2@ The active party
+@3@ Battle commands
+@4@ Information window. Shows HP and MP of 
+     active party
+@5@ Turn bar. This shows the current turn 
+     order, with the leftmost character 
+     currently having its turn. This bar 
+     will automatically be updated when 
+     enemies or allies fall in battle, 
+     or certain status effects change a 
+     character's speed.
+
+
+@Battle Commands@
+
+@Attack@    Perform a regular physical attack 
+           on a target enemy.
+@Magic@     Cast a magic spell.
+@Special@   Use a character's special ability. 
+           Greyed out if character has none.
+@Item@      Use a character's equipped items.
+@Move@      Move character to another place on 
+           the grid.
+@Switch@    Switch a character with someone in 
+           the entourage.
+@Equip@     Change a character's equipment or
+           items.
+
+All options will end the character's turn 
+afterwards if used. Equip will end turn only 
+if any equipment has actually been changed.
+
+Choosing Magic will show the following 
+screen:
+
+[Pictures\\Help_2]
+
+Here, all available spells are shown, along 
+with their element, the @MP@ cost, and the 
+number of casts left for this battle. For 
+clarity, you can either look at all spells 
+at once, or only spells of a particular 
+element. The Left/Right/L/R buttons behave 
+as follows:
+ @Left@     Move to the previous element.
+ @Right@    Move to the next element.
+ @L@        Scroll one screen downwards.
+ @R@        Scroll one screen upwards."  
+      
+      
+      node_b_b = Help_Node.new
+      node_b_b.name = "Bribing"
+      node_b.children.push(node_b_b)
+      node_b_b.contents = "@Bribing@
+
+When running around in areas populated by 
+enemies, battles may be initiated at random. 
+Before a battle begins, a warning is shown 
+on screen, and the player is given time to 
+cancel the battle by paying a certain amount 
+of money, 25% of what could be earned by 
+fighting the battle. Quickly pressing the @B@ 
+button will avoid the battle and 
+automatically deduct the required bribe
+money. Note that when the player does not 
+have sufficient money to pay the bribe, 
+the battle will begin instantly. Bribing 
+cannot be used in forced or story-related 
+battles."
+
+      node_b_st = Help_Node.new
+      node_b_st.name = "Status"
+      node_b.children.push(node_b_st)
+      node_b_st.contents = "@Status Effects@
+
+During battle, characters may be afflicted
+with status effects, which can have harmful
+or beneficial effects. All of them last for
+a set amount of turns, but negative effects 
+can be cured by the appropriate spell of 
+the opposite element (for example, the Light
+spell 'Neutralize' will cure the Dark 
+status 'Poison').
+
+@Negative effects@
+
+[Animations\\Status\\2]@Stun@
+ Lasts 1 turn
+ Affected character can't act for a single
+  turn.
+ 
+[Animations\\Status\\3]@Amnesia@ 
+ Lasts 4 turns
+ MAG is temporarily reduced.
+
+[Animations\\Status\\4]@Mindblow@
+ Lasts 3 turns
+ Character stops regenerating MP.
+ 
+[Animations\\Status\\5]@Poison@
+ Lasts 5 turns
+ Character takes damage every turn.
+
+[Animations\\Status\\6]@Chaos@ 
+ Lasts 3 turns
+ Character will randomly attack an enemy or 
+  ally each turn.
+ 
+[Animations\\Status\\7]@Blind@ 
+ Lasts 4 turns
+ ACC is temporarily reduced.
+ 
+[Animations\\Status\\8]@Berserk@
+ Lasts 4 turns 
+ ACC is temporarily reduced and character 
+  will attack a random enemy each turn.
+ 
+[Animations\\Status\\9]@Slow@ 
+ Lasts 4 turns
+ SPD is temporarily reduced.
+ 
+[Animations\\Status\\10]@Freeze@
+ Lasts 3 turns.
+ Character can't dodge physical attacks and 
+  will instantly die when hit by one.
+ 
+[Animations\\Status\\11]@Silence@
+ Lasts 4 turn.
+ Character can't use any magic.
+
+[Animations\\Status\\12]@Sleep@ 
+ Lasts 4 turns or until hit with physical 
+  attack.
+ Character can't act.
+ 
+[Animations\\Status\\13]@Enfeeble@ 
+ Lasts 4 turns
+ STR is temporarily reduced.
+ 
+[Animations\\Status\\14]@Paralyze@ 
+ Lasts 3 turns
+ Character can't act.
+ 
+ 
+@Positive effects@
+
+[Animations\\Status\\0]@Boost@
+ Lasts while characters with relation are KO.
+ Boosts character's stats. See help for 
+  Relations for more information.
+
+[Animations\\Status\\15]@Regen@
+ Lasts 6 turns
+ Character recovers HP every turn.
+ 
+[Animations\\Status\\16]@Lock@ 
+ Lasts 10 turns
+ Locks character status. No new effects can 
+  be added, and existing ones will not wear 
+  off.
+ 
+[Animations\\Status\\17]@Haste@
+ Lasts 5 turns
+ SPD is temporarily increased.
+ 
+[Animations\\Status\\18]@Barrier@ 
+ Lasts 5 turns
+ Reduces damage from physical attacks.
+ 
+[Animations\\Status\\19]@Shield@ 
+ Lasts 5 turns
+ Reduces damage from magical attacks.
+
+[Animations\\Status\\20]@Blink@ 
+ Lasts 5 turns
+ Character has one in three chance to dodge 
+ any attack.
+ 
+[Animations\\Status\\21]@Elemental Strike@ (Any Element)
+ Lasts 4 turns
+ Character's physical attacks are 
+  temporarily of this element.
+ 
+[Animations\\Status\\28]@Elemental Shield@ (Any Element)
+ Lasts 4 turns
+ Character temporarily takes less damage 
+  from attacks of this element."
+      
+      node_b_t = Help_Node.new
+      node_b_t.name = "Targeting"
+      node_b.children.push(node_b_t)
+      node_b_t.contents = "@Targeting@
+
+@Single@    One target.
+@Row@       Entire row of up to 3 targets.
+@Column@    Entire column of up to 3 targets.
+@Adjacent@  Target and each of its direct 
+           neighbours.
+@All@       All enemies or all allies.
+@Spread@    All enemies or all allies, but the 
+           more targets, the weaker the 
+           effect on each."
+
+      # WAR BATTLES
+      
+      
+      node_wb = Help_Node.new
+      node_wb.name = "War..."
+      node_wb.parent = node_gp
+      node_gp.children.push(node_wb)
+      
+      node_w_w = Help_Node.new
+      node_w_w.name = "War Battles"
+      node_wb.children.push(node_w_w)
+      node_w_w.contents = "@War Battles@
+
+At key points in the game, war battles will
+be fought. These battles use a turn-based
+system where each side moves its units in
+turn. Units are positioned on a square grid
+and each have a certain movement range.
+
+In general, the side that loses its 
+commanding unit (denoted by a banner) loses 
+the battle.
+
+When a unit attacks another, the attacking 
+unit will hit first. Then, if the target is 
+still alive, within range, and not a sorcery 
+unit, he will perform a counter-attack with 
+his remaining men. Because of this, it pays 
+off to get the first strike on enemies, 
+especially if they're unable to fight back. 
+The target, having lost some of its men, 
+will return with a weaker attack than if 
+it had struck first.
+
+Units in war battles have three statistics
+that determine its effectiveness:
+
+@Men@ Measure of the size of a unit. The 
+     more men, the more damage it can 
+     deal and the more it can take. When 
+     a unit's number of men goes down, 
+     its strength also decreases 
+     proportionally. A unit is lost when 
+     its number of men reaches 0.
+@ATK@ Attack strength. The higher this value, 
+     the more damage a unit will inflict 
+     for each of its men.
+@DEF@ Defence. The higher this value, the 
+     lower the damage an enemy unit will 
+     inflict for each of its men.
+       
+Units may also have special abilities. See
+the help topic on Abilities for more 
+information.
+
+@Controls@
+ @B@   Show main menu  
+ @C@   Select an option from a menu.
+     Select a friendly unit to give 
+      orders to.
+     Show attack range of a enemy unit.
+     Select next friendly unit awaiting
+      orders.
+      "
+      
+      node_w_sc = Help_Node.new
+      node_w_sc.name = "Scoring"
+      node_wb.children.push(node_w_sc)
+      node_w_sc.contents = "@Scoring@
+
+At the end of a war battle, the player's
+performance is assigned a score. The score
+is a number from 0 to 100 and corresponds to
+a rating from F to A. The higher the rating,
+the better the reward for winning the battle.
+
+The scoring is composed of the following 
+three
+
+@Speed@      The fewer turns taken to win 
+            the battle, the higher this 
+            score will be.
+@Power@      The more enemy units were 
+            destroyed, the higher this score
+            will be.
+@Efficiency@ The fewer allied units were 
+            lost, the higher this score will
+            be.        "
+      
+
+      node_w_s = Help_Node.new
+      node_w_s.name = "Setup"
+      node_wb.children.push(node_w_s)
+      node_w_s.contents = "@War Setup@
+
+The War Setup allows you to set up your army
+for war battles, and will be available 
+in-game once it's required. The screen offers
+the following three options:
+
+@Change Unit Members@
+Certain characters act as unit commanders 
+in war battles, and will automatically show
+up in the list when available. Other 
+characters can be assigned to units, up to 
+three per unit. Commanders have certain base 
+stats for @Men@, @ATK@ and @DEF@, and each 
+character may add to each of those. Certain
+characters also have special abilities.
+
+ @Controls@
+  @Up/Down@     Switch between commanders, or 
+              available characters in the 
+              list.
+  @Left/Right@  Cycle through character slots 
+              within a unit.
+
+@Clear Unit Members@
+
+This option removes all characters from all
+units. Use only if you want to set up your
+units from scratch.
+
+@Change unit type@
+
+You may pick any of the four unit types for 
+each commander. However, each commander has 
+strengths and weaknesses, denoted by the 
+number of stars listed for each unit type
+
+@Three stars@    No penalty
+@Two stars@      -1 @ATK@, -1 @DEF@
+@One star@       -2 @ATK@, -2 @DEF@"
+      
+      node_w_u = Help_Node.new
+      node_w_u.name = "Unit Types"
+      node_wb.children.push(node_w_u)
+      node_w_u.contents = "@Unit types@
+
+@Infantry@
+ @Stats:@ +1 ATK, +1 DEF
+ @Attack range:@ 1
+ @Movement range:@ 2
+ @Movement cost:@
+  Plains:    1
+  Forest:    1
+  Mountains: 1
+
+Infantry units form a solid line against 
+enemy attacks. They are slow, but can move 
+equally well on any terrain, and with their 
+minor stat boost they are valuable both 
+offensively and defensively.
+ 
+@Cavalry@
+ @Stats:@ No change
+ @Attack range:@ 1
+ @Movement range:@ 4
+ @Movement cost:@
+  Plains:    1
+  Forest:    3
+  Mountains: 3
+ 
+Cavalry units have superior manoeuvreability 
+on open terrain. Although they generally 
+ineffective at crossing forests or mountains, 
+they are essential to get the first strike 
+on any opponent and take out key units 
+before they can harm the rest of your 
+troops.
+ 
+@Scout@
+ @Stats:@ No change
+ @Attack range:@ 2
+ @Movement range:@ 3
+ @Movement cost:@
+  Plains:    1
+  Forest:    1
+  Mountains: 2
+ 
+Scouts are highly mobile units that can 
+attack from a distance, and therefore don't 
+have to worry about counter-attacks from 
+infantry or cavalry. 
+ 
+@Sorcery@
+ @Stats:@ -1 ATK
+ @Attack range:@ 3
+ @Movement range:@ 2
+ @Movement cost:@
+  Plains:    1
+  Forest:    2
+  Mountains: 2
+ 
+Sorcery units are extremely deadly due to 
+their long attack range. However, they 
+cannot counter-attack and have low mobility, 
+so they must be guarded well to be 
+effective."
+      
+      node_w_a = Help_Node.new
+      node_w_a.name = "Abilities"
+      node_wb.children.push(node_w_a)
+      node_w_a.contents = "@Abilities@
+
+@Analyze@     The expected damage inflicted 
+             and received in an attack is 
+             shown in advance.
+@Counter@     Unit gets +2 ATK when counter-
+             attacking.
+@Shield@      Unit gets +2 DEF when counter-
+             attacked.
+@Berserker@   Unit gets +2 ATK on first 
+             strike, but -2 DEF when 
+             counter-attacked.
+@Forester@    Units mobility in forests is 
+             increased.
+@Mountnr@     Units mobility on mountains is 
+             increased.
+@Regen@       Unit recovers 5% of its men after
+             each battle.
+@Evasion@     Unit has a 20% chance of 
+             avoiding battle when attacked.
+@Light Feet@  Unit gets +2 DEF against 
+             infantry units.
+@Blockade@    Unit gets +2 DEF against 
+             cavalry units.
+@Scatter@     Unit gets +2 DEF against 
+             scout units.
+@Forcefield@  Unit gets +2 DEF against 
+             sorcery units."
+      
+      # CREDITS
+      
+      node = Help_Node.new
+      node.name = "Credits"
+      node_root.children.push(node)
+      node.contents = "
+@Game Design@             SCF
+@Character Design@
+@Programming@
+
+@Playtesting@             James Sharp     
+                        Trevor Eaton
+                        Samuel Ho                        
+                        
+Created with @RPGMaker XP@ by Enterbrain
+
+@Website@  http://www.scfworks.com/
+@Email@    scfworks^gmail.com
+        "
+  end
+end

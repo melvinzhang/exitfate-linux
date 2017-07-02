@@ -1,0 +1,254 @@
+ #==============================================================================
+# ** SkillInfo
+#==============================================================================
+class SkillInfo
+  #--------------------------------------------------------------------------
+  # * Initialize
+  #--------------------------------------------------------------------------
+  def initialize(skill)
+    @skill = skill
+  end
+  #--------------------------------------------------------------------------
+  # * isMagic
+  #--------------------------------------------------------------------------
+  def isMagic?
+    return (m != 0 or (m == 0 and x == 0))
+  end  
+  #--------------------------------------------------------------------------
+  # * Magic Power factor
+  #--------------------------------------------------------------------------
+  def m
+    return @skill.power
+  end  
+  #--------------------------------------------------------------------------
+  # * X used in dmg formulas
+  #--------------------------------------------------------------------------
+  def x
+    return @skill.atk_f * 10
+  end  
+  #--------------------------------------------------------------------------
+  # * Q used in dmg formulas
+  #--------------------------------------------------------------------------
+  def q
+    return @skill.eva_f * 10
+  end  
+  #--------------------------------------------------------------------------
+  # * Limit for mag, above which damage increase slows down
+  #-------------------------------------------------------------------------- 
+  def mag_limit
+    return @skill.dex_f * 10
+  end  
+  #--------------------------------------------------------------------------
+  # * MP cost
+  #--------------------------------------------------------------------------
+  def mp_cost(user=nil)
+    cost = @skill.sp_cost
+    if user != nil
+      if user.element != self.element(user)
+        cost = (cost * 120 / 100).to_i
+      end
+    end
+    return cost
+  end  
+  #--------------------------------------------------------------------------
+  # * Targets an enemy?
+  #--------------------------------------------------------------------------
+  def target_enemy?
+    return [1, 2].include?(@skill.scope)
+  end  
+  #--------------------------------------------------------------------------
+  # * Targets dead characters?
+  #--------------------------------------------------------------------------
+  def target_hp0?
+    return [5, 6].include?(@skill.scope)
+  end  
+  #--------------------------------------------------------------------------
+  # * Targets an enemy?
+  #--------------------------------------------------------------------------
+  def target_self?
+    return @skill.scope == 7
+  end  
+  #--------------------------------------------------------------------------
+  # * Targeting type
+  #--------------------------------------------------------------------------
+  def target_type
+    return @skill.str_f
+  end  
+  #--------------------------------------------------------------------------
+  # * Chance of inflicting status
+  #--------------------------------------------------------------------------
+  def status_chance
+    return @skill.int_f
+  end  
+  #--------------------------------------------------------------------------
+  # * Stuns user?
+  #--------------------------------------------------------------------------  
+  def stun_user?
+    return false if $exdata_skills[@skill.id] == nil
+    return $exdata_skills[@skill.id].stun_user
+  end
+  #--------------------------------------------------------------------------
+  # * Scan?
+  #--------------------------------------------------------------------------  
+  def scan?
+    return false if $exdata_skills[@skill.id] == nil
+    return $exdata_skills[@skill.id].scan
+  end
+  #--------------------------------------------------------------------------
+  # * Scan?
+  #--------------------------------------------------------------------------  
+  def steal?
+    return false if $exdata_skills[@skill.id] == nil
+    return $exdata_skills[@skill.id].steal
+  end
+  #--------------------------------------------------------------------------
+  # * Focus?
+  #--------------------------------------------------------------------------  
+  def focus?
+    return false if $exdata_skills[@skill.id] == nil
+    return $exdata_skills[@skill.id].focus
+  end
+  #--------------------------------------------------------------------------
+  # * Escape?
+  #--------------------------------------------------------------------------  
+  def escape?
+    return false if $exdata_skills[@skill.id] == nil
+    return $exdata_skills[@skill.id].escape
+  end
+  #--------------------------------------------------------------------------
+  # * Aura?
+  #--------------------------------------------------------------------------  
+  def aura?
+    return false if $exdata_skills[@skill.id] == nil
+    return $exdata_skills[@skill.id].aura
+  end
+  #--------------------------------------------------------------------------
+  # * Drain?
+  #--------------------------------------------------------------------------  
+  def drain?
+    return false if $exdata_skills[@skill.id] == nil
+    return $exdata_skills[@skill.id].drain
+  end
+  #--------------------------------------------------------------------------
+  # * Raise Stats (as 1/x fraction to raise by
+  #--------------------------------------------------------------------------  
+  def raise_stats
+    return 0 if $exdata_skills[@skill.id] == nil
+    return $exdata_skills[@skill.id].raise_stats
+  end
+  #--------------------------------------------------------------------------
+  # * Hide Name?
+  #--------------------------------------------------------------------------  
+  def hide_name?
+    return false if $exdata_skills[@skill.id] == nil
+    return $exdata_skills[@skill.id].hide_name
+  end
+  #--------------------------------------------------------------------------
+  # * Direct damage?
+  #--------------------------------------------------------------------------  
+  def direct_damage?
+    return false if $exdata_skills[@skill.id] == nil
+    return $exdata_skills[@skill.id].direct_damage
+  end
+  #--------------------------------------------------------------------------
+  # * Target main ally only?
+  #--------------------------------------------------------------------------  
+  def target_main?
+    return false if $exdata_skills[@skill.id] == nil
+    return $exdata_skills[@skill.id].target_main
+  end
+  #--------------------------------------------------------------------------
+  # * Dont show "miss"
+  #--------------------------------------------------------------------------  
+  def no_miss?
+    return false if $exdata_skills[@skill.id] == nil
+    return $exdata_skills[@skill.id].no_miss
+  end
+  #--------------------------------------------------------------------------
+  # * Is healing
+  #--------------------------------------------------------------------------    
+  def is_healing?
+    if not isMagic?
+      return false
+    else
+      return self.m < 0
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Long range?
+  #--------------------------------------------------------------------------
+  def longrange?
+    # Magic is always long-range
+    return true if self.isMagic?
+    # ALL, SPREAD and COLUMN are always long-range
+    return true if [TARG_ALL, TARG_SPREAD, TARG_COLUMN].include?(@skill.str_f)
+    # If there is Extra data for this skill, it has a long-range field
+    if $exdata_skills[@skill.id] != nil
+      return $exdata_skills[@skill.id].long_range
+    end    
+    return false    
+  end  
+  #--------------------------------------------------------------------------
+  # * Should the attacker physically move to the target ?
+  #--------------------------------------------------------------------------  
+  def move_to_target
+    return [1, 2].include?(@skill.mdef_f)
+  end
+  #--------------------------------------------------------------------------
+  # * Should the attacker move a little forward (long range)
+  #--------------------------------------------------------------------------  
+  def move_longrange
+    return @skill.mdef_f == 3
+  end
+  #--------------------------------------------------------------------------
+  # * Use normal attack animation
+  #--------------------------------------------------------------------------  
+  def attack_animation?
+    return [1, 3].include?(@skill.mdef_f)
+  end
+  #--------------------------------------------------------------------------
+  # * Turn on approrpriate switches
+  #--------------------------------------------------------------------------  
+  def check_switches
+    return if $exdata_skills[@skill.id] == nil
+    if $exdata_skills[@skill.id].switch_on > 0
+      $game_switches[$exdata_skills[@skill.id].switch_on] = true
+    end
+    if $exdata_skills[@skill.id].switch_off > 0    
+      $game_switches[$exdata_skills[@skill.id].switch_off] = false
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Change sprite
+  #--------------------------------------------------------------------------  
+  def change_sprite(battler)
+    return if $exdata_skills[@skill.id] == nil
+    if $exdata_skills[@skill.id].new_sprite != ""
+      battler.battler_name = $exdata_skills[@skill.id].new_sprite
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Element
+  #    If no element is set, use the user's
+  #--------------------------------------------------------------------------
+  def element(user = nil)
+    for i in ELEM_LIGHT..ELEM_THUNDER
+      if @skill.element_set.include?(i)
+        return i      
+      end
+    end
+    # No element set, use the user's if there is one
+    return 0 if @skill.element_set.include?(ELEM_NONE)    
+    return 0 if user == nil
+    return user.attack_element
+  end  
+  #--------------------------------------------------------------------------
+  # * Status effects inflicted
+  #--------------------------------------------------------------------------
+  def status_effect
+    if $exdata_skills[@skill.id] != nil
+      return $exdata_skills[@skill.id].status
+    end    
+    return {}    
+  end  
+end

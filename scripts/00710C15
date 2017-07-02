@@ -1,0 +1,1790 @@
+#==============================================================================
+# ** Data_Troops
+#------------------------------------------------------------------------------
+#  Contains static data that can't be set in the GUI
+#
+#  Remaining armour is added when the game begins
+#==============================================================================
+
+class Data_Troop
+  attr_accessor :enemies # Array of triples [enemy_id, row, column]  
+  def initialize
+    @enemies = []
+  end
+end
+
+$exdata_troops = []
+
+# 2x Bandit, 2x LR Bandit
+i = 1
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([1, 0, 0])
+$exdata_troops[i].enemies.push([1, 0, 2])
+$exdata_troops[i].enemies.push([2, 2, 0])
+$exdata_troops[i].enemies.push([2, 2, 2])
+
+# 3x Bandit
+i = 2
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([1, 1, 0])
+$exdata_troops[i].enemies.push([1, 1, 1])
+$exdata_troops[i].enemies.push([1, 1, 2])
+
+# 3x Bandit, 1x LR Bandit
+i = 3
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([1, 0, 0])
+$exdata_troops[i].enemies.push([1, 0, 1])
+$exdata_troops[i].enemies.push([1, 0, 2])
+$exdata_troops[i].enemies.push([2, 2, 1])
+
+# 2x Bat
+i = 4
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([3, 1, 0])
+$exdata_troops[i].enemies.push([3, 1, 2])
+
+# 1x Bat
+i = 5
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([3, 1, 1])
+
+# 2x Bandit (Unique battle)
+i = 6
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([1, 0, 0])
+$exdata_troops[i].enemies.push([1, 0, 2])
+
+# Bandit Lord + 3x Bandit Archer
+i = 7
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([4, 0, 1])
+$exdata_troops[i].enemies.push([2, 2, 0])
+$exdata_troops[i].enemies.push([2, 2, 1])
+$exdata_troops[i].enemies.push([2, 2, 2])
+
+# 4x Killer Hornet
+i = 8
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([5, 0, 0])
+$exdata_troops[i].enemies.push([5, 0, 1])
+$exdata_troops[i].enemies.push([5, 1, 1])
+$exdata_troops[i].enemies.push([5, 1, 2])
+
+# 3x Killer Hornet
+i = 9
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([5, 1, 0])
+$exdata_troops[i].enemies.push([5, 1, 1])
+$exdata_troops[i].enemies.push([5, 1, 2])
+
+# 2x Killer Hornet + Puddle
+i = 10
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([7, 1, 1])
+$exdata_troops[i].enemies.push([5, 0, 0])
+$exdata_troops[i].enemies.push([5, 0, 2])
+
+# 2x Puddle
+i = 11
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([7, 1, 0])
+$exdata_troops[i].enemies.push([7, 1, 2])
+
+# 1x Spider
+i = 12
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([6, 1, 1])
+
+# 2x Spider
+i = 13
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([6, 1, 0])
+$exdata_troops[i].enemies.push([6, 1, 2])
+
+# 2x Kirgard
+i = 14
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([8, 1, 0])
+$exdata_troops[i].enemies.push([8, 1, 2])
+
+# 2x Kirgard
+i = 15
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([8, 1, 0])
+$exdata_troops[i].enemies.push([8, 1, 2])
+
+# 2x Kirgard + Sarge
+i = 16
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([9, 1, 1])
+$exdata_troops[i].enemies.push([8, 0, 0])
+$exdata_troops[i].enemies.push([8, 0, 2])
+
+# 4x Viper
+i = 17
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([10, 0, 0])
+$exdata_troops[i].enemies.push([10, 1, 1])
+$exdata_troops[i].enemies.push([10, 2, 1])
+$exdata_troops[i].enemies.push([10, 1, 2])
+
+# 3x Viper + Goblin
+i = 18
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([10, 0, 0])
+$exdata_troops[i].enemies.push([10, 0, 1])
+$exdata_troops[i].enemies.push([10, 0, 2])
+$exdata_troops[i].enemies.push([11, 1, 1])
+
+# 2x Grey Wolf
+i = 19
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([12, 1, 0])
+$exdata_troops[i].enemies.push([12, 1, 2])
+
+# 3x Grey Wolf
+i = 20
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([12, 1, 0])
+$exdata_troops[i].enemies.push([12, 1, 1])
+$exdata_troops[i].enemies.push([12, 1, 2])
+
+# 2x Goblin
+i = 21
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([11, 0, 1])
+$exdata_troops[i].enemies.push([11, 1, 2])
+
+# 2x Goblin + Orc
+i = 22
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([14, 1, 1])
+$exdata_troops[i].enemies.push([11, 1, 0])
+$exdata_troops[i].enemies.push([11, 1, 2])
+
+# 2x Goblin, 2x Lizardman
+i = 23
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([11, 0, 0])
+$exdata_troops[i].enemies.push([11, 0, 2])
+$exdata_troops[i].enemies.push([13, 2, 0])
+$exdata_troops[i].enemies.push([13, 2, 2])
+
+# 3x Grey Wolf
+i = 24
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([12, 1, 0])
+$exdata_troops[i].enemies.push([12, 1, 1])
+$exdata_troops[i].enemies.push([12, 1, 2])
+
+# 2x Grey Wolf, 2x Lizardman
+i = 25
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([12, 0, 0])
+$exdata_troops[i].enemies.push([12, 1, 1])
+$exdata_troops[i].enemies.push([13, 1, 0])
+$exdata_troops[i].enemies.push([13, 2, 1])
+
+# 3x Goblin
+i = 26
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([11, 1, 0])
+$exdata_troops[i].enemies.push([11, 1, 1])
+$exdata_troops[i].enemies.push([11, 1, 2])
+
+# Mist Monster
+i = 27
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([15, 1, 0])
+
+# Wandering Mage
+i = 28
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([17, 1, 1])
+
+# 3x Grey Wolf  + Matrian Wolf
+i = 29
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([16, 1, 1])
+$exdata_troops[i].enemies.push([12, 1, 0])
+$exdata_troops[i].enemies.push([12, 1, 2])
+$exdata_troops[i].enemies.push([12, 2, 1])
+
+# 2x Orc
+i = 30
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([14, 0, 0])
+$exdata_troops[i].enemies.push([14, 1, 1])
+
+# 2x Tin Soldier
+i = 31
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([18, 1, 1])
+$exdata_troops[i].enemies.push([18, 1, 2])
+
+# 2x Tin Soldier, 1x Surprise Box
+i = 32
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([18, 1, 1])
+$exdata_troops[i].enemies.push([18, 0, 1])
+$exdata_troops[i].enemies.push([19, 2, 1])
+
+# 2x Surprise Box
+i = 33
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([19, 1, 0])
+$exdata_troops[i].enemies.push([19, 2, 1])
+
+# Hermit + 3x Mud Golem
+i = 34
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([21, 0, 1])
+$exdata_troops[i].enemies.push([21, 1, 0])
+$exdata_troops[i].enemies.push([21, 1, 2])
+$exdata_troops[i].enemies.push([20, 2, 1])
+
+# Orc + 2x Hill Orc
+i = 35
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([22, 0, 0])
+$exdata_troops[i].enemies.push([22, 0, 2])
+$exdata_troops[i].enemies.push([14, 1, 1])
+
+# 2x Hill Orc
+i = 36
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([22, 1, 0])
+$exdata_troops[i].enemies.push([22, 1, 2])
+
+# 3x Matrian Wolf
+i = 37
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([16, 0, 1])
+$exdata_troops[i].enemies.push([16, 1, 0])
+$exdata_troops[i].enemies.push([16, 1, 2])
+
+# Maneater
+i = 38
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([26, 1, 1])
+
+# 4x Mantis
+i = 39
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([24, 0, 0])
+$exdata_troops[i].enemies.push([24, 0, 1])
+$exdata_troops[i].enemies.push([24, 0, 2])
+$exdata_troops[i].enemies.push([24, 1, 1])
+
+# Forest Spirit + 2x Mantis
+i = 40
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([24, 0, 2])
+$exdata_troops[i].enemies.push([24, 0, 0])
+$exdata_troops[i].enemies.push([25, 1, 1])
+
+# 2x Yellow Puddle
+i = 41
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([23, 1, 0])
+$exdata_troops[i].enemies.push([23, 1, 2])
+
+# 2x Yellow Puddle + Forest Spirit
+i = 42
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([23, 1, 0])
+$exdata_troops[i].enemies.push([23, 1, 2])
+$exdata_troops[i].enemies.push([25, 2, 1])
+
+# Bruce + 4x Kirgard 2nd
+i = 43
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([27, 1, 1])
+$exdata_troops[i].enemies.push([28, 0, 0])
+$exdata_troops[i].enemies.push([28, 0, 2])
+$exdata_troops[i].enemies.push([28, 1, 0])
+$exdata_troops[i].enemies.push([28, 1, 2])
+
+# Spectral Mage + 3x Dead Knight
+i = 44
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([30, 0, 0])
+$exdata_troops[i].enemies.push([30, 0, 1])
+$exdata_troops[i].enemies.push([30, 0, 2])
+$exdata_troops[i].enemies.push([32, 2, 1])
+
+# Zombie + 2x Dead Knight
+i = 45
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([31, 0, 1])
+$exdata_troops[i].enemies.push([30, 1, 0])
+$exdata_troops[i].enemies.push([30, 1, 2])
+
+# 4x Vampire Bat
+i = 46
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([29, 0, 1])
+$exdata_troops[i].enemies.push([29, 1, 0])
+$exdata_troops[i].enemies.push([29, 1, 2])
+$exdata_troops[i].enemies.push([29, 2, 1])
+
+# 3x Vampire Bat + Spectral Mage
+i = 47
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([29, 0, 1])
+$exdata_troops[i].enemies.push([32, 1, 1])
+$exdata_troops[i].enemies.push([29, 2, 0])
+$exdata_troops[i].enemies.push([29, 2, 2])
+
+# 2x Zombie 
+i = 48
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([31, 1, 0])
+$exdata_troops[i].enemies.push([31, 1, 2])
+
+## HIGHLAND
+# 4x Hill Orc
+i = 49
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([22, 0, 1])
+$exdata_troops[i].enemies.push([22, 1, 0])
+$exdata_troops[i].enemies.push([22, 1, 2])
+$exdata_troops[i].enemies.push([22, 2, 1])
+
+# 2x Minotaur
+i = 50
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([33, 0, 0])
+$exdata_troops[i].enemies.push([33, 1, 1])
+
+# 3x Hill Orc + Minotaur
+i = 51
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([33, 0, 1])
+$exdata_troops[i].enemies.push([22, 1, 0])
+$exdata_troops[i].enemies.push([22, 1, 1])
+$exdata_troops[i].enemies.push([22, 1, 2])
+
+# Ogre
+i = 52
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([34, 0, 1])
+
+# 6x Highland
+i = 53
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([36, 0, 0])
+$exdata_troops[i].enemies.push([36, 0, 1])
+$exdata_troops[i].enemies.push([36, 0, 2])
+$exdata_troops[i].enemies.push([36, 1, 0])
+$exdata_troops[i].enemies.push([36, 1, 1])
+$exdata_troops[i].enemies.push([36, 1, 2])
+
+# 5x Highland
+i = 54
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([36, 0, 1])
+$exdata_troops[i].enemies.push([36, 1, 0])
+$exdata_troops[i].enemies.push([36, 1, 1])
+$exdata_troops[i].enemies.push([36, 1, 2])
+$exdata_troops[i].enemies.push([36, 2, 1])
+
+# 3x Highland x2 Scout
+i = 55
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([36, 0, 0])
+$exdata_troops[i].enemies.push([36, 0, 1])
+$exdata_troops[i].enemies.push([36, 0, 2])
+$exdata_troops[i].enemies.push([37, 2, 0])
+$exdata_troops[i].enemies.push([37, 2, 2])
+
+# Guard Tiger + 2x Highland
+i = 56
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([38, 1, 1])
+$exdata_troops[i].enemies.push([36, 1, 0])
+$exdata_troops[i].enemies.push([36, 1, 2])
+
+# Guard Tiger + Highland + Scout
+i = 57
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([38, 1, 1])
+$exdata_troops[i].enemies.push([36, 1, 0])
+$exdata_troops[i].enemies.push([37, 2, 0])
+
+# Joshua
+i = 58
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([39, 1, 1])
+
+# Ninja
+i = 59
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([40, 1, 1])
+
+# Trevor/Sick
+i = 60
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([41, 1, 1])
+$exdata_troops[i].enemies.push([42, 2, 2])
+
+# Mist Monster
+i = 61
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([43, 1, 1])
+
+# 3x Proto-Mist 
+i = 62
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([44, 0, 1])
+$exdata_troops[i].enemies.push([44, 2, 1])
+$exdata_troops[i].enemies.push([44, 1, 2])
+
+# 2x Mist Monster
+i = 63
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([43, 0, 1])
+$exdata_troops[i].enemies.push([43, 2, 1])
+
+# Mist Monster + 2x Proto-Mist 
+i = 64
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([43, 1, 1])
+$exdata_troops[i].enemies.push([44, 2, 0])
+$exdata_troops[i].enemies.push([44, 2, 2])
+
+# Mist Queen
+i = 65
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([45, 1, 1])
+
+# 2x Wild Barbarian
+i = 66
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([35, 0, 0])
+$exdata_troops[i].enemies.push([35, 1, 1])
+
+# Ogre + 2x Minotaur
+i = 67
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([33, 0, 1])
+$exdata_troops[i].enemies.push([34, 1, 1])
+$exdata_troops[i].enemies.push([33, 2, 1])
+
+#Wild Barbarian, Ogre, Minotaur
+i = 68
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([35, 0, 1])
+$exdata_troops[i].enemies.push([34, 1, 2])
+$exdata_troops[i].enemies.push([33, 2, 0])
+
+# 3x Minotaur
+i = 69
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([33, 0, 1])
+$exdata_troops[i].enemies.push([33, 1, 1])
+$exdata_troops[i].enemies.push([33, 2, 1])
+
+# 6x Kirgard 2nd
+i = 70
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([46, 0, 0])
+$exdata_troops[i].enemies.push([46, 0, 1])
+$exdata_troops[i].enemies.push([46, 0, 2])
+$exdata_troops[i].enemies.push([46, 1, 0])
+$exdata_troops[i].enemies.push([46, 1, 1])
+$exdata_troops[i].enemies.push([46, 1, 2])
+
+# Kirgard Sarge + 5x Kirgard 2nd
+i = 71
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([46, 0, 0])
+$exdata_troops[i].enemies.push([46, 0, 1])
+$exdata_troops[i].enemies.push([46, 0, 2])
+$exdata_troops[i].enemies.push([46, 1, 0])
+$exdata_troops[i].enemies.push([47, 1, 1])
+$exdata_troops[i].enemies.push([46, 1, 2])
+
+# 2x Sentinel
+i = 72
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([50, 1, 0])
+$exdata_troops[i].enemies.push([50, 1, 2])
+
+# Sentinel + 2x Relic
+i = 73
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([50, 1, 1])
+$exdata_troops[i].enemies.push([49, 2, 0])
+$exdata_troops[i].enemies.push([49, 2, 2])
+
+# 2x Sentinel + 2x Relic
+i = 74
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([50, 1, 0])
+$exdata_troops[i].enemies.push([50, 1, 2])
+$exdata_troops[i].enemies.push([49, 2, 0])
+$exdata_troops[i].enemies.push([49, 2, 2])
+
+# Kirgard Captain + 5x Kirgard 2nd
+i = 75
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([46, 0, 0])
+$exdata_troops[i].enemies.push([46, 0, 1])
+$exdata_troops[i].enemies.push([46, 0, 2])
+$exdata_troops[i].enemies.push([48, 1, 1])
+$exdata_troops[i].enemies.push([46, 2, 0])
+$exdata_troops[i].enemies.push([46, 2, 2])
+
+# Keyser + 4x Kirgard Sergeant
+i = 76
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([51, 2, 1])
+$exdata_troops[i].enemies.push([47, 0, 0])
+$exdata_troops[i].enemies.push([47, 0, 2])
+$exdata_troops[i].enemies.push([47, 1, 0])
+$exdata_troops[i].enemies.push([47, 1, 2])
+
+# Iron Golem
+i = 77
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([52, 1, 1])
+
+# 2x Dragon, 2x Black Cobra
+i = 78
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([53, 0, 0])
+$exdata_troops[i].enemies.push([53, 0, 2])
+$exdata_troops[i].enemies.push([54, 2, 0])
+$exdata_troops[i].enemies.push([54, 2, 2])
+
+# 4x Black Cobra
+i = 79
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([53, 0, 0])
+$exdata_troops[i].enemies.push([53, 0, 2])
+$exdata_troops[i].enemies.push([53, 1, 0])
+$exdata_troops[i].enemies.push([53, 1, 2])
+
+# 2x Wood Berserker
+i = 80
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([55, 0, 0])
+$exdata_troops[i].enemies.push([55, 0, 2])
+
+# Wood Berserker + 3x Dragon Man
+i = 81
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([55, 0, 1])
+$exdata_troops[i].enemies.push([54, 2, 0])
+$exdata_troops[i].enemies.push([54, 2, 1])
+$exdata_troops[i].enemies.push([54, 2, 2])
+
+# Basilisk
+i = 82
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([56, 1, 1])
+
+# Frostmonger
+i = 83
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([57, 1, 1])
+
+# 2x Devourer
+i = 84
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([58, 0, 0])
+$exdata_troops[i].enemies.push([58, 1, 1])
+
+# 2x Almenga
+i = 85
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([59, 0, 0])
+$exdata_troops[i].enemies.push([59, 0, 1])
+
+# 3x Almenga
+i = 86
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([59, 0, 0])
+$exdata_troops[i].enemies.push([59, 0, 1])
+$exdata_troops[i].enemies.push([59, 0, 2])
+
+# 5x Almenga
+i = 87
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([59, 0, 0])
+$exdata_troops[i].enemies.push([59, 0, 1])
+$exdata_troops[i].enemies.push([59, 0, 2])
+$exdata_troops[i].enemies.push([59, 1, 0])
+$exdata_troops[i].enemies.push([59, 1, 2])
+
+# 3x Black Elem
+i = 88
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([62, 0, 1])
+$exdata_troops[i].enemies.push([62, 1, 0])
+$exdata_troops[i].enemies.push([62, 1, 2])
+
+# Black, Blue, White Elem
+i = 89
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([62, 0, 1])
+$exdata_troops[i].enemies.push([61, 1, 2])
+$exdata_troops[i].enemies.push([60, 2, 0])
+
+# 2x Blue Elem, 2x Black Elem
+i = 90
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([62, 0, 0])
+$exdata_troops[i].enemies.push([62, 0, 2])
+$exdata_troops[i].enemies.push([60, 2, 0])
+$exdata_troops[i].enemies.push([60, 2, 2])
+
+# 4x Blue Elem
+i = 91
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([60, 1, 1])
+$exdata_troops[i].enemies.push([60, 2, 0])
+$exdata_troops[i].enemies.push([60, 2, 1])
+$exdata_troops[i].enemies.push([60, 2, 2])
+
+# 4x White Elem
+i = 92
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([61, 0, 1])
+$exdata_troops[i].enemies.push([61, 1, 0])
+$exdata_troops[i].enemies.push([61, 1, 2])
+$exdata_troops[i].enemies.push([61, 2, 1])
+
+# 1x Deep Puddle
+i = 93
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([63, 1, 1])
+
+# Caretakers
+i = 94
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([65, 0, 1])
+$exdata_troops[i].enemies.push([64, 1, 0])
+$exdata_troops[i].enemies.push([67, 1, 2])
+$exdata_troops[i].enemies.push([66, 2, 1])
+
+# The Mad King
+i = 95
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([68, 1, 1])
+
+# Cathead
+i = 96
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([72, 1, 1])
+
+# Lurker + 2x Brain Leech
+i = 97
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([71, 1, 1])
+$exdata_troops[i].enemies.push([70, 2, 0])
+$exdata_troops[i].enemies.push([70, 2, 1])
+
+# 3x Light Stalker
+i = 98
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([69, 0, 1])
+$exdata_troops[i].enemies.push([69, 1, 0])
+$exdata_troops[i].enemies.push([69, 1, 2])
+
+# 2x Lurker
+i = 99
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([71, 0, 1])
+$exdata_troops[i].enemies.push([71, 1, 2])
+
+# 2x Light Stalker, 2x Brain Leech
+i = 100
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([69, 1, 0])
+$exdata_troops[i].enemies.push([69, 1, 1])
+$exdata_troops[i].enemies.push([70, 2, 1])
+$exdata_troops[i].enemies.push([70, 2, 2])
+
+# Wyvern Boss
+i = 101
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([73, 1, 1])
+$exdata_troops[i].enemies.push([75, 1, 0])
+$exdata_troops[i].enemies.push([74, 1, 2])
+
+# Matrech Corporal, 3x Matrech Soldier
+i = 102
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([76, 0, 0])
+$exdata_troops[i].enemies.push([76, 0, 1])
+$exdata_troops[i].enemies.push([76, 0, 2])
+$exdata_troops[i].enemies.push([77, 1, 1])
+
+# Matrech Corporal, 4x Matrech Soldier
+i = 103
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([76, 0, 0])
+$exdata_troops[i].enemies.push([76, 0, 2])
+$exdata_troops[i].enemies.push([76, 1, 0])
+$exdata_troops[i].enemies.push([76, 1, 2])
+$exdata_troops[i].enemies.push([77, 1, 1])
+
+# 5x Matrech Soldier
+i = 104
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([76, 0, 0])
+$exdata_troops[i].enemies.push([76, 0, 1])
+$exdata_troops[i].enemies.push([76, 0, 2])
+$exdata_troops[i].enemies.push([76, 1, 0])
+$exdata_troops[i].enemies.push([76, 1, 2])
+
+# Mai
+i = 105
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([78, 1, 1])
+
+# Boris
+i = 106
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([79, 1, 1])
+
+# 3x Dire Spider, 2x Belgugon
+i = 107
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([80, 0, 0])
+$exdata_troops[i].enemies.push([80, 0, 1])
+$exdata_troops[i].enemies.push([80, 0, 2])
+$exdata_troops[i].enemies.push([81, 2, 0])
+$exdata_troops[i].enemies.push([81, 2, 1])
+
+# 2x Dire Spider, 2x Carrion Worm
+i = 108
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([80, 0, 0])
+$exdata_troops[i].enemies.push([82, 0, 1])
+$exdata_troops[i].enemies.push([80, 1, 0])
+$exdata_troops[i].enemies.push([82, 1, 1])
+
+# Carrion Worm, 2x Belgugon
+i = 109
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([82, 0, 1])
+$exdata_troops[i].enemies.push([81, 2, 0])
+$exdata_troops[i].enemies.push([81, 2, 2])
+
+# 3x Carrion Worm
+i = 110
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([82, 0, 1])
+$exdata_troops[i].enemies.push([82, 0, 2])
+$exdata_troops[i].enemies.push([82, 1, 1])
+
+# Cave Troll
+i = 111
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([83, 1, 1])
+
+# Pestilence
+i = 112
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([84, 1, 1])
+
+# 3x Enchanter
+i = 113
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([85, 1, 1])
+$exdata_troops[i].enemies.push([85, 2, 0])
+$exdata_troops[i].enemies.push([85, 2, 2])
+
+# 2x Crusader, 2x Enchanter
+i = 114
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([86, 0, 0])
+$exdata_troops[i].enemies.push([86, 0, 2])
+$exdata_troops[i].enemies.push([85, 2, 0])
+$exdata_troops[i].enemies.push([85, 2, 2])
+
+# 5x Crusader
+i = 115
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([86, 0, 0])
+$exdata_troops[i].enemies.push([86, 0, 1])
+$exdata_troops[i].enemies.push([86, 0, 2])
+$exdata_troops[i].enemies.push([86, 1, 0])
+$exdata_troops[i].enemies.push([86, 1, 1])
+
+# 3x Crusader, 1x Templar
+i = 116
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([86, 0, 0])
+$exdata_troops[i].enemies.push([86, 0, 1])
+$exdata_troops[i].enemies.push([86, 0, 2])
+$exdata_troops[i].enemies.push([87, 2, 1])
+
+# Unicorn + 2x Crusader + Enchanter
+i = 117
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([86, 0, 0])
+$exdata_troops[i].enemies.push([86, 0, 2])
+$exdata_troops[i].enemies.push([88, 1, 1])
+$exdata_troops[i].enemies.push([85, 2, 1])
+
+# Unicorn + 2x Crusader
+i = 118
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([86, 0, 0])
+$exdata_troops[i].enemies.push([86, 0, 2])
+$exdata_troops[i].enemies.push([88, 1, 1])
+
+# Pendragon
+i = 119
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([89, 1, 1])
+
+# Trevor/Sick
+i = 120
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([90, 1, 1])
+$exdata_troops[i].enemies.push([91, 2, 2])
+
+# Clint
+i = 121
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([92, 1, 1])
+
+# Ogre King, 3x Ogre soldier, Orc shaman
+i = 122
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([93, 0, 0])
+$exdata_troops[i].enemies.push([93, 0, 1])
+$exdata_troops[i].enemies.push([93, 0, 2])
+$exdata_troops[i].enemies.push([94, 1, 1])
+$exdata_troops[i].enemies.push([95, 2, 1])
+
+# 3x Ogre soldier, Orc shaman
+i = 123
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([93, 0, 0])
+$exdata_troops[i].enemies.push([93, 0, 1])
+$exdata_troops[i].enemies.push([93, 1, 1])
+$exdata_troops[i].enemies.push([95, 2, 1])
+
+# 5x Ogre soldier
+i = 124
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([93, 0, 0])
+$exdata_troops[i].enemies.push([93, 0, 2])
+$exdata_troops[i].enemies.push([93, 1, 1])
+$exdata_troops[i].enemies.push([93, 2, 0])
+$exdata_troops[i].enemies.push([93, 2, 2])
+
+# Nightmare, 2x Ogre Soldier
+i = 125
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([93, 0, 0])
+$exdata_troops[i].enemies.push([96, 1, 1])
+$exdata_troops[i].enemies.push([93, 0, 2])
+
+# 2x Nightmare
+i = 126
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([96, 0, 0])
+$exdata_troops[i].enemies.push([96, 1, 1])
+
+# Hill Giant
+i = 127
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([97, 1, 1])
+
+# Brunhild
+i = 128
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([98, 1, 1])
+
+# Matrech Elite, 3x Matrech Knight
+i = 129
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([99, 0, 0])
+$exdata_troops[i].enemies.push([99, 0, 1])
+$exdata_troops[i].enemies.push([99, 0, 2])
+$exdata_troops[i].enemies.push([100, 1, 1])
+
+# Matrech Elite, 4x Matrech Knight
+i = 130
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([99, 0, 0])
+$exdata_troops[i].enemies.push([99, 0, 2])
+$exdata_troops[i].enemies.push([99, 1, 0])
+$exdata_troops[i].enemies.push([99, 1, 2])
+$exdata_troops[i].enemies.push([100, 1, 1])
+
+# 5x Matrech Knight
+i = 131
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([99, 0, 0])
+$exdata_troops[i].enemies.push([99, 0, 1])
+$exdata_troops[i].enemies.push([99, 0, 2])
+$exdata_troops[i].enemies.push([99, 1, 0])
+$exdata_troops[i].enemies.push([99, 1, 2])
+
+# Land Shark + 2x Sahagin
+i = 132
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([101, 0, 0])
+$exdata_troops[i].enemies.push([101, 0, 2])
+$exdata_troops[i].enemies.push([102, 1, 1])
+
+# 3x Sahagin
+i = 133
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([101, 0, 0])
+$exdata_troops[i].enemies.push([101, 0, 2])
+$exdata_troops[i].enemies.push([101, 1, 1])
+
+# Ghost Magus
+i = 134
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([103, 1, 1])
+
+# Hoarder + 3x Azure Golem
+i = 135
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([105, 0, 1])
+$exdata_troops[i].enemies.push([105, 1, 0])
+$exdata_troops[i].enemies.push([105, 1, 2])
+$exdata_troops[i].enemies.push([104, 2, 1])
+
+# 2x Land Shark
+i = 136
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([102, 0, 0])
+$exdata_troops[i].enemies.push([102, 1, 1])
+
+# 4x Tribal warrior
+i = 137
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([106, 0, 0])
+$exdata_troops[i].enemies.push([106, 0, 1])
+$exdata_troops[i].enemies.push([106, 0, 2])
+$exdata_troops[i].enemies.push([106, 1, 1])
+
+# 2x Tribal warrior, 2x Hunter
+i = 138
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([106, 0, 1])
+$exdata_troops[i].enemies.push([106, 0, 2])
+$exdata_troops[i].enemies.push([108, 2, 1])
+$exdata_troops[i].enemies.push([108, 2, 2])
+
+# 2x Savak
+i = 139
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([109, 0, 0])
+$exdata_troops[i].enemies.push([109, 1, 1])
+
+# Savak, Hunter, Warlock
+i = 140
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([109, 0, 1])
+$exdata_troops[i].enemies.push([108, 2, 0])
+$exdata_troops[i].enemies.push([107, 2, 2])
+
+# Warlock, 3x Tribal warrior
+i = 141
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([106, 0, 0])
+$exdata_troops[i].enemies.push([106, 0, 1])
+$exdata_troops[i].enemies.push([106, 0, 2])
+$exdata_troops[i].enemies.push([107, 2, 1])
+
+# Beastmaster, Beasts
+i = 142
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([110, 1, 1])
+$exdata_troops[i].enemies.push([111, 0, 0])
+$exdata_troops[i].enemies.push([112, 0, 2])
+
+# Catoblepas
+i = 143
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([117, 1, 1])
+
+# 3x Hobgoblin
+i = 144
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([114, 0, 0])
+$exdata_troops[i].enemies.push([114, 1, 1])
+$exdata_troops[i].enemies.push([114, 0, 2])
+
+# 4x Lava Bones
+i = 145
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([113, 0, 1])
+$exdata_troops[i].enemies.push([113, 1, 0])
+$exdata_troops[i].enemies.push([113, 1, 1])
+$exdata_troops[i].enemies.push([113, 1, 2])
+
+# Imp, 2x Hobgoblin
+i = 146
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([114, 0, 0])
+$exdata_troops[i].enemies.push([114, 0, 1])
+$exdata_troops[i].enemies.push([115, 1, 1])
+
+# 2x Lava Bones, Gargoyle, Imp
+i = 147
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([113, 0, 0])
+$exdata_troops[i].enemies.push([113, 0, 2])
+$exdata_troops[i].enemies.push([114, 1, 0])
+$exdata_troops[i].enemies.push([116, 2, 2])
+
+# 2x Gargoyle
+i = 148
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([116, 1, 0])
+$exdata_troops[i].enemies.push([116, 1, 2])
+
+# Soth
+i = 149
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([118, 1, 1])
+
+# 4x Almenga
+i = 150
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([119, 0, 0])
+$exdata_troops[i].enemies.push([119, 0, 1])
+$exdata_troops[i].enemies.push([119, 1, 0])
+$exdata_troops[i].enemies.push([119, 1, 1])
+
+# 5x Almenga
+i = 151
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([119, 0, 0])
+$exdata_troops[i].enemies.push([119, 0, 1])
+$exdata_troops[i].enemies.push([119, 0, 2])
+$exdata_troops[i].enemies.push([119, 1, 0])
+$exdata_troops[i].enemies.push([119, 1, 2])
+
+# 3x Almenga + Captain
+i = 152
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([119, 0, 0])
+$exdata_troops[i].enemies.push([119, 0, 1])
+$exdata_troops[i].enemies.push([119, 0, 2])
+$exdata_troops[i].enemies.push([120, 1, 1])
+
+# Summoner + Pandora's Box
+i = 153
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([122, 0, 1])
+$exdata_troops[i].enemies.push([121, 2, 1])
+
+# Summoner + 2x Pandora's Box
+i = 154
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([122, 0, 1])
+$exdata_troops[i].enemies.push([122, 1, 1])
+$exdata_troops[i].enemies.push([121, 2, 1])
+
+# 4x Parasite
+i = 155
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([124, 0, 1])
+$exdata_troops[i].enemies.push([124, 1, 0])
+$exdata_troops[i].enemies.push([124, 1, 2])
+$exdata_troops[i].enemies.push([124, 2, 1])
+
+# 2x Parasite + Mountain Tiger
+i = 156
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([123, 0, 1])
+$exdata_troops[i].enemies.push([124, 1, 0])
+$exdata_troops[i].enemies.push([124, 1, 2])
+
+# Manticore
+i = 157
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([125, 1, 1])
+
+# Manticore + Mountain Tiger
+i = 158
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([123, 1, 0])
+$exdata_troops[i].enemies.push([125, 1, 2])
+
+# 4x Almenga + Captain
+i = 159
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([119, 0, 0])
+$exdata_troops[i].enemies.push([119, 0, 1])
+$exdata_troops[i].enemies.push([119, 0, 2])
+$exdata_troops[i].enemies.push([119, 1, 1])
+$exdata_troops[i].enemies.push([120, 2, 1])
+
+# Indra
+i = 160
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([126, 1, 1])
+$exdata_troops[i].enemies.push([130, 2, 0])
+
+# Mahadevi
+i = 161
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([119, 0, 0])
+$exdata_troops[i].enemies.push([119, 0, 1])
+$exdata_troops[i].enemies.push([119, 0, 2])
+$exdata_troops[i].enemies.push([127, 1, 1])
+
+# Nandi
+i = 162
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([119, 0, 0])
+$exdata_troops[i].enemies.push([119, 1, 0])
+$exdata_troops[i].enemies.push([128, 1, 1])
+$exdata_troops[i].enemies.push([119, 1, 2])
+
+# Kama
+i = 163
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([119, 0, 0])
+$exdata_troops[i].enemies.push([119, 0, 1])
+$exdata_troops[i].enemies.push([119, 0, 2])
+$exdata_troops[i].enemies.push([129, 1, 1])
+
+#  2x Pandora's Box
+i = 164
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([122, 0, 1])
+$exdata_troops[i].enemies.push([122, 1, 1])
+
+#  2x Green Wolf, Pandora's Box
+i = 165
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([131, 0, 0])
+$exdata_troops[i].enemies.push([131, 2, 0])
+$exdata_troops[i].enemies.push([122, 1, 1])
+
+#  4x Green Wolf,
+i = 166
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([131, 0, 0])
+$exdata_troops[i].enemies.push([131, 0, 2])
+$exdata_troops[i].enemies.push([131, 1, 1])
+$exdata_troops[i].enemies.push([131, 2, 2])
+
+# 2x Mountain Tiger
+i = 167
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([123, 0, 0])
+$exdata_troops[i].enemies.push([123, 1, 1])
+
+# Demilich
+i = 168
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([132, 1, 1])
+
+# 4x Black Death
+i = 169
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([133, 0, 0])
+$exdata_troops[i].enemies.push([133, 0, 1])
+$exdata_troops[i].enemies.push([133, 1, 1])
+$exdata_troops[i].enemies.push([133, 1, 2])
+
+# 3x Black Death + Serpent
+i = 170
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([133, 0, 0])
+$exdata_troops[i].enemies.push([133, 0, 1])
+$exdata_troops[i].enemies.push([133, 0, 2])
+$exdata_troops[i].enemies.push([134, 1, 1])
+
+# Sand Shark
+i = 171
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([135, 1, 1])
+
+# 3x Harpy
+i = 172
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([136, 2, 0])
+$exdata_troops[i].enemies.push([136, 1, 1])
+$exdata_troops[i].enemies.push([136, 2, 2])
+
+# 2x Harpy, 2x Serpent
+i = 173
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([134, 1, 0])
+$exdata_troops[i].enemies.push([134, 1, 2])
+$exdata_troops[i].enemies.push([136, 2, 0])
+$exdata_troops[i].enemies.push([136, 2, 2])
+
+# Rashnu
+i = 174
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([137, 1, 1])
+
+# Demons
+i = 175
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([138, 0, 1])
+$exdata_troops[i].enemies.push([139, 1, 0])
+
+# Chimaera
+i = 176
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([143, 1, 1])
+
+# Deathgaze + 2x Earthworm
+i = 177
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([140, 0, 0])
+$exdata_troops[i].enemies.push([140, 0, 2])
+$exdata_troops[i].enemies.push([141, 1, 1])
+
+# Deathgaze + Paragon
+i = 178
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([141, 0, 1])
+$exdata_troops[i].enemies.push([142, 2, 1])
+
+# 3x Earthworm, 2x Paragon
+i = 179
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([140, 0, 0])
+$exdata_troops[i].enemies.push([140, 1, 1])
+$exdata_troops[i].enemies.push([140, 0, 2])
+$exdata_troops[i].enemies.push([142, 2, 0])
+$exdata_troops[i].enemies.push([142, 2, 2])
+
+# Tiamat
+i = 180
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([144, 1, 0])
+
+# Riftgate
+i = 181
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([145, 1, 1])
+
+# Frost Giant, Drow Fairy
+i = 182
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([149, 1, 1])
+$exdata_troops[i].enemies.push([147, 2, 1])
+
+# 2x Needler Tortoise, 2x Flying Fish
+i = 183
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([147, 0, 0])
+$exdata_troops[i].enemies.push([147, 0, 2])
+$exdata_troops[i].enemies.push([148, 1, 0])
+$exdata_troops[i].enemies.push([148, 1, 2])
+
+# 2x Drow Fairy, 3x Flying Fish
+i = 184
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([147, 0, 0])
+$exdata_troops[i].enemies.push([147, 1, 1])
+$exdata_troops[i].enemies.push([147, 0, 2])
+$exdata_troops[i].enemies.push([146, 2, 0])
+$exdata_troops[i].enemies.push([146, 2, 2])
+
+# 5x Flying Fish
+i = 185
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([147, 0, 1])
+$exdata_troops[i].enemies.push([147, 1, 0])
+$exdata_troops[i].enemies.push([147, 1, 1])
+$exdata_troops[i].enemies.push([147, 1, 2])
+$exdata_troops[i].enemies.push([147, 2, 1])
+
+# Frost Giant, Needler Tortoise
+i = 186
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([149, 1, 1])
+$exdata_troops[i].enemies.push([148, 2, 0])
+
+# Snow Worm, 2x Ice Wolf
+i = 187
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([151, 0, 0])
+$exdata_troops[i].enemies.push([151, 0, 2])
+$exdata_troops[i].enemies.push([150, 1, 1])
+
+# 2x Snow Worm 
+i = 188
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([150, 0, 0])
+$exdata_troops[i].enemies.push([150, 1, 1])
+
+# 4x Ice Wolf
+i = 189
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([151, 0, 1])
+$exdata_troops[i].enemies.push([151, 1, 0])
+$exdata_troops[i].enemies.push([151, 1, 2])
+$exdata_troops[i].enemies.push([151, 2, 1])
+
+# 2x Ghoul, Wraith, Harbinger
+i = 190
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([152, 0, 0])
+$exdata_troops[i].enemies.push([152, 0, 1])
+$exdata_troops[i].enemies.push([154, 1, 2])
+$exdata_troops[i].enemies.push([153, 1, 1])
+
+# 2x Little Scarlet
+i = 191
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([155, 0, 1])
+$exdata_troops[i].enemies.push([155, 1, 0])
+
+# Little Scarlet, 2x Wraith
+i = 192
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([155, 0, 1])
+$exdata_troops[i].enemies.push([153, 1, 0])
+$exdata_troops[i].enemies.push([153, 1, 2])
+
+# 3x Ghoul, 2x Harbinger
+i = 193
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([152, 0, 0])
+$exdata_troops[i].enemies.push([152, 0, 1])
+$exdata_troops[i].enemies.push([152, 0, 2])
+$exdata_troops[i].enemies.push([154, 1, 0])
+$exdata_troops[i].enemies.push([154, 1, 2])
+
+# Vanrushal
+i = 194
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([156, 1, 1])
+
+# Scylla & Charybdis
+i = 195
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([161, 1, 0])
+$exdata_troops[i].enemies.push([162, 2, 1])
+
+# Black Cat
+i = 196
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([160, 1, 1])
+
+# 2x Stalker, 2x Merman
+i = 197
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([157, 0, 0])
+$exdata_troops[i].enemies.push([157, 0, 2])
+$exdata_troops[i].enemies.push([158, 2, 0])
+$exdata_troops[i].enemies.push([158, 2, 2])
+
+# 2x Deep Spawn
+i = 198
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([159, 0, 0])
+$exdata_troops[i].enemies.push([159, 1, 1])
+
+# Deep Spawn, 2x Stalker
+i = 199
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([159, 1, 1])
+$exdata_troops[i].enemies.push([158, 2, 0])
+$exdata_troops[i].enemies.push([158, 2, 2])
+
+# 3x Merman
+i = 200
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([157, 0, 0])
+$exdata_troops[i].enemies.push([157, 1, 1])
+$exdata_troops[i].enemies.push([157, 0, 2])
+
+# Marid King
+i = 201
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([163, 1, 1])
+
+# Fafnir
+i = 202
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([164, 1, 1])
+$exdata_troops[i].enemies.push([166, 1, 0])
+$exdata_troops[i].enemies.push([165, 1, 2])
+
+# Tlazolteotl
+i = 203
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([167, 1, 1])
+
+# Thanatos
+i = 204
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([168, 1, 1])
+
+# Phaseshaper
+i = 205
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([169, 1, 1])
+
+# 6x Shadow Clan
+i = 206
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([170, 0, 0])
+$exdata_troops[i].enemies.push([170, 0, 1])
+$exdata_troops[i].enemies.push([170, 0, 2])
+$exdata_troops[i].enemies.push([170, 1, 0])
+$exdata_troops[i].enemies.push([170, 1, 1])
+$exdata_troops[i].enemies.push([170, 1, 2])
+
+# 5x Shadow Clan
+i = 207
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([170, 0, 0])
+$exdata_troops[i].enemies.push([170, 0, 1])
+$exdata_troops[i].enemies.push([170, 0, 2])
+$exdata_troops[i].enemies.push([170, 1, 0])
+$exdata_troops[i].enemies.push([170, 1, 2])
+
+# 3x Shadow Clan, Assassin
+i = 208
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([170, 0, 0])
+$exdata_troops[i].enemies.push([170, 0, 1])
+$exdata_troops[i].enemies.push([170, 0, 2])
+$exdata_troops[i].enemies.push([171, 1, 1])
+
+# 2x Shadow Clan, 2x Assassin
+i = 209
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([170, 0, 0])
+$exdata_troops[i].enemies.push([170, 0, 2])
+$exdata_troops[i].enemies.push([171, 1, 0])
+$exdata_troops[i].enemies.push([171, 1, 2])
+
+# 2x Navar
+i = 210
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([172, 1, 1])
+$exdata_troops[i].enemies.push([172, 2, 0])
+
+# 3x Shadow Clan + Navar
+i = 211
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([170, 0, 0])
+$exdata_troops[i].enemies.push([170, 0, 1])
+$exdata_troops[i].enemies.push([170, 0, 2])
+$exdata_troops[i].enemies.push([172, 1, 1])
+
+# Fukubei
+i = 212
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([173, 1, 1])
+
+# Trevor
+i = 213
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([179, 0, 1])
+
+# Sick
+i = 214
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([180, 1, 1])
+
+# Demons
+i =215
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([181, 0, 1])
+$exdata_troops[i].enemies.push([182, 1, 0])
+
+# Mara
+i =216
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([185, 1, 1])
+
+# 4x Non-Euclidian Horror
+i =217
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([186, 0, 0])
+$exdata_troops[i].enemies.push([186, 0, 1])
+$exdata_troops[i].enemies.push([186, 1, 1])
+$exdata_troops[i].enemies.push([186, 1, 2])
+
+# 2x Poltergeist 2x Eyestalker
+i =218
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([183, 1, 0])
+$exdata_troops[i].enemies.push([184, 1, 2])
+$exdata_troops[i].enemies.push([184, 2, 0])
+$exdata_troops[i].enemies.push([183, 2, 2])
+
+# Poltergeist, Eyestalker 2x Horror
+i =219
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([186, 0, 0])
+$exdata_troops[i].enemies.push([186, 0, 1])
+$exdata_troops[i].enemies.push([183, 2, 0])
+$exdata_troops[i].enemies.push([184, 2, 2])
+
+# 3x Eyestalker
+i =220
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([184, 1, 1])
+$exdata_troops[i].enemies.push([184, 2, 0])
+$exdata_troops[i].enemies.push([184, 2, 2])
+
+# Mephisto
+i =221
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([187, 1, 1])
+
+# Thunderbeast
+i =222
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([190, 1, 1])
+
+# 2x Ice Tortoise, Mustang
+i =223
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([188, 1, 1])
+$exdata_troops[i].enemies.push([189, 2, 0])
+$exdata_troops[i].enemies.push([189, 2, 2])
+
+# 2x Ice Tortoise
+i =224
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([189, 2, 0])
+$exdata_troops[i].enemies.push([189, 2, 2])
+
+# 2x Mustang
+i =225
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([188, 0, 0])
+$exdata_troops[i].enemies.push([188, 1, 1])
+
+# Almenga Colonel + 3x Elite
+i =226
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([191, 0, 0])
+$exdata_troops[i].enemies.push([191, 0, 1])
+$exdata_troops[i].enemies.push([191, 0, 2])
+$exdata_troops[i].enemies.push([192, 1, 1])
+
+# Almenga Colonel + 4x Elite
+i =227
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([191, 0, 0])
+$exdata_troops[i].enemies.push([191, 0, 2])
+$exdata_troops[i].enemies.push([191, 1, 0])
+$exdata_troops[i].enemies.push([191, 1, 2])
+$exdata_troops[i].enemies.push([192, 1, 1])
+
+# 5x Elite
+i =228
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([191, 0, 0])
+$exdata_troops[i].enemies.push([191, 0, 2])
+$exdata_troops[i].enemies.push([191, 1, 1])
+$exdata_troops[i].enemies.push([191, 2, 0])
+$exdata_troops[i].enemies.push([191, 2, 2])
+
+# Summoner + 3x Lightning
+i =229
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([194, 0, 0])
+$exdata_troops[i].enemies.push([194, 0, 1])
+$exdata_troops[i].enemies.push([194, 0, 2])
+$exdata_troops[i].enemies.push([193, 2, 1])
+
+# Summoner + 2x Lightning
+i =230
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([194, 0, 1])
+$exdata_troops[i].enemies.push([194, 1, 1])
+$exdata_troops[i].enemies.push([193, 2, 1])
+
+# Dracoknight
+i =231
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([195, 0, 1])
+
+# Leonius
+i =232
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([196, 1, 1])
+
+# 3x Elite, 3x Archers
+i =233
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([191, 0, 0])
+$exdata_troops[i].enemies.push([191, 0, 1])
+$exdata_troops[i].enemies.push([191, 0, 2])
+$exdata_troops[i].enemies.push([197, 2, 0])
+$exdata_troops[i].enemies.push([197, 2, 1])
+$exdata_troops[i].enemies.push([197, 2, 0])
+
+# Dracoknight + 2x Elite
+i =234
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([195, 0, 1])
+$exdata_troops[i].enemies.push([197, 1, 0])
+$exdata_troops[i].enemies.push([197, 1, 2])
+
+# Apocalypse
+i =235
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([199, 1, 1])
+
+# General, 3x Elite, 2x Archers
+i =236
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([191, 0, 0])
+$exdata_troops[i].enemies.push([191, 0, 1])
+$exdata_troops[i].enemies.push([191, 0, 2])
+$exdata_troops[i].enemies.push([197, 2, 0])
+$exdata_troops[i].enemies.push([198, 2, 1])
+$exdata_troops[i].enemies.push([197, 2, 0])
+
+# Dracoknight
+i =237
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([195, 0, 1])
+
+# General, 2x Elite, 3x Archers
+i =238
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([191, 0, 0])
+$exdata_troops[i].enemies.push([198, 0, 1])
+$exdata_troops[i].enemies.push([191, 0, 2])
+$exdata_troops[i].enemies.push([197, 2, 0])
+$exdata_troops[i].enemies.push([197, 2, 1])
+$exdata_troops[i].enemies.push([197, 2, 0])
+
+# Gudrun
+i =239
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([200, 1, 1])
+
+# Sirius Lux + 2x Starshine
+i =240
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([202, 1, 1])
+$exdata_troops[i].enemies.push([203, 2, 0])
+$exdata_troops[i].enemies.push([203, 2, 2])
+
+# Red Dracoknight
+i =241
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([201, 0, 1])
+
+# Red Dracoknight + 2x Elite
+i =242
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([201, 0, 1])
+$exdata_troops[i].enemies.push([197, 1, 0])
+$exdata_troops[i].enemies.push([197, 1, 2])
+
+# General, 4x Archers
+i =243
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([197, 1, 0])
+$exdata_troops[i].enemies.push([198, 1, 1])
+$exdata_troops[i].enemies.push([197, 1, 2])
+$exdata_troops[i].enemies.push([197, 2, 0])
+$exdata_troops[i].enemies.push([197, 2, 2])
+
+# 2x Apocalypse
+i =244
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([199, 1, 0])
+$exdata_troops[i].enemies.push([199, 1, 2])
+
+# General, Apocalypse, 1x Archer
+i =245
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([199, 1, 0])
+$exdata_troops[i].enemies.push([198, 1, 2])
+$exdata_troops[i].enemies.push([197, 2, 1])
+
+# Brunhild
+i =246
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([204, 1, 1])
+
+# Hand of Fate
+i =247
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([205, 1, 1])
+$exdata_troops[i].enemies.push([206, 0, 1])
+$exdata_troops[i].enemies.push([207, 1, 0])
+$exdata_troops[i].enemies.push([208, 1, 2])
+$exdata_troops[i].enemies.push([209, 2, 0])
+$exdata_troops[i].enemies.push([210, 2, 2])
+
+# Hugin & Munin
+i =248
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([211, 1, 2])
+$exdata_troops[i].enemies.push([212, 1, 0])
+
+# 4x Shadow Legionnaire
+i =249
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([213, 0, 0])
+$exdata_troops[i].enemies.push([213, 0, 1])
+$exdata_troops[i].enemies.push([213, 0, 2])
+$exdata_troops[i].enemies.push([213, 1, 1])
+
+# 5x Shadow Legionnaire
+i =250
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([213, 0, 0])
+$exdata_troops[i].enemies.push([213, 0, 1])
+$exdata_troops[i].enemies.push([213, 0, 2])
+$exdata_troops[i].enemies.push([213, 1, 0])
+$exdata_troops[i].enemies.push([213, 1, 2])
+
+# 6x Shadow Legionnaire
+i =251
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([213, 0, 0])
+$exdata_troops[i].enemies.push([213, 0, 1])
+$exdata_troops[i].enemies.push([213, 0, 2])
+$exdata_troops[i].enemies.push([213, 1, 0])
+$exdata_troops[i].enemies.push([213, 1, 1])
+$exdata_troops[i].enemies.push([213, 1, 2])
+
+# Shadow Daniel
+i =252
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([214, 1, 1])
+
+# Shadow Erin
+i =253
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([215, 1, 1])
+
+# Shadow Eander
+i =254
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([216, 1, 1])
+
+# Shadow Tarlia
+i =255
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([217, 1, 1])
+
+# Shadow Ljusalf
+i =256
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([218, 1, 1])
+
+# Shadow Yan Angwa
+i =257
+$exdata_troops[i] = Data_Troop.new
+$exdata_troops[i].enemies.push([219, 1, 1])

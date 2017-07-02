@@ -1,0 +1,91 @@
+#==============================================================================
+# ** Scene_Ending
+#------------------------------------------------------------------------------
+#  Character endings.
+#==============================================================================
+
+class Scene_Ending
+  #--------------------------------------------------------------------------
+  # * Main Processing
+  #--------------------------------------------------------------------------
+  def main
+    # Make title graphic
+    @sprite = Sprite.new
+    @sprite.bitmap = RPG::Cache.picture("Backgrounds/Menu" + $game_system.windowskin_id.to_s)    
+    @sprite.opacity = 0
+    @y = 0
+    @counter = 20
+    @char_index = 0
+    @windows = []
+    # Execute transition
+    Graphics.transition
+    # Main loop
+    loop do
+      # Update game screen
+      Graphics.update
+      # Update input information
+      Input.update
+      # Frame update
+      update
+      # Abort loop if screen is changed
+      if $scene != self
+        break
+      end
+    end
+    # Prepare for transition
+    Graphics.freeze
+    # Dispose of windows
+    @sprite.bitmap.dispose
+    @sprite.dispose
+  end
+  #--------------------------------------------------------------------------
+  # * Frame Update
+  #--------------------------------------------------------------------------
+  def update    
+    if @sprite.opacity < 255 and not @fade_out
+      @sprite.opacity += 2
+      if @sprite.opacity == 100
+        $game_system.me_play(RPG::AudioFile.new("Char Ending", 100, 100))        
+      end
+      return
+    end    
+    for window in @windows
+      if not window == nil
+        window.update
+      end
+    end
+    if @counter > 0
+      @counter -= 1
+      return
+    end    
+    if @char_index > 74
+      @fade_out = true
+      @sprite.opacity -= 2
+      if @sprite.opacity == 0
+        # Next scene
+        $scene = Scene_Credits.new
+      end
+      return
+    end
+    ending = $data_charending[@char_index]    
+    # Find appropriate text
+    for line in ending.lines
+      if line.switch < 0 or $game_switches[line.switch] == true
+        text = line.text
+        break
+      end
+    end    
+    window = Window_CharEnding.new(@y, $game_actors[ending.char_id], text)
+    @windows.push(window)    
+    if @char_index % 4 == 3
+      @counter = 370
+    else
+      @counter = 90
+    end
+    @y = (@y + 120) % 480
+    @char_index += 1
+    if @char_index > 74
+      @counter = 500
+    end
+  end
+end

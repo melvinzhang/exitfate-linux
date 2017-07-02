@@ -1,0 +1,432 @@
+#==============================================================================
+# ** Scene_Equip
+#------------------------------------------------------------------------------
+#  This class performs equipment screen processing.
+#==============================================================================
+
+class Scene_Equip
+  #--------------------------------------------------------------------------
+  # * Main Processing
+  #--------------------------------------------------------------------------
+  def main
+    # Make title graphic
+    @sprite = Sprite.new
+    @sprite.bitmap = RPG::Cache.picture("Backgrounds/Menu" + $game_system.windowskin_id.to_s)    
+    # Make label window
+    @label_window = Window_Label.new("Equip")
+    # Make command window
+    s = []
+    s.push("Equip")
+    s.push("Remove")
+    s.push("Remove All")
+    @command_window = Window_Command.new(150, s)
+    @command_window.y = 75
+    @command_window.windowskin_suffix = "_left"
+    @command_window.index = 0
+    @command_window.active = true
+    # Make status window
+    @status_window = []
+    for i in 0...6
+      @status_window[i] = Window_MenuStatus.new($game_party.actors[i], true, true)
+      @status_window[i].x = 465
+      @status_window[i].y = i*36
+    end
+    @entourage_window = Window_Base_Short.new(465, 6*36, 300, 40)
+    @entourage_window.contents = Bitmap.new(175, 48)      
+    @entourage_window.windowskin_suffix = "_right"
+    @entourage_window.contents.font.color = @entourage_window.system_color
+    @entourage_window.draw_text(24, 4, 200, 32, "Entourage")
+    for i in 0...2
+      @status_window[6+i] = Window_MenuStatus.new($game_party.entourage[i], true,  true)
+      @status_window[6+i].x = 465
+      @status_window[6+i].y = (i+7)*36
+    end
+    # Make windows
+    @equip_window = Window_Equip.new
+    @equip_window.disable_LR = true
+    @equipstats_window =Window_EquipStats.new
+    @equipstats_window.x = @equip_window.x - @equipstats_window.width    
+    @item_windows = []
+    @item_windows[0] = Window_EquipItem.new(0)
+    @item_windows[1] = Window_EquipItem.new(1)
+    @item_windows[2] = Window_EquipItem.new(2)
+    @item_windows[3] = Window_EquipItem.new(3)
+    @item_windows[4] = Window_EquipItem.new(4)    
+    @help_window = Window_Help.new        
+    @equip_window.help_window = @help_window
+    for w in @item_windows
+      w.help_window = @help_window
+      w.disable_LR = true
+    end
+    # Execute transition
+    Graphics.transition
+    # Main loop
+    loop do
+      # Update game screen
+      Graphics.update
+      # Update input information
+      Input.update
+      # Frame update
+      update
+      # Abort loop if screen is changed
+      if $scene != self
+        break
+      end
+    end
+    # Prepare for transition
+    Graphics.freeze
+    # Dispose of windows
+    for w in @status_window + @item_windows
+      w.dispose
+    end
+    @help_window.dispose
+    @command_window.dispose
+    @label_window.dispose
+    @sprite.bitmap.dispose
+    @sprite.dispose
+    @entourage_window.dispose    
+    @equip_window.dispose
+    @equipstats_window.dispose
+  end
+  #--------------------------------------------------------------------------
+  # * Refresh
+  #--------------------------------------------------------------------------
+  def refresh
+    # Set item window to visible
+    for w in @item_windows
+      w.visible = false
+    end    
+    if @command_window.index == 0    
+      @item_windows[0].visible = (@equip_window.index == 0) 
+      @item_windows[1].visible = (@equip_window.index == 1)
+      @item_windows[2].visible = (@equip_window.index == 2)
+      @item_windows[3].visible = ([3, 4, 5].include?(@equip_window.index))
+      @item_windows[4].visible = ([6, 7].include?(@equip_window.index))
+    end
+    @cur_item_window = nil
+    for w in @item_windows
+      if w.visible
+        @cur_item_window = w
+      end
+    end
+    @item_windows[0].refresh(@actor)
+    @item_windows[1].refresh(@actor)
+    @item_windows[2].refresh(@actor)
+    @item_windows[3].refresh(@actor)
+    @item_windows[4].refresh(@actor)
+    #@cur_item_window.refresh(@actor) if @cur_item_window != nil
+    # Equip
+    if @command_window.index == 0
+      @equipstats_window.set_new_parameters
+      if @cur_item_window != nil
+        if @cur_item_window.active
+          id = @equip_window.index
+          item_type =  id >= 6 ? 4 : 
+                                id  >= 3 ? 3 : 
+                                id 
+          item_slot  =  id >= 6 ? id-6 : 
+                                id  >= 3 ? id-3 : 
+                                0     
+          old_item = item_type == 0 ? @actor.helmet_id :
+                             item_type == 1 ? @actor.armor_id :
+                             item_type == 2 ? @actor.boots_id :
+                             item_type == 3 ? @actor.acc_ids[item_slot] :
+                             @actor.item_ids[item_slot]      
+          id = @cur_item_window.item == nil ? 0 : @cur_item_window.item.id
+          @actor.equip(item_type, id, item_slot)
+          @equipstats_window.set_new_parameters
+          @actor.equip(item_type, old_item, item_slot)
+        end
+      end
+    end
+    # Remove
+    if @command_window.index == 1
+      id = @equip_window.index
+      item_type =  id >= 6 ? 4 : 
+                            id  >= 3 ? 3 : 
+                            id 
+      item_slot  =  id >= 6 ? id-6 : 
+                            id  >= 3 ? id-3 : 
+                            0     
+      old_item = item_type == 0 ? @actor.helmet_id :
+                         item_type == 1 ? @actor.armor_id :
+                         item_type == 2 ? @actor.boots_id :
+                         item_type == 3 ? @actor.acc_ids[item_slot] :
+                         @actor.item_ids[item_slot]      
+      @actor.equip(item_type, 0, item_slot)
+      @equipstats_window.set_new_parameters
+      @actor.equip(item_type, old_item, item_slot)
+    end
+    # Remove all
+    if @command_window.index == 2
+      old_helmet = @actor.helmet_id
+      old_armor = @actor.armor_id
+      old_boots = @actor.boots_id
+      old_accs = @actor.acc_ids.clone
+      old_items= @actor.item_ids.clone      
+      @actor.equip(0, 0)
+      @actor.equip(1, 0)
+      @actor.equip(2, 0)
+      @actor.equip(3, 0, 0)
+      @actor.equip(3, 0, 1)
+      @actor.equip(3, 0, 2)
+      @actor.equip(4, 0, 0)
+      @actor.equip(4, 0, 1)
+      @equipstats_window.set_new_parameters
+      @actor.equip(0, old_helmet)
+      @actor.equip(1, old_armor)
+      @actor.equip(2, old_boots)
+      @actor.equip(3, old_accs[0], 0)
+      @actor.equip(3, old_accs[1], 1)
+      @actor.equip(3, old_accs[2], 2)
+      @actor.equip(4, old_items[0], 0)
+      @actor.equip(4, old_items[1], 1)
+    end
+    @equip_window.refresh
+  end
+  #--------------------------------------------------------------------------
+  # * Frame Update
+  #--------------------------------------------------------------------------
+  def update
+    # Update windows
+    @help_window.update
+    @command_window.update
+    @equip_window.update
+    @equipstats_window.update
+    for w in @status_window + @item_windows
+      w.update
+    end    
+    
+    if @command_window.active
+      update_command
+      return
+    end   
+    if @equip_window.active
+      update_equip
+      return
+    end   
+    if @cur_item_window != nil
+      if @cur_item_window.active
+        update_item
+        return
+      end
+    end   
+    update_target
+  end
+  #--------------------------------------------------------------------------
+  # * Frame Update (when Command window is active)
+  #--------------------------------------------------------------------------
+  def update_command
+    # If B button was pressed
+    if Input.trigger?(Input::B)
+      $game_system.se_play($data_system.cancel_se)
+      $scene = Scene_Menu.new(1)
+      return
+    end
+    # If C button was pressed, switch to items
+    if Input.trigger?(Input::C)
+      $game_system.se_play($data_system.decision_se)
+      @command_window.active = false
+      @target_index = 0
+      @status_window[0].active = true
+      @status_window[0].select        
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Move target cursor down
+  #--------------------------------------------------------------------------  
+  def move_target_cursor_down
+      @status_window[@target_index].active = false
+      @status_window[@target_index].unselect        
+      @target_index = (@target_index + 1) % 8
+      @status_window[@target_index].active = true
+      @status_window[@target_index].select       
+  end
+  #--------------------------------------------------------------------------
+  # * Move target cursor up
+  #--------------------------------------------------------------------------
+  def move_target_cursor_up    
+      @status_window[@target_index].active = false
+      @status_window[@target_index].unselect        
+      @target_index = (@target_index - 1 + 8) % 8
+      @status_window[@target_index].active = true
+      @status_window[@target_index].select       
+  end
+  #--------------------------------------------------------------------------
+  # * Frame Update (when target window is active)
+  #--------------------------------------------------------------------------
+  def update_target
+    if Input.repeat?(Input::DOWN)
+      $game_system.se_play($data_system.cursor_se)   
+       move_target_cursor_down  
+    end    
+    if Input.repeat?(Input::UP) 
+      $game_system.se_play($data_system.cursor_se)   
+      move_target_cursor_up
+    end        
+    # If B button was pressed
+    if Input.trigger?(Input::B)
+      # Play cancel SE
+      $game_system.se_play($data_system.cancel_se)
+      for w in @status_window
+        w.unselect
+        w.active = false
+      end
+      @command_window.active = true      
+      return
+    end
+    # If C button was pressed
+    if Input.trigger?(Input::C)
+      if @status_window[@target_index].actor == nil
+        $game_system.se_play($data_system.buzzer_se)
+        return        
+      end      
+      @actor = @status_window[@target_index].actor
+      @equip_window.actor = @actor
+      @equip_window.select_all = false
+      if @command_window.index == 2
+        @equip_window.select_all = true
+        @equip_window.help_window = nil
+      end
+      @equip_window.visible = true
+      @equip_window.active = true
+      @equipstats_window.visible = true
+      @equipstats_window.actor = @actor
+      @equipstats_window.set_old_parameters      
+      for w in @status_window
+        w.active = false
+      end            
+      refresh
+    end   
+  end
+  #--------------------------------------------------------------------------
+  # * Frame Update (when equip window is active)
+  #--------------------------------------------------------------------------
+  def update_equip
+    if Input.repeat?(Input::L) or Input.repeat?(Input::R)
+      $game_system.se_play($data_system.cursor_se)
+      if Input.repeat?(Input::L)
+        move_target_cursor_up
+        while @status_window[@target_index].actor == nil
+          move_target_cursor_up
+        end      
+      end    
+      if Input.repeat?(Input::R)
+        move_target_cursor_down
+        while @status_window[@target_index].actor == nil
+          move_target_cursor_down
+        end      
+      end        
+      @actor = @status_window[@target_index].actor
+      @equip_window.actor = @actor
+      @equip_window.select_all = false
+      if @command_window.index == 2
+        @equip_window.select_all = true
+        @equip_window.help_window = nil
+      end
+      @equipstats_window.actor = @actor
+      @equipstats_window.set_old_parameters      
+      refresh      
+    end
+    if Input.trigger?(Input::B)
+      $game_system.se_play($data_system.cancel_se)
+      @help_window.set_text("")
+      @equip_window.visible = false
+      @equip_window.active = false      
+      @equipstats_window.visible = false
+      @equip_window.help_window = @help_window
+      if @cur_item_window != nil
+        @cur_item_window.visible = false
+      end
+      for w in @status_window
+        w.active = true
+      end       
+      return
+    end
+    if @equip_window.index_changed
+      refresh
+    end    
+    # If C button was pressed
+    if Input.trigger?(Input::C)
+      if @actor.fixed_equip
+        $game_system.se_play($data_system.buzzer_se)
+        return
+      end
+      if @command_window.index == 0
+        # Equip
+        if @equip_window.index <= 2 and $exdata_actors[@actor.id].no_armour
+          $game_system.se_play($data_system.buzzer_se)          
+          return
+        end
+        $game_system.se_play($data_system.decision_se)
+        refresh        
+        @cur_item_window.active = true
+        @cur_item_window.index = 0
+        @equip_window.active = false
+        refresh
+      elsif @command_window.index == 1
+        # Remove
+        $game_system.se_play($data_system.cancel_se)
+        if @equip_window.index <= 2 
+          @actor.equip(@equip_window.index, 0)
+        elsif @equip_window.index <= 5
+          @actor.equip(3, 0, @equip_window.index-3)
+        else
+          @actor.equip(4, 0, @equip_window.index-6)
+        end                  
+        @equipstats_window.set_old_parameters
+        refresh
+      elsif @command_window.index == 2
+        # Remove all        
+        $game_system.se_play($data_system.cancel_se)
+        @actor.equip(0, 0)
+        @actor.equip(1, 0)
+        @actor.equip(2, 0)
+        @actor.equip(3, 0, 0)
+        @actor.equip(3, 0, 1)
+        @actor.equip(3, 0, 2)
+        @actor.equip(4, 0, 0)
+        @actor.equip(4, 0, 1)
+        @equipstats_window.set_old_parameters
+        refresh
+      end            
+      return
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Frame Update (when selecting new equipment)
+  #--------------------------------------------------------------------------
+  def update_item
+    # If B button was pressed
+    if Input.trigger?(Input::B)
+      $game_system.se_play($data_system.cancel_se)
+      @cur_item_window.active = false
+      @cur_item_window.index = -1
+      @equip_window.active = true
+      refresh
+      return
+    end
+    if @cur_item_window.index_changed       
+      refresh
+    end
+    # If C button was pressed
+    if Input.trigger?(Input::C)
+      $game_system.se_play($data_system.decision_se)
+      id = @equip_window.index
+      item_type =  id >= 6 ? 4 : 
+                            id  >= 3 ? 3 : 
+                            id 
+      item_slot  =  id >= 6 ? id-6 : 
+                            id  >= 3 ? id-3 : 
+                            0      
+      id = @cur_item_window.item == nil ? 0 : @cur_item_window.item.id
+      @actor.equip(item_type, id, item_slot)
+      @equipstats_window.set_old_parameters
+      @cur_item_window.active = false
+      @cur_item_window.index = -1
+      @equip_window.active = true
+      refresh
+      return
+    end
+  end
+end

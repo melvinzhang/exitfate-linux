@@ -1,0 +1,306 @@
+#==============================================================================
+# ** Scene_Interview
+#------------------------------------------------------------------------------
+#  Interview screen
+#==============================================================================
+
+class Scene_Interview
+  #--------------------------------------------------------------------------
+  # * Main Processing
+  #--------------------------------------------------------------------------
+  def main        
+    # Make title graphic
+    @sprite = Sprite.new
+    @sprite.bitmap = RPG::Cache.picture("Backgrounds/Menu" + $game_system.windowskin_id.to_s)    
+    # Make label window
+    @label_window = Window_Label.new("Interview")    
+    # Make sprite with left/right arrows
+    windowskin = RPG::Cache.windowskin($game_system.windowskin_name)
+    @arrow_sprite = Sprite.new    
+    @arrow_sprite.x = 0
+    @arrow_sprite.y = 80
+    @arrow_sprite.bitmap = Bitmap.new(180, 16)    
+    @arrow_sprite.bitmap.blt(10, 0, windowskin, Rect.new(144, 24, 8, 16))
+    @arrow_sprite.bitmap.blt(150, 0, windowskin, Rect.new(168, 24, 8, 16))
+    @arrow_sprite.visible = false
+    # Make available party windows
+    @available_window = []
+    for i in 0...10
+      @available_window[i] = Window_MenuStatus.new(nil, true, true, false, true)
+      @available_window[i].x = -125
+      @available_window[i].y = 95 + i*36
+      @available_page = 0
+    end   
+    refresh_available
+    @available_index = 0
+    @available_window[@available_index].active = true
+    @available_window[@available_index].select        
+    @portrait_sprite = Sprite.new
+    @portrait_sprite.x = 155
+    show_portrait
+    @portrait_sm_sprite = Sprite.new
+    @portrait_sm_sprite.x = 255
+    @portrait_sm_sprite.y = 30
+    @portrait_sm_sprite.z = 500
+    @portrait_sm_sprite.visible = false
+    # Other windows
+    @interview_title_window = Window_Base_Short.new(320, 95-48, 320, 48)
+    @interview_title_window.set_standard_bitmap
+    @interview_title_window.visible = false    
+    @interview_window = Window_Base.new(175, 95, 640-175, 480-95-25)
+    @interview_window.visible = false    
+    @interview_window.back_opacity = 220
+    @choice_title_window = Window_Base_Short.new(200, 150, 250, 48)
+    @choice_title_window.set_standard_bitmap
+    @choice_title_window.visible = false    
+    @choice_window = Window_Command.new(100, ["Yes", "No"])
+    @choice_window.x = 275
+    @choice_window.y = @choice_title_window.y + 48
+    @choice_window.visible = false
+    @choice_window.active = false
+    # Check if an interview should be shown immediately
+    id = $game_system.interview_id
+    if id > 0
+      $game_system.interview_id = 0
+      $game_actors[id].interviewed = true
+      # Highlight this actor in the list
+      chars = $game_actors.get_joined_characters
+      for i in 0...chars.size
+        if chars[i].id == id
+          @available_window[@available_index].active = false
+          @available_window[@available_index].unselect       
+          @available_index = i % 10
+          @available_window[@available_index].active = true
+          @available_window[@available_index].select       
+          @available_page = (i - @available_index)  / 10
+          refresh_available          
+          show_portrait
+          break
+        end
+      end
+      show_interview(id)
+    end
+    # Execute transition
+    Graphics.transition
+    # Main loop
+    loop do
+      # Update game screen
+      Graphics.update
+      # Update input information
+      Input.update
+      # Frame update
+      update
+      # Abort loop if screen is changed
+      if $scene != self
+        break
+      end
+    end
+    # Prepare for transition
+    Graphics.freeze
+    # Dispose of windows
+    for w in @available_window
+      w.dispose
+    end
+    @portrait_sprite.dispose
+    @portrait_sm_sprite.dispose
+    @interview_title_window.dispose
+    @interview_window.dispose
+    @choice_title_window.dispose
+    @choice_window.dispose
+    @label_window.dispose
+    @arrow_sprite.dispose
+    @sprite.bitmap.dispose
+    @sprite.dispose
+  end
+  #--------------------------------------------------------------------------
+  # * Frame Update
+  #--------------------------------------------------------------------------
+  def update
+    # Update windows
+    @choice_window.update
+    for w in @available_window
+      w.update
+    end        
+    if @choice_window.active
+      update_choice
+    elsif @interview_window.visible
+      update_interview
+    else    
+      update_available
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Frame Update (when selecting from available characters)
+  #--------------------------------------------------------------------------
+  def update_available
+    if Input.repeat?(Input::DOWN)
+      $game_system.se_play($data_system.cursor_se)       
+      @available_window[@available_index].active = false
+      @available_window[@available_index].unselect
+      @available_index = (@available_index + 1) % @available_window.size
+      @available_window[@available_index].active = true
+      @available_window[@available_index].select        
+      show_portrait
+    end    
+    if Input.repeat?(Input::UP)
+      $game_system.se_play($data_system.cursor_se)       
+      @available_window[@available_index].active = false
+      @available_window[@available_index].unselect        
+      @available_index = (@available_index - 1) % @available_window.size
+      @available_window[@available_index].active = true
+      @available_window[@available_index].select            
+      show_portrait
+    end        
+    if (Input.repeat?(Input::LEFT) or Input.repeat?(Input::L))
+      $game_system.se_play($data_system.cursor_se)       
+      @available_page -= 1
+      refresh_available
+      show_portrait
+    end    
+    if (Input.repeat?(Input::RIGHT) or Input.repeat?(Input::R))
+      $game_system.se_play($data_system.cursor_se)       
+      @available_page += 1
+      refresh_available
+      show_portrait
+    end    
+    # If B button was pressed
+    if Input.trigger?(Input::B)
+      $game_system.se_play($data_system.cancel_se)
+      $scene = Scene_Map.new
+      return
+    end
+    # If C button was pressed
+    if Input.trigger?(Input::C)           
+      if @available_window[@available_index].actor == nil
+        $game_system.se_play($data_system.buzzer_se)        
+      else
+        $game_system.se_play($data_system.decision_se)        
+        actor = @available_window[@available_index].actor
+        if actor.interviewed
+          # Show interview         
+          show_interview(actor.id)
+        else
+          # Start Interview
+          @choice_window.visible = true
+          @choice_window.active = true
+          @choice_window.index = 0
+          @choice_title_window.visible = true
+          @choice_title_window.contents.clear
+          @choice_title_window.contents.font.color = @choice_title_window.normal_color
+          @choice_title_window.draw_text(0, 12, 250, 24, "Interview " + actor.name + "?", 1)    
+          @available_window[@available_index].active = false
+        end
+      end         
+    end   
+  end
+  #--------------------------------------------------------------------------
+  # * Frame Update (when choosing whether to interview someone)
+  #--------------------------------------------------------------------------
+  def update_choice
+    # If B button was pressed
+    if Input.trigger?(Input::B) or (Input.trigger?(Input::C) and @choice_window.index == 1)
+      $game_system.se_play($data_system.cancel_se)      
+      @choice_window.visible = false
+      @choice_window.active = false
+      @choice_title_window.visible = false
+      @available_window[@available_index].active = true
+    elsif (Input.trigger?(Input::C) and @choice_window.index == 0)
+      $game_system.se_play($data_system.decision_se)      
+      $game_system.interview_id = @available_window[@available_index].actor.id
+      $game_system.interview_timer = 20 * 60 * 5
+      $scene = Scene_Map.new
+    end   
+  end
+  #--------------------------------------------------------------------------
+  # * Frame Update (when choosing whether to interview someone)
+  #--------------------------------------------------------------------------
+  def update_interview
+    if Input.repeat?(Input::DOWN)
+      $game_system.se_play($data_system.cursor_se)       
+      @interview_window.oy = [@interview_window.oy + 24, @interview_window.contents.height - 240].min
+    end    
+    if Input.repeat?(Input::UP)
+      $game_system.se_play($data_system.cursor_se)       
+      @interview_window.oy = [@interview_window.oy - 24, 0].max
+    end         
+    # If B button was pressed
+    if Input.trigger?(Input::B)
+      $game_system.se_play($data_system.cancel_se)     
+      @interview_window.visible = false    
+      @interview_title_window.visible = false
+      @portrait_sm_sprite.visible = false
+      @available_window[@available_index].active = true
+    end   
+  end
+  #--------------------------------------------------------------------------
+  # * Refresh available character list
+  #--------------------------------------------------------------------------
+  def refresh_available
+    chars = $game_actors.get_joined_characters
+    # If current page is beyond current amount of characters, reduce it
+    max_page = [((chars.size - 1) / 10) , 0].max
+    @available_page = @available_page % (max_page + 1)
+    start = @available_page * 10
+    for i in 0...10
+      id = start + i
+      if id < chars.size
+        @available_window[i].actor = chars[id]
+        if chars[id].interviewed
+          @available_window[i].grey_name
+        end
+      else
+        @available_window[i].actor = nil
+      end
+    end
+    # Turn on left/right arrows
+    if chars.size > 10
+      @arrow_sprite.visible = true
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Show portrait of currently selected character
+  #--------------------------------------------------------------------------  
+  def show_portrait    
+    actor = @available_window[@available_index].actor
+    if actor == nil
+      @portrait_sprite.visible = false
+      return
+    end
+    @portrait_sprite.bitmap = RPG::Cache.picture("Portraits/" + actor.name)
+    @portrait_sprite.y = 480 - @portrait_sprite.bitmap.height    
+    @portrait_sprite.visible = true
+  end
+  #--------------------------------------------------------------------------
+  # * Show someone's interview
+  #--------------------------------------------------------------------------
+  def show_interview(id)    
+    @available_window[@available_index].active = false
+    # Show small portrait    
+    actor = @available_window[@available_index].actor
+    @portrait_sm_sprite.bitmap = RPG::Cache.picture("Battle Portraits/" + actor.name)
+    @portrait_sm_sprite.visible = true
+    # Find the interview string and cut it into lines
+    string = $data_interview[id] + "\n"
+    lines = string.scan(/.*\n/)
+    # Set window bitmap 
+    @interview_window.oy = 0
+    @interview_window.contents = Bitmap.new(@interview_window.width - 32, lines.size * 24)
+    # Draw lines to bitmap
+    y = 0    
+    for line in lines
+      # Lines in string starting with @ are shown in blue
+      if line[0, 1] == "@"
+        @interview_window.contents.font.color = @interview_window.system_color    
+        @interview_window.draw_text(0, y, 500, 24, line[1, line.length - 1])
+      else
+        @interview_window.contents.font.color = @interview_window.normal_color    
+        @interview_window.draw_text(0, y, 500, 24, line)
+      end
+      y += 24
+    end
+    @interview_window.visible = true    
+    @interview_title_window.visible = true
+    @interview_title_window.contents.clear
+    @interview_title_window.draw_text(32, 12, 320, 24, "Interview with " + @available_window[@available_index].actor.name, 0)    
+  end
+end

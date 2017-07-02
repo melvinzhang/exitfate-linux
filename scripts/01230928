@@ -1,0 +1,36 @@
+#==============================================================================
+# ** Window_HelpScreenList
+#------------------------------------------------------------------------------
+#  Shows the current list of help topics
+#==============================================================================
+
+class Window_HelpScreenList < Window_Selectable
+  #--------------------------------------------------------------------------
+  # * Object Initialization
+  #     width    : window width
+  #     commands : command text string array
+  #--------------------------------------------------------------------------
+  def initialize(topics)
+    # Compute window height from command quantity
+    super(0, 100, 160, 380)
+    self.windowskin_suffix = "_left"
+    @topics = topics    
+    refresh
+    self.index = 0
+  end
+  #--------------------------------------------------------------------------
+  # * Refresh
+  #--------------------------------------------------------------------------
+  def refresh(topics = @topics)
+    @topics = topics
+    @item_max = @topics.size
+    self.contents = Bitmap.new(width - 32, height - 32)
+    self.contents.clear
+    for i in 0...@item_max
+      self.contents.font.color = @topics[i].children.empty? ? normal_color : system_color
+      rect = Rect.new(4, @row_height * i, self.contents.width + 16, @row_height)
+      self.contents.fill_rect(rect, Color.new(0, 0, 0, 0))
+      self.draw_text_rect(rect, @topics[i].name)
+    end
+  end
+end

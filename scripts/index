@@ -1,0 +1,166 @@
+0484EB58~Game_Temp
+03A5532E~Game_System
+03EB8BF0~Game_Switches
+04A2B0F4~Game_Variables
+058E4E3F~Game_SelfSwitches
+0324FD19~Game_Screen
+04BDD6DB~Game_Picture
+0326F347~Game_Battler 1
+002B69C9~Game_Battler 2
+025B0A7C~Game_Battler 3
+03EE0A39~Game_BattleAction
+0595D7F8~Game_Actor
+01295322~Game_Enemy
+05066F95~Game_Actors
+0133A994~Game_Party
+05B91044~Game_Troop
+02B06318~Game_Map
+0236A9C9~Game_CommonEvent
+0514A377~Game_Character 1
+057BB07B~Game_Character 2
+05D471C5~Game_Character 3
+04846C59~Game_Event
+02CFD322~Game_Player
+00BA9079~Game_WarUnit
+01AC0C44~Game_Card
+02CBFF73~RPG::Weather
+0078F93E~RPG::Sprite
+02883D61~SkillInfo
+04909FA2~Sprite_Character
+030CB4FD~Sprite_Projectile
+021E4338~Sprite_Battler
+01CA87F9~Sprite_WarUnit
+05445549~Sprite_WarCursor
+05E1D286~Sprite_WarSquare
+011C2582~Sprite_Picture
+05113151~Sprite_Timer
+05788F34~Sprite_BattleTurnOrder
+042E5E9C~Sprite_WarTop
+03BF9AD3~Sprite_WarSetupLeader
+05F36A3B~Sprite_Card
+0023EB1B~Spriteset_Map
+0583B283~Spriteset_Battle
+03CC8EDC~Spriteset_War
+05268528~==== BASE WINDOWS ===
+01D6D483~Window_Base
+0077778A~Window_Base_Short
+03AFA9A0~Window_Selectable
+0515DCBB~Window_Selectable_Old
+0501AFA6~Window_Command
+04A625F2~Window_Help
+04EFBA53~====  OTHER WINDOWS ===
+03780D55~Window_Bribe
+05D754DE~Window_Gold
+009CC9C5~Window_PlayTime
+01265831~Window_MenuStatus
+04E12949~Window_Experience
+05743E0A~Window_BattleStatus
+05E14486~Window_BattleCommand
+04AD8F4A~Window_BattleHelp
+04E8D1DF~Window_Item
+00BCC19B~Window_BattleItem
+0558C190~Window_BattleSwitch
+036B6CC5~Window_BattleMove
+01340093~Window_BattleScan
+0295A24B~Window_Magic
+02F04C3E~Window_Blacksmith
+0462268C~Window_EquipStats
+013420CA~Window_Equip
+04042231~Window_EquipItem
+019305BB~Window_Label
+048DA4BA~Window_ArrangeStatus
+028AE6BF~Window_Status
+04DB807C~Window_SaveFile
+01230928~Window_HelpScreenList
+00FEAEC6~Window_HelpScreen
+056D7048~Window_ShopBuy
+0207554F~Window_ShopSell
+02FB9765~Window_ShopNumber
+05BBFF73~Window_ShopOwned
+005682A5~Window_ShopEffect
+05D26E59~Window_WarSetupUnit
+0044FF56~Window_WarSetupMember
+02297603~Window_WarSetupType
+0336D83E~Window_WarSetupList
+04996CB0~Window_NameEdit
+0477D9B3~Window_NameInput
+00BEEBCF~Window_InputNumber
+02E251ED~Window_Message_Small
+0391FFFE~Window_Message
+04A70DD4~Window_Message_Name
+02B73E30~Window_Message_Picture
+011EB529~Window_BattleResult
+04303F54~Window_DebugLeft
+046DF6A8~Window_DebugRight
+045F6F4E~Window_WarUnitInfo
+0331C79E~Window_WarAnalyze
+02E50C18~Window_Destination
+03A04C8F~Window_BJBalance
+04A8C957~Window_BJBet
+05E7FC98~Window_BJCurrentBet
+01677657~Window_SimList
+01423E02~Window_CharEnding
+048E3FAA~Interpreter 1
+05A8C3F1~Interpreter 2
+014EE752~Interpreter 3
+0349AECA~Interpreter 4
+049B5572~Interpreter 5
+0024BD9D~Interpreter 6
+05EF85D7~Interpreter 7
+03EA4B97~Interpreter 8
+04785AF3~Scene_Intro
+02E91AC9~Scene_Title
+01BDEAD1~Scene_Map
+05AF02C0~Scene_Menu
+0031EB4E~Scene_Options
+014112CE~Scene_Item
+04E6D145~Scene_Equip
+040A2497~Scene_Magic
+04FD6B03~Scene_Transport
+037BECD1~Scene_Blacksmith
+03A6F645~Scene_Arrange
+0382F209~Scene_Formation
+05B4DF62~Scene_Status
+03EF37F4~Scene_WarSetup
+0449BFFA~Scene_File
+0498E98F~Scene_Save
+037A93C4~Scene_Load
+035D8292~Scene_Help
+04C02AE6~Scene_End
+00419C97~Scene_Battle 1
+03C82809~Scene_Battle 2
+026F3DB7~Scene_Battle 3
+01F99187~Scene_Battle 4
+039B893C~Scene_Battle 5 (Equip)
+05A362E7~Scene_War 1
+026A298F~Scene_War 2
+03A54E43~Scene_War 3
+05458D38~Scene_War 4
+04D9D0C0~Scene_War 5
+030C93F4~Scene_War 6
+02C4D214~Scene_Shop
+02B93026~Scene_Name
+032544A0~Scene_Gameover
+008BCCFE~Scene_Stats
+016D0D92~Scene_Blackjack 1
+01F904C5~Scene_Blackjack 2
+04055029~Scene_MenuStyle
+017BE888~Scene_Interview
+02AD7290~Scene_Simulation
+011F850C~Scene_Ending
+05DC90CE~Scene_Ending2
+0499BADE~Scene_Credits
+02AE0BF9~Scene_Debug
+04044E60~Scene_Test
+03BD66AA~Global Variables
+04CE19A1~Data_Actors
+02BBD9EA~Data_Skill
+0044C0C6~Data_War
+0255EF83~Data_WarBattles
+01A44B55~Data_Enemies
+00710C15~Data_Troops
+03D7A114~Data_Interview
+011E738E~Data_CharEnding
+035824C4~Data_Other
+050DBA86~RPG_Cache
+01D63BDF~Main

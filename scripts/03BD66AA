@@ -1,0 +1,135 @@
+#==============================================================================
+# ** Global Variables
+#------------------------------------------------------------------------------
+#==============================================================================
+# Allow user to specify a font to work around the various font bugs
+if (FileTest.exists?("font.ini"))
+  file = File.open("font.ini", "r")
+  lines = file.readlines("\n")
+  for line in lines
+    if line[0, 5] == "font="
+      Font.default_name = [line[5, line.length-5]]
+      Font.default_name[0][/\n/] = ""
+    elsif line[0, 5] == "size="
+      Font.default_size = line[5, line.length-5].to_i
+    end    
+  end
+else
+  Font.default_name = ["MS Gothic", "ＭＳ ゴシック", "med ＭＳゴシック", "Courier New"]
+  Font.default_size = 20
+end
+#$DEBUG = true
+#=====================================
+# Constants
+#=====================================
+VERSION = "v1.02" + ($DEBUG ? " DEBUG" : "")
+SAVESLOTS = 40
+
+# Levels corresponding to each upgrade
+#                                                  0    1    2      3       4      5       6        7          8       9           10        11      12     13          14        15
+WEAPON_UPGR_LEVEL = [0,   4,   7,    11,   15,   20,    25,     30,      36,    42,         47,       54,     61,      69,        78,        85]
+#WEAPON_UPGR_PRICE =  [0, 40, 75, 110, 200, 340, 550,  800,  1550,  2400,  3400,    4600,    5750,    7500,     9000,     15000]
+#WEAPON_UPGR_PRICE =  [0, 40, 75, 110, 200, 360, 675,  1100,  1850,  3500,  6000,  10000,  17500,  32000,   60000,  140000]
+#WEAPON_UPGR_PRICE =  [0, 40, 120, 300, 440, 1000, 1800, 3375, 6600, 11100, 17500, 42000, 60000, 122500, 256000, 600000]
+WEAPON_UPGR_PRICE =  [0, 32, 100, 240, 350, 800, 1450, 2700, 5200, 9000, 14000, 33000, 48000, 100000, 210000, 480000]
+
+                                                    #                                 1.05 1.22   1.37    1.19     1.45    1.76    2.17    3.04   4.26     6.66      9.33
+                                                   #         1	1,6	2,73	2,2	2,78	2,67	3,07	3,57	3,17	2,92	4,2	3,43	3,83	4,27	4,29
+                                                    
+# Stats
+STAT_HP = 1
+STAT_MP = 2
+STAT_STR = 3
+STAT_MAG = 4
+STAT_PDF = 5
+STAT_MDF = 6
+STAT_SPD = 7
+STAT_ACC = 8
+STAT_DEX = 9
+STAT_SKL = 10
+
+# Elements
+ELEM_LIGHT = 1
+ELEM_DARK = 2
+ELEM_FIRE = 3
+ELEM_ICE = 4
+ELEM_WATER = 5
+ELEM_THUNDER = 6
+ELEM_NONE = 7
+
+# Target Types
+TARG_ONE = 1
+TARG_ALL = 2
+TARG_ADJACENT = 3
+TARG_ROW = 4
+TARG_COLUMN = 5
+TARG_SPREAD = 6
+
+# Steal chance
+STEAL_COMN  = 50
+STEAL_UNCM = 25
+STEAL_RARE = 12
+
+# Blackjack card suit
+SUIT_HEARTS = 0
+SUIT_DIAMONDS = 1
+SUIT_SPADES = 2
+SUIT_CLUBS = 3
+
+# War unit types
+UNIT_INFANTRY = 1
+UNIT_CAVALRY = 2
+UNIT_SCOUT = 3
+UNIT_SORCERY = 4
+UNIT_DEMON = 5
+
+# War unit side (flag/colour)
+SIDE_ELYSIUM = 0
+SIDE_KIRGARD = 1
+SIDE_ZELMONY = 2
+SIDE_ALMENGA = 3
+SIDE_HIGHLAND = 4
+SIDE_PEREIOUS = 5
+SIDE_DEMON = 6
+
+# War unit abilities
+WA_ANALYZE = 1
+WA_COUNTER = 2
+WA_SHIELD = 3
+WA_BERSERKER = 4
+WA_FORESTER = 5
+WA_MOUNTAINEER = 6
+WA_REGEN = 7
+WA_EVASION = 8
+WA_LIGHT_FEET = 9
+WA_BLOCKADE = 10
+WA_SCATTER = 11
+WA_FORCEFIELD = 12
+
+$data_war_ability_names = []
+$data_war_ability_names[WA_ANALYZE] = "Analyze"
+$data_war_ability_names[WA_COUNTER] = "Counter"
+$data_war_ability_names[WA_SHIELD] = "Shield"
+$data_war_ability_names[WA_BERSERKER] = "Berserker"
+$data_war_ability_names[WA_FORESTER] = "Forester"
+$data_war_ability_names[WA_MOUNTAINEER] = "Mountaineer"
+$data_war_ability_names[WA_REGEN] = "Regenerate"
+$data_war_ability_names[WA_EVASION] = "Evasion"
+$data_war_ability_names[WA_LIGHT_FEET] = "Light Feet"
+$data_war_ability_names[WA_BLOCKADE] = "Blockade"
+$data_war_ability_names[WA_SCATTER] = "Scatter"
+$data_war_ability_names[WA_FORCEFIELD] = "Forcefield"
+
+$data_war_ability_desc = []
+$data_war_ability_desc[WA_ANALYZE] = "See the expected damage in advance"
+$data_war_ability_desc[WA_COUNTER] = "+2 Attacks on counter"
+$data_war_ability_desc[WA_SHIELD] = "+2 Defence on counter"
+$data_war_ability_desc[WA_BERSERKER] = "+2 Attack on first strike, -2 Def on counter"
+$data_war_ability_desc[WA_FORESTER] = "Better movement in forests"
+$data_war_ability_desc[WA_MOUNTAINEER] = "Better movement on mountains"
+$data_war_ability_desc[WA_REGEN] = "Recover lost men after each battle"
+$data_war_ability_desc[WA_EVASION] = "25% of avoiding battle when attacked"
+$data_war_ability_desc[WA_LIGHT_FEET] = "+2 Defence against infantry"
+$data_war_ability_desc[WA_BLOCKADE] = "+2 Defence against cavalry"
+$data_war_ability_desc[WA_SCATTER] = "+2 Defence against scouts"
+$data_war_ability_desc[WA_FORCEFIELD] = "+2 Defence against sorcery"

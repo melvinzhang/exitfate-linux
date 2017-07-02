@@ -1,0 +1,194 @@
+#==============================================================================
+# ** Scene_Formation
+#------------------------------------------------------------------------------
+# Formation screen handling
+#==============================================================================
+
+class Scene_Formation
+  #--------------------------------------------------------------------------
+  # * Initialize
+  #--------------------------------------------------------------------------
+  def initialize(from_map = false)
+    @from_map = from_map
+  end
+  #--------------------------------------------------------------------------
+  # * Main Processing
+  #--------------------------------------------------------------------------
+  def main
+    # Make title graphic
+    @sprite = Sprite.new
+    @sprite.bitmap = RPG::Cache.picture("Backgrounds/Menu" + $game_system.windowskin_id.to_s)    
+    # 3x3 grid
+    @space_windows = []
+    @rowname_windows = []
+    for i in 0..2
+      row = []
+      for j in 0..2
+        row[j] = Window_Base.new(150 + j * 150, 100 + i * 90, 158, 98)
+        row[j].contents = Bitmap.new(row[j].width - 32, row[j].height - 32)
+      end
+      @rowname_windows[i] = Window_Base.new(10, 100 + 90*i, 140, 98)
+      @rowname_windows[i].contents = Bitmap.new(@rowname_windows[i].width - 32, @rowname_windows[i].height - 32)
+      @space_windows[i] = row
+    end   
+    @help_window = Window_Help.new
+    @label_window = Window_Label.new("Formation")
+    @col_index = 0
+    @row_index = 0
+    @selected_col_index = -1
+    @selected_row_index = -1
+    cur_window = @space_windows[@row_index][@col_index]    
+    cur_window.active = true
+    cur_window.cursor_rect.set(0, 0, cur_window.width-32, cur_window.height-32)
+    update_help
+    refresh
+    # Execute transition
+    Graphics.transition
+    # Main loop
+    loop do
+      # Update game screen
+      Graphics.update
+      # Update input information
+      Input.update
+      # Frame update
+      update
+      # Abort loop if screen is changed
+      if $scene != self
+        break
+      end
+    end
+    # Prepare for transition
+    Graphics.freeze
+    # Dispose of windows
+    for w in @rowname_windows
+      w.dispose
+    end
+    for r in @space_windows
+      for w in r
+        w.dispose
+      end
+    end
+    @label_window.dispose
+    @help_window.dispose
+    @sprite.bitmap.dispose
+    @sprite.dispose
+  end
+  #--------------------------------------------------------------------------
+  # * Refresh
+  #--------------------------------------------------------------------------
+  def refresh
+    for w in @rowname_windows
+      w.contents.clear
+    end
+    for r in @space_windows
+      for w in r
+        w.contents.clear
+      end
+    end    
+    @rowname_windows[0].draw_text(5, 20, 150, 32, "Front Row", 0)
+    @rowname_windows[1].draw_text(5, 20, 150, 32, "Centre Row", 0)
+    @rowname_windows[2].draw_text(5, 20, 150, 32, "Back Row", 0)
+    for actor in $game_party.actors
+      w = @space_windows[actor.battle_row][actor.battle_column]
+      w.draw_actor_menu_portrait(actor, 0, 0)
+      if actor.weapon_longrange?
+        w.contents.font.size = 25
+        w.contents.font.color = w.system_color
+        w.draw_text(0, w.contents.height - 24, 32, 32, "L")
+      end
+    end    
+  end
+  #--------------------------------------------------------------------------
+  # * Frame Update
+  #--------------------------------------------------------------------------
+  def update
+    for r in @space_windows
+      for w in r
+        w.update
+      end
+    end    
+    # If B button was pressed
+    if Input.trigger?(Input::B)
+      $game_system.se_play($data_system.cancel_se)
+      if @selected_col_index > -1
+        w = @space_windows[@selected_row_index][@selected_col_index]    
+        if @selected_col_index != @col_index or @selected_row_index != @row_index
+          w.cursor_rect.empty
+        end
+        @selected_col_index = -1
+        @selected_col_index = -1
+      else
+        if @from_map
+          $scene = Scene_Map.new
+        else
+          $scene = Scene_Menu.new(4)
+        end
+      end      
+      return
+    end
+    # If C button was pressed
+    if Input.trigger?(Input::C)
+      $game_system.se_play($data_system.decision_se)
+      if @selected_col_index > -1
+        # Switch spaces
+        for actor in $game_party.actors
+          if actor.battle_column == @selected_col_index and  actor.battle_row == @selected_row_index
+            actor.battle_column = @col_index
+            actor.battle_row = @row_index
+          elsif actor.battle_column == @col_index and  actor.battle_row == @row_index
+            actor.battle_column = @selected_col_index
+            actor.battle_row = @selected_row_index
+          end
+        end        
+        w = @space_windows[@selected_row_index][@selected_col_index]    
+        if @selected_col_index != @col_index or @selected_row_index != @row_index
+          w.cursor_rect.empty
+        end
+        @selected_col_index = -1
+        @selected_col_index = -1
+        refresh
+      else
+        # Select this space
+        @selected_col_index = @col_index
+        @selected_row_index = @row_index
+      end      
+      return
+    end
+    if Input.trigger?(Input::LEFT)  or Input.trigger?(Input::RIGHT) or 
+      Input.trigger?(Input::UP) or Input.trigger?(Input::DOWN)
+      $game_system.se_play($data_system.cursor_se)
+      cur_window = @space_windows[@row_index][@col_index]    
+      cur_window.active = false
+      # Remove highlight from old space if it's not selected
+      if @selected_col_index != @col_index or @selected_row_index != @row_index
+        cur_window.cursor_rect.empty
+      end
+      if Input.trigger?(Input::LEFT) 
+        @col_index = (@col_index - 1) % 3      
+      elsif Input.trigger?(Input::RIGHT) 
+        @col_index = (@col_index + 1) % 3      
+      elsif Input.trigger?(Input::UP) 
+        @row_index = (@row_index - 1) % 3    
+      elsif Input.trigger?(Input::DOWN) 
+        @row_index = (@row_index + 1) % 3    
+      end      
+      cur_window = @space_windows[@row_index][@col_index]    
+      cur_window.active = true
+      cur_window.cursor_rect.set(0, 0, cur_window.width-32, cur_window.height-32)
+      update_help
+      return
+    end    
+  end
+  #--------------------------------------------------------------------------
+  # * Update help window text
+  #--------------------------------------------------------------------------
+  def update_help
+      if @row_index == 0      
+        @help_window.set_text("Front Row: Normal strength and defence")
+      elsif @row_index == 1
+        @help_window.set_text("Centre Row: PDF+, STR- (for non-long range attacks)")
+      else
+        @help_window.set_text("Back Row: PDF++, STR-- (for non-long range attacks)")
+      end
+  end
+end

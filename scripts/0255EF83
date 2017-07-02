@@ -1,0 +1,1795 @@
+#==============================================================================
+# ** Data_WarBattles
+#------------------------------------------------------------------------------
+#  Sets up war battle units
+#
+#  Put units in order of movement (Sorcery -> Scout -> Infantry -> Cavalry -> Leader unit)
+#==============================================================================
+          
+class Data_WarBattles
+  #--------------------------------------------------------------------------
+  # * Set up
+  #
+  #  Returns [units, turn limit for A score, 
+  #--------------------------------------------------------------------------
+  def setup(id)    
+    if (id < 100 and id > 16) or (id >= 100 and id > 109)
+      return nil
+    end
+    return eval("setup_battle_" + id.to_s)
+  end
+  #--------------------------------------------------------------------------
+  # * Battle 1: Jargo Port City
+  #--------------------------------------------------------------------------
+  def setup_battle_1
+    units = []
+    # Kirgard Side
+    units.push(Game_WarUnit.new(5, 11, "Daniel", SIDE_KIRGARD, UNIT_INFANTRY,
+                400, 6, 6, [], ["Daniel"], false, true, false, 0, "Is this... the end?"))       
+    units.push(Game_WarUnit.new(12, 6, "Angel", SIDE_KIRGARD, UNIT_INFANTRY,
+                525, 5, 6, [WA_BLOCKADE],  ["Angel"], false, true, true, 1, "What a foolish mistake..."))  
+    units.push(Game_WarUnit.new(11, 5, "Jovian", SIDE_KIRGARD, UNIT_CAVALRY,
+                550, 6, 4, [], ["Jovian"],true, true, true, 1, "Damn it! Finish this for me, Daniel!"))     
+    units.push(Game_WarUnit.new(4, 11, "Kirgard 3rd Legion", SIDE_KIRGARD, UNIT_INFANTRY,
+                350, 3, 4, [], [], false, true, false))   
+    units.push(Game_WarUnit.new(4, 12, "Kirgard 3rd Legion", SIDE_KIRGARD, UNIT_SCOUT,
+                325, 3, 3, [WA_COUNTER], [], false, true, false))                             
+    # Jargo Side
+    units.push(Game_WarUnit.new(13, 15, "Jargo Defence Force", SIDE_ZELMONY, UNIT_INFANTRY,
+                450, 4, 4, [], [], false, false, true))              
+    units.push(Game_WarUnit.new(12, 15, "Jargo Defence Force", SIDE_ZELMONY, UNIT_INFANTRY,
+                400, 3, 5, [], [], false, false, true))             
+    units.push(Game_WarUnit.new(10, 15, "Jargo Defence Force", SIDE_ZELMONY, UNIT_INFANTRY,
+                400, 4, 3, [], [], false, false, true))             
+    units.push(Game_WarUnit.new(10, 16, "Jargo Defence Force", SIDE_ZELMONY, UNIT_INFANTRY,                
+                450, 3, 2, [], [], false, false, true))                
+    # Rewards
+    # A  Lightning (5)
+    # B  Hide belt (380)
+    # C  Blue Drop (24)
+    # D  Brown Herb (4)                
+    return [units, 5, "Kirgard 3rd Legion", "Jargo Defence Force", 
+                SIDE_KIRGARD, SIDE_ZELMONY, "Jargo Port City", 
+                1, 5, 
+                2, 380, 
+                0, 24, 
+                0, 4]
+  end
+  #--------------------------------------------------------------------------
+  # * Battle 2: Grunthall
+  #--------------------------------------------------------------------------
+  def setup_battle_2
+    units = []
+    # Matrech Side
+    units.push(Game_WarUnit.new(11, 19, "Highland Army", SIDE_ZELMONY, UNIT_INFANTRY,
+                350, 3, 5, [], [], false, true, true, 1, "", 0, true))       
+    units.push(Game_WarUnit.new(12, 20, "Highland Army", SIDE_ZELMONY, UNIT_INFANTRY,
+                350, 4, 4, [], [], false, true, true, 1, "", 0, true))       
+    units.push(Game_WarUnit.new(20, 19, "Matrech Guard", SIDE_ZELMONY, UNIT_SCOUT,
+                400, 4, 3, [], [], false, true, true))          
+    units.push(Game_WarUnit.new(20, 21, "Matrech Guard", SIDE_ZELMONY, UNIT_INFANTRY,
+                450, 4, 4, [], [], false, true, true))                    
+    units.push(Game_WarUnit.new(20, 20, "Jasper", SIDE_ZELMONY, UNIT_INFANTRY,
+                600, 5, 6, [WA_BLOCKADE],  ["Jasper"], false, true, true, 0, "What's going on!?\nUgh... I have to retreat."))  
+    create_player_units(units, SIDE_ZELMONY, [
+      [22, 19],    #Daniel
+      [22, 20],    # Ljusalf
+      [22, 21],    # Outsider
+      [23, 20],      # Paris
+      [22, 22],      # Bast
+      [23, 19],      # Shiro
+      [23, 21],      # Griever
+      [23, 22],     # Keyser         
+      [24, 19],       # Jovian
+      [24, 20],       # Nashal
+      [24, 22],       # Merrick
+      [24, 21],       # Eander
+      [25, 19],       # Erin
+      [25, 20]       # Marian
+      ])     
+    # Highland Side                     
+    units.push(Game_WarUnit.new(10, 5, "Highland Rebels", SIDE_HIGHLAND, UNIT_SORCERY,
+                250, 3, 2, [WA_MOUNTAINEER], [], false, false, true, 1))          
+    units.push(Game_WarUnit.new(10, 7, "Highland Rebels", SIDE_HIGHLAND, UNIT_SCOUT,
+                300, 2, 3, [], [], false, false, true, 1))             
+    units.push(Game_WarUnit.new(13, 7, "Highland Rebels", SIDE_HIGHLAND, UNIT_SCOUT,
+                300, 2, 2, [WA_COUNTER], [], false, false, true))           
+    units.push(Game_WarUnit.new(11, 8, "Highland Rebels", SIDE_HIGHLAND, UNIT_INFANTRY,
+                375, 3, 3, [WA_MOUNTAINEER], [], false, false, true, 1))                    
+    units.push(Game_WarUnit.new(12, 8, "Highland Rebels", SIDE_HIGHLAND, UNIT_INFANTRY,
+                375, 3, 3, [WA_MOUNTAINEER], [], false, false, true))           
+    units.push(Game_WarUnit.new(12, 6, "Paris", SIDE_HIGHLAND, UNIT_SCOUT,
+                500, 4, 3, [], ["Paris"], false, false, true, 0, "Sorry, Rock. I've gotta bail out."))      
+    units.push(Game_WarUnit.new(11, 6, "Rock", SIDE_HIGHLAND, UNIT_INFANTRY,
+                600, 6, 6, [WA_MOUNTAINEER], ["Rock"], true, false, true, 1))        
+    # Flip direction
+    for unit in units
+      unit.flip_direction = true
+    end                
+    # Rewards
+    # A  Grey Robe (108)
+    # B  Steel Bracer (301)
+    # C  Mend (13)
+    # D  Brown Herb (4)                
+    return [units, 10, "Matrech Guard", "Highland Rebel Army", 
+                SIDE_ZELMONY, SIDE_HIGHLAND, "Grunthall", 
+                2, 108,
+                2, 301, 
+                1, 13, 
+                0, 4]
+              end              
+  #--------------------------------------------------------------------------
+  # * Battle 3: Mayfall I
+  #--------------------------------------------------------------------------
+  def setup_battle_3
+    units = []
+    # Elysium Side
+    units.push(Game_WarUnit.new(7, 13, "Elysium Army", SIDE_ELYSIUM, UNIT_INFANTRY,
+                300, 4, 4, [], [], false, true, false))       
+    units.push(Game_WarUnit.new(7, 15, "Elysium Army", SIDE_ELYSIUM, UNIT_INFANTRY,
+                300, 4, 3, [], [], false, true, false))                          
+    create_player_units(units, SIDE_ELYSIUM, [
+      [9, 14],      # Daniel
+      [8, 14],      # Ljsualf
+      [8, 13],      # Outsider
+      [8, 15]     # Paris
+      ])           
+    # Kirgard Side                     
+    units.push(Game_WarUnit.new(22, 16, "Kirgard 2nd Legion", SIDE_KIRGARD, UNIT_INFANTRY,
+                650, 5, 4, [], [], false, false, true, 0))             
+    units.push(Game_WarUnit.new(20, 19, "Kirgard 2nd Legion", SIDE_KIRGARD, UNIT_INFANTRY,
+                650, 5, 6, [WA_FORCEFIELD], [], false, false, true, 1))     
+    units.push(Game_WarUnit.new(22, 17, "Kirgard 2nd Legion", SIDE_KIRGARD, UNIT_CAVALRY,
+                550, 5, 5, [WA_SHIELD], [], false, false, true, 0))     
+    units.push(Game_WarUnit.new(18, 20, "Kirgard 2nd Legion", SIDE_KIRGARD, UNIT_CAVALRY,
+                550, 5, 5, [WA_COUNTER], [], false, false, true, 1))     
+    units.push(Game_WarUnit.new(23, 17, "Kirgard 2nd Legion", SIDE_KIRGARD, UNIT_SCOUT,
+                525, 3, 3, [], [], false, false, true, 0))     
+    units.push(Game_WarUnit.new(19, 20, "Kirgard 2nd Legion", SIDE_KIRGARD, UNIT_SCOUT,
+                525, 3, 4, [], [], false, false, true, 1))     
+    units.push(Game_WarUnit.new(24, 17, "Kirgard 2nd Legion", SIDE_KIRGARD, UNIT_SORCERY,
+                500, 5, 2, [WA_LIGHT_FEET], [], false, false, true, 0))     
+    units.push(Game_WarUnit.new(19, 19, "Bruce", SIDE_KIRGARD, UNIT_CAVALRY,
+                750, 8, 6, [], ["Bruce"], false, false, true, 1, "What!? I'll get you for this, Daniel!!"))      
+    units.push(Game_WarUnit.new(23, 16, "Keyser", SIDE_KIRGARD, UNIT_INFANTRY,
+                1200, 6, 10, [WA_BLOCKADE], ["Keyser"], true, false, true, 0))        
+    # Rewards
+    # None, impossible to win            
+    return [units, 99, "Elysium Army", "Kirgard 2nd Legion", 
+                SIDE_ELYSIUM, SIDE_KIRGARD, "Mayfall City", 
+                0, 4,  
+                0, 4,  
+                0, 4,   
+                0, 4]      
+              end                 
+  #--------------------------------------------------------------------------
+  # * Battle 4: Mayfall II
+  #--------------------------------------------------------------------------
+  def setup_battle_4
+    units = []
+    # Elysium Side
+    units.push(Game_WarUnit.new(5, 11, "Elysium Army", SIDE_ELYSIUM, UNIT_INFANTRY,
+                400, 4, 4, [], [], false, true, false))             
+    units.push(Game_WarUnit.new(5, 13, "Elysium Army", SIDE_ELYSIUM, UNIT_CAVALRY,
+                400, 4, 3, [WA_LIGHT_FEET], [], false, true, false))              
+    create_player_units(units, SIDE_ELYSIUM, [
+      [7, 12],      # Daniel
+      [6, 12],      # Ljsualf
+      [6, 13],      # Outsider
+      [6, 11],     # Paris    
+      [7, 11],      # Bast
+      [6, 10],      # Shiro
+      [7, 13],      # Griever
+      [6, 14],     # Keyser         
+      [5, 14],       # Jovian
+      [4, 11],       # Nashal
+      [4, 12],       # Merrick
+      [5, 10],       # Eander
+      [4, 13],       # Erin
+      [4, 14]       # Marian
+      ])
+    # Kirgard Side                     
+    units.push(Game_WarUnit.new(21, 13, "Kirgard 2nd Legion", SIDE_KIRGARD, UNIT_INFANTRY,
+                500, 5, 4, [], [], false, false, true, 0))             
+    units.push(Game_WarUnit.new(21, 15, "Kirgard 2nd Legion", SIDE_KIRGARD, UNIT_INFANTRY,
+                500, 4, 5, [WA_SCATTER], [], false, false, true, 1))                     
+    units.push(Game_WarUnit.new(22, 12, "Kirgard 2nd Legion", SIDE_KIRGARD, UNIT_CAVALRY,
+                450, 4, 3, [], [], false, false, true, 0))     
+    units.push(Game_WarUnit.new(22, 14, "Kirgard 2nd Legion", SIDE_KIRGARD, UNIT_CAVALRY,
+                450, 4, 4, [], [], false, false, true, 1))     
+    units.push(Game_WarUnit.new(22, 16, "Kirgard 2nd Legion", SIDE_KIRGARD, UNIT_CAVALRY,
+                450, 3, 4, [WA_COUNTER], [], false, false, true, 1))                     
+    units.push(Game_WarUnit.new(22, 13, "Kirgard 2nd Legion", SIDE_KIRGARD, UNIT_SCOUT,
+                400, 3, 3, [], [], false, false, true, 0))     
+    units.push(Game_WarUnit.new(22, 15, "Kirgard 2nd Legion", SIDE_KIRGARD, UNIT_SCOUT,
+                400, 3, 4, [], [], false, false, true, 1))                     
+    units.push(Game_WarUnit.new(23, 13, "Kirgard 2nd Legion", SIDE_KIRGARD, UNIT_SORCERY,
+                400, 5, 2, [], [], false, false, true, 0))      
+    units.push(Game_WarUnit.new(23, 15, "Kirgard 2nd Legion", SIDE_KIRGARD, UNIT_SORCERY,
+                400, 5, 1, [WA_FORCEFIELD], [], false, false, true, 1))                      
+    units.push(Game_WarUnit.new(24, 14, "Keyser", SIDE_KIRGARD, UNIT_INFANTRY,
+                1000, 6, 10, [WA_BLOCKADE, WA_SHIELD], ["Keyser"], true, false, true, 0))                   
+    # Reinforcements
+    $game_temp.war_units_extra = []
+    $game_temp.war_units_extra .push(Game_WarUnit.new(16, 17, "Bast", SIDE_ELYSIUM, UNIT_INFANTRY,
+                750, 9, 6, [WA_COUNTER], ["Bast"], false, true, true, 1, "Don't worry about me! Press on and rout them!"))         
+    $game_temp.war_units_extra .push(Game_WarUnit.new(17, 17, "Elysium Army", SIDE_ELYSIUM, UNIT_SCOUT,
+                400, 6, 6, [WA_EVASION], [], false, true, true, 2))              
+    $game_temp.war_units_extra .push(Game_WarUnit.new(16, 18, "Elysium Army", SIDE_ELYSIUM, UNIT_SORCERY,
+                400, 6, 5, [], [], false, true, true, 3))        
+    # Rewards                
+    # A  Photon Beam (29)
+    # B  Mend-All (22)
+    # C  Charged Pearl (30)
+    # D  Brown Herb (4)                
+    return [units, 8, "Elysium Army", "Kirgard 2nd Legion", 
+                SIDE_ELYSIUM, SIDE_KIRGARD, "Mayfall City", 
+                1, 29,
+                1, 22, 
+                0, 30, 
+                0, 4]
+  end               
+  #--------------------------------------------------------------------------
+  # * Battle 5: Matrech Coast
+  #--------------------------------------------------------------------------
+  def setup_battle_5
+    units = []
+    # Elysium Side   
+    create_player_units(units, SIDE_ELYSIUM, [
+      [10, 13],      # Daniel
+      [9, 12],      # Ljusalf
+      [9, 13],      # Outsider
+      [11, 12],      # Paris
+      [10, 14],      # Bast
+      [11, 14],      # Shiro
+      [11, 13],      # Griever
+      [9, 14],       # Keyser          
+      [10, 12],       # Jovian
+      [10, 11],       # Nashal
+      [9, 11],       # Merrick
+      [11, 11],       # Eander
+      [11, 10],       # Erin
+      [10, 10]       # Marian
+      ])     
+    # Kirgard Side                     
+    units.push(Game_WarUnit.new(20, 21, "Kirgard 4th Legion", SIDE_KIRGARD, UNIT_SORCERY,
+                400, 3, 3, [], [], false, false, true, 0))                   
+    units.push(Game_WarUnit.new(20, 22, "Kirgard 4th Legion", SIDE_KIRGARD, UNIT_SORCERY,
+                400, 3, 2, [WA_LIGHT_FEET], [], false, false, true, 0))                       
+                
+    units.push(Game_WarUnit.new(23, 17, "Kirgard 4th Legion", SIDE_KIRGARD, UNIT_SCOUT,
+                450, 2, 3, [], [], false, false, true, 1))              
+    units.push(Game_WarUnit.new(23, 19, "Kirgard 4th Legion", SIDE_KIRGARD, UNIT_SCOUT,
+                450, 3, 3, [WA_COUNTER], [], false, false, true, 1))               
+                
+    units.push(Game_WarUnit.new(18, 22, "Kirgard 4th Legion", SIDE_KIRGARD, UNIT_INFANTRY,
+                550, 4, 4, [WA_FORCEFIELD], [], false, false, true, 0))             
+    units.push(Game_WarUnit.new(19, 20, "Kirgard 4th Legion", SIDE_KIRGARD, UNIT_INFANTRY,
+                550, 4, 4, [], [], false, false, true, 0))                 
+    units.push(Game_WarUnit.new(18, 21, "Trevor/Sick", SIDE_KIRGARD, UNIT_INFANTRY,
+                700, 7, 5, [WA_EVASION, WA_COUNTER], ["Trevor", "Sick"], false, false, true, 0, "What the... What are you doing!?"))         
+                    
+    units.push(Game_WarUnit.new(21, 18, "Kirgard 4th Legion", SIDE_KIRGARD, UNIT_CAVALRY,
+                500, 3, 3, [], [], false, false, true, 1))       
+    units.push(Game_WarUnit.new(22, 17, "Kirgard 4th Legion", SIDE_KIRGARD, UNIT_CAVALRY,
+                500, 3, 3, [WA_SHIELD], [], false, false, true, 1))    
+    units.push(Game_WarUnit.new(22, 19, "Kirgard 4th Legion", SIDE_KIRGARD, UNIT_CAVALRY,
+                500, 3, 4, [], [], false, false, true, 1))           
+                
+    units.push(Game_WarUnit.new(22, 18, "Leonius", SIDE_KIRGARD, UNIT_SCOUT,
+                900, 5, 8, [ ], ["E_Leonius"], true, false, true, 1))                   
+    # Rewards                
+    # A  Flamestrike (47)
+    # B  Fireball (27)
+    # C  Red Glasses (352)
+    # D  Green Herb (5)                
+    return [units, 10, "Elysium Army", "Kirgard 4th Legion", 
+                SIDE_ELYSIUM, SIDE_KIRGARD, "Matrech Coast", 
+                1, 48,
+                1, 27, 
+                2, 352, 
+                0, 5]
+  end              
+  #--------------------------------------------------------------------------
+  # * Battle 6: Elysium Castle
+  #--------------------------------------------------------------------------
+  def setup_battle_6
+    units = []
+    # Elysium Side   
+    units.push(Game_WarUnit.new(14, 10, "Jovian", SIDE_KIRGARD, UNIT_CAVALRY,
+                550, 6, 4, [], ["Jovian"], false, true, true, 1, "Damn it! Finish this for me, Daniel!"))                   
+    units.push(Game_WarUnit.new(14, 11, "Kirgard 3rd Legion", SIDE_KIRGARD, UNIT_INFANTRY,
+                400, 4, 4, [], [], false, true, true, 1))                   
+    create_player_units(units, SIDE_ELYSIUM, [
+      [16, 11],      # Daniel
+      [15, 10],      # Ljusalf
+      [17, 11],      # Outsider
+      [17, 10],      # Paris
+      [15, 11],      # Bast
+      [16, 12],      # Shiro
+      [15, 12],      # Griever
+      [17, 12],     # Keyser               
+      [16, 10],       # Jovian
+      [15, 9],       # Nashal
+      [16, 9],       # Merrick
+      [14, 12],       # Eander
+      [13, 12],       # Erin
+      [17, 9]       # Marian
+      ])     
+    # Zelmony Side                             
+    units.push(Game_WarUnit.new(15, 20, "Jasper", SIDE_ZELMONY, UNIT_CAVALRY,
+                675, 7, 4, [WA_LIGHT_FEET], ["Jasper"], false, false, true, 0, "Forgive me, Captain. I must withdraw."))         
+    units.push(Game_WarUnit.new(14, 20, "Matrech Guard", SIDE_ZELMONY, UNIT_CAVALRY,
+                450, 4, 3, [], [], false, false, true, 0))                 
+    units.push(Game_WarUnit.new(16, 20, "Matrech Guard", SIDE_ZELMONY, UNIT_CAVALRY,
+                450, 3, 4, [WA_COUNTER], [], false, false, true, 0))                 
+                
+    units.push(Game_WarUnit.new(14, 21, "Matrech Guard", SIDE_ZELMONY, UNIT_INFANTRY,
+                500, 4, 5, [], [], false, false, true, 0))                                 
+    units.push(Game_WarUnit.new(16, 21, "Matrech Guard", SIDE_ZELMONY, UNIT_INFANTRY,
+                500, 4, 4, [WA_FORCEFIELD], [], false, false, true, 0))                                   
+    units.push(Game_WarUnit.new(13, 22, "Matrech Guard", SIDE_ZELMONY, UNIT_INFANTRY,
+                500, 5, 4, [WA_EVASION], [], false, false, true, 2))                                  
+    units.push(Game_WarUnit.new(17, 22, "Matrech Guard", SIDE_ZELMONY, UNIT_INFANTRY,
+                500, 4, 4, [], [], false, false, true, 2))                
+                
+    units.push(Game_WarUnit.new(14, 23, "Matrech Guard", SIDE_ZELMONY, UNIT_SCOUT,
+                425, 3, 3, [WA_BLOCKADE], [], false, false, true, 2))          
+    units.push(Game_WarUnit.new(16, 23, "Matrech Guard", SIDE_ZELMONY, UNIT_SCOUT,
+                425, 3, 4, [], [], false, false, true, 2))                                    
+                
+    units.push(Game_WarUnit.new(15, 22, "Erin", SIDE_ZELMONY, UNIT_INFANTRY,
+                850, 7, 7, [ ], ["Erin"], true, false, true, 1, "You... You've brought ruin upon us all!"))                   
+    # Rewards                
+    # A  Matrech Plate (118)
+    # B  Diamond Dust (12)
+    # C  Velvet Scarf (342)
+    # D  Green Herb (5)                
+    return [units, 6, "Elysium Army", "Matrech Guard", 
+                SIDE_ELYSIUM, SIDE_ZELMONY, "Elysium Castle", 
+                2, 118,
+                0, 12, 
+                2, 342, 
+                0, 5]
+  end            
+  #--------------------------------------------------------------------------
+  # * Battle 7: Mayfall III
+  #--------------------------------------------------------------------------
+  def setup_battle_7
+    units = []
+    # Elysium Side              
+    create_player_units(units, SIDE_ELYSIUM, [
+      [6, 20],      # Daniel
+      [22, 6],      # Ljusalf
+      [6, 19],      # Outsider
+      [21, 6],      # Paris
+      [7, 20],      # Bast
+      [7, 21],      # Shiro
+      [7, 19],      # Griever
+      [22, 7],     # Keyser         
+      [21, 7],     # Jovian
+      [7, 22],       # Nashal
+      [21, 5],       # Merrick
+      [23, 7],       # Eander
+      [23, 6],       # Erin
+      [5, 20]       # Marian
+      ])           
+    # Zelmony Side        
+    units.push(Game_WarUnit.new(19, 15, "Mayfall Army", SIDE_ZELMONY, UNIT_CAVALRY,
+                425, 4, 3, [], [], false, false, true, 0))              
+    units.push(Game_WarUnit.new(16, 18, "Mayfall Army", SIDE_ZELMONY, UNIT_CAVALRY,
+                425, 4, 3, [], [], false, false, true, 1))            
+    units.push(Game_WarUnit.new(17, 20, "Mayfall Army", SIDE_ZELMONY, UNIT_CAVALRY,
+                425, 4, 3, [], [], false, false, true, 1))                      
+                
+    units.push(Game_WarUnit.new(17, 14, "Mayfall Army", SIDE_ZELMONY, UNIT_INFANTRY,
+                480, 4, 5, [], [], false, false, true, 0))              
+    units.push(Game_WarUnit.new(18, 14, "Mayfall Army", SIDE_ZELMONY, UNIT_INFANTRY,
+                480, 4, 5, [], [], false, false, true, 0))               
+    units.push(Game_WarUnit.new(17, 19, "Mayfall Army", SIDE_ZELMONY, UNIT_INFANTRY,
+                480, 4, 5, [], [], false, false, true, 1))          
+    units.push(Game_WarUnit.new(16, 19, "Mayfall Army", SIDE_ZELMONY, UNIT_INFANTRY,
+                480, 4, 5, [], [], false, false, true, 1))                              
+                
+    units.push(Game_WarUnit.new(17, 15, "Mayfall Army", SIDE_ZELMONY, UNIT_SCOUT,
+                420, 3, 4, [], [], false, false, true, 0))                  
+    units.push(Game_WarUnit.new(18, 19, "Mayfall Army", SIDE_ZELMONY, UNIT_SCOUT,
+                420, 3, 4, [], [], false, false, true, 1))                                   
+                
+    units.push(Game_WarUnit.new(18, 15, "Mayfall Army", SIDE_ZELMONY, UNIT_SORCERY,
+                420, 5, 2, [], [], false, false, true, 0))      
+    units.push(Game_WarUnit.new(17, 19, "Mayfall Army", SIDE_ZELMONY, UNIT_SORCERY,
+                420, 5, 2, [], [], false, false, true, 1))      
+                
+    units.push(Game_WarUnit.new(17, 17, "Merrick", SIDE_ZELMONY, UNIT_SCOUT,
+                800, 5, 9, [WA_FORESTER, WA_BERSERKER], ["Merrick"], true, false, true, 1, nil, 1))                 
+    # Reinforcements
+    $game_temp.war_units_extra = []
+    $game_temp.war_units_extra .push(Game_WarUnit.new(25, 10, "Nashal", SIDE_ELYSIUM, UNIT_SCOUT,
+                700, 6, 6, [WA_COUNTER, WA_SHIELD], ["Nashal"], false, true, true, 9, "I must fall back.", 0, true))         
+    $game_temp.war_units_extra .push(Game_WarUnit.new(25, 11, "Goji Reinforcements", SIDE_ELYSIUM, UNIT_SCOUT,
+                400, 5, 5, [], [], false, true, true, 9, "", 0, true))
+    # Rewards                
+    # A  Cure (52)
+    # B  Blue Cape (363)
+    # C  Frost Shard (33)
+    # D  Green Herb (5)                
+    return [units, 5, "Elysium Army", "Mayfall Army", 
+                SIDE_ELYSIUM, SIDE_ZELMONY, "Mayfall City", 
+                1, 52,
+                2, 363, 
+                0, 33, 
+                0, 5]
+  end          
+  #--------------------------------------------------------------------------
+  # * Battle 8: Matrech
+  #--------------------------------------------------------------------------
+  def setup_battle_8
+    units = []
+    # Elysium Side           
+    create_player_units(units, SIDE_ELYSIUM, [
+      [16, 31],      # Daniel
+      [15, 32],      # Ljusalf
+      [17, 32],      # Outsider
+      [31, 16],      # Paris
+      [17, 31],      # Bast
+      [30, 16],      # Shiro
+      [30, 17],      # Griever
+      [30, 18],     # Keyser               
+      [16, 30],       # Jovian
+      [15, 31],       # Nashal
+      [31, 17],       # Merrick
+      [29, 17],       # Eander
+      [16, 32],       # Erin
+      [31, 18]       # Marian
+      ])     
+    # Zelmony Side                             
+    units.push(Game_WarUnit.new(15, 22, "Matrech Guard", SIDE_ZELMONY, UNIT_CAVALRY,
+                400, 4, 4, [WA_FORCEFIELD], [], false, false, true, 0))            
+    units.push(Game_WarUnit.new(14, 22, "Matrech Guard", SIDE_ZELMONY, UNIT_INFANTRY,
+                400, 5, 4, [WA_SHIELD], [], false, false, true, 0))             
+          
+    units.push(Game_WarUnit.new(27, 26, "Matrech Guard", SIDE_ZELMONY, UNIT_INFANTRY,
+                450, 4, 5, [], [], false, false, true, 1))          
+    units.push(Game_WarUnit.new(28, 26, "Matrech Guard", SIDE_ZELMONY, UNIT_INFANTRY,
+                450, 4, 4, [], [], false, false, true, 1))        
+    units.push(Game_WarUnit.new(27, 27, "Matrech Guard", SIDE_ZELMONY, UNIT_SORCERY,
+                380, 4, 1, [], [], false, false, true, 1))    
+                    
+    units.push(Game_WarUnit.new(13, 14, "Matrech Guard", SIDE_ZELMONY, UNIT_SORCERY,
+                400, 4, 2, [], [], false, false, true, 2))    
+    units.push(Game_WarUnit.new(16, 14, "Matrech Guard", SIDE_ZELMONY, UNIT_SORCERY,
+                400, 5, 1, [], [], false, false, true, 3))    
+                
+    units.push(Game_WarUnit.new(13, 16, "Matrech Guard", SIDE_ZELMONY, UNIT_CAVALRY,
+                425, 4, 4, [WA_EVASION], [], false, false, true, 2))                 
+    units.push(Game_WarUnit.new(16, 16, "Matrech Guard", SIDE_ZELMONY, UNIT_CAVALRY,
+                425, 4, 4, [], [], false, false, true, 3))                 
+                
+    units.push(Game_WarUnit.new(14, 16, "Matrech Guard", SIDE_ZELMONY, UNIT_INFANTRY,
+                450, 5, 4, [], [], false, false, true, 2))                                 
+    units.push(Game_WarUnit.new(15, 16, "Matrech Guard", SIDE_ZELMONY, UNIT_INFANTRY,
+                450, 4, 4, [WA_FORESTER], [], false, false, true, 3))           
+                
+    units.push(Game_WarUnit.new(14, 15, "Jasper", SIDE_ZELMONY, UNIT_CAVALRY,
+                675, 7, 4, [WA_LIGHT_FEET], ["Jasper"], false, false, true, 2, "I'm sorry, Captain... I can't go on any further.\nIt's all lost."))         
+                
+    units.push(Game_WarUnit.new(13, 15, "Matrech Guard", SIDE_ZELMONY, UNIT_SCOUT,
+                400, 4, 3, [WA_COUNTER], [], false, false, true, 2))          
+    units.push(Game_WarUnit.new(16, 15, "Matrech Guard", SIDE_ZELMONY, UNIT_SCOUT,
+                400, 3, 4, [], [], false, false, true, 3))                                    
+                
+    units.push(Game_WarUnit.new(15, 15, "Erin", SIDE_ZELMONY, UNIT_INFANTRY,
+                850, 7, 7, [ ], ["Erin"], true, false, true, 3))              
+    # Flip direction
+    for unit in units
+      unit.flip_direction = true
+    end      
+    # Rewards                
+    # A  Winged Boots (210)
+    # B  Firestrike (47)
+    # C  Knight Armour (121)
+    # D  Green Herb (5)                
+    return [units, 8, "Elysium Army", "Matrech Guard", 
+                SIDE_ELYSIUM, SIDE_ZELMONY, "Matrech State Capital", 
+                2, 210,
+                1, 47, 
+                2, 121, 
+                0, 5]
+  end                          
+  #--------------------------------------------------------------------------
+  # * Battle 9: Vishnu I
+  #--------------------------------------------------------------------------
+  def setup_battle_9
+    units = []
+    # Elysium Side           
+    create_player_units(units, SIDE_ELYSIUM, [
+      [13, 20],      # Daniel      
+      [13, 22],      # Ljusalf
+      [15, 22],      # Outsider
+      [12, 22],      # Paris
+      [13, 19],      # Bast
+      [12, 21],      # Shiro
+      [12, 20],      # Griever
+      [13, 21],     # Keyser         
+      [14, 19],     # Jovian
+      [14, 21],       # Nashal
+      [15, 21],       # Merrick
+      [14, 20],       # Eander
+      [15, 20],       # Erin
+      [14, 22]       # Marian
+      ])     
+    # Pereious Side                                             
+    units.push(Game_WarUnit.new(9, 8, "Mountain Tribes", SIDE_PEREIOUS, UNIT_CAVALRY,
+                400, 5, 5, [WA_SHIELD], [], false, false, true, 1))          
+    units.push(Game_WarUnit.new(13, 8, "Mountain Tribes", SIDE_PEREIOUS, UNIT_CAVALRY,
+                400, 6, 5, [WA_COUNTER], [], false, false, true, 2))          
+    units.push(Game_WarUnit.new(9, 7, "Mountain Tribes", SIDE_PEREIOUS, UNIT_CAVALRY,
+                400, 6, 6, [], [], false, false, true, 1))        
+    units.push(Game_WarUnit.new(10, 7, "Mountain Tribes", SIDE_PEREIOUS, UNIT_CAVALRY,
+                400, 5, 5, [WA_BLOCKADE], [], false, false, true, 1))          
+    units.push(Game_WarUnit.new(12, 7, "Mountain Tribes", SIDE_PEREIOUS, UNIT_CAVALRY,
+                400, 4, 6, [], [], false, false, true, 2))     
+    units.push(Game_WarUnit.new(13, 7, "Mountain Tribes", SIDE_PEREIOUS, UNIT_CAVALRY,
+                400, 5, 6, [], [], false, false, true, 2))        
+                      
+    units.push(Game_WarUnit.new(10, 9, "Mountain Tribes", SIDE_PEREIOUS, UNIT_INFANTRY,
+                425, 6, 6, [WA_LIGHT_FEET], [], false, false, true, 1))         
+    units.push(Game_WarUnit.new(12, 9, "Mountain Tribes", SIDE_PEREIOUS, UNIT_INFANTRY,
+                425, 6, 5, [], [], false, false, true, 2))   
+    units.push(Game_WarUnit.new(10, 8, "Mountain Tribes", SIDE_PEREIOUS, UNIT_INFANTRY,
+                425, 5, 5, [WA_COUNTER], [], false, false, true, 1))         
+    units.push(Game_WarUnit.new(11, 7, "Mountain Tribes", SIDE_PEREIOUS, UNIT_INFANTRY,
+                425, 5, 7, [], [], false, false, true, 3))          
+    units.push(Game_WarUnit.new(12, 8, "Mountain Tribes", SIDE_PEREIOUS, UNIT_INFANTRY,
+                425, 6, 6, [], [], false, false, true, 2))                                  
+                
+    units.push(Game_WarUnit.new(10, 6, "Mountain Tribes", SIDE_PEREIOUS, UNIT_SCOUT,
+                350, 6, 5, [WA_EVASION], [], false, false, true, 1))           
+    units.push(Game_WarUnit.new(12, 6, "Mountain Tribes", SIDE_PEREIOUS, UNIT_SCOUT,
+                350, 6, 5, [WA_FORCEFIELD], [], false, false, true, 2))                                            
+                
+    units.push(Game_WarUnit.new(11, 8, "Pereious", SIDE_PEREIOUS, UNIT_CAVALRY,
+                900, 10, 6, [WA_MOUNTAINEER], ["Pereious"], true, false, true, 3))              
+    # Flip direction
+    for unit in units
+      unit.flip_direction = true
+    end      
+    # Rewards                
+    # none      
+    return [units, 1, "Elysium Army", "Mountain Tribes", 
+                SIDE_ELYSIUM, SIDE_PEREIOUS, "Vishnu Citadel", 
+                0, 1, 0, 1,  0, 1,  0, 1]
+  end        
+  #--------------------------------------------------------------------------
+  # * Battle 10: Vishnu II
+  #--------------------------------------------------------------------------
+  def setup_battle_10
+    units = []
+    # Elysium Side           
+    create_player_units(units, SIDE_ELYSIUM, [
+      [13, 20],      # Daniel      
+      [13, 22],      # Ljusalf
+      [15, 22],      # Outsider
+      [12, 22],      # Paris
+      [13, 19],      # Bast
+      [12, 21],      # Shiro
+      [12, 20],      # Griever
+      [13, 21],     # Keyser         
+      [14, 19],     # Jovian
+      [14, 21],       # Nashal
+      [15, 21],       # Merrick
+      [14, 20],       # Eander
+      [15, 20],       # Erin
+      [14, 22]       # Marian
+      ])     
+    # Pereious Side                                             
+    units.push(Game_WarUnit.new(9, 8, "Mountain Tribes", SIDE_PEREIOUS, UNIT_CAVALRY,
+                400, 5, 5, [WA_SHIELD], [], false, false, true, 1))          
+    units.push(Game_WarUnit.new(13, 8, "Mountain Tribes", SIDE_PEREIOUS, UNIT_CAVALRY,
+                400, 6, 5, [WA_COUNTER], [], false, false, true, 2))          
+    units.push(Game_WarUnit.new(10, 7, "Mountain Tribes", SIDE_PEREIOUS, UNIT_CAVALRY,
+                400, 5, 5, [WA_BLOCKADE], [], false, false, true, 1))          
+    units.push(Game_WarUnit.new(12, 7, "Mountain Tribes", SIDE_PEREIOUS, UNIT_CAVALRY,
+                400, 4, 6, [], [], false, false, true, 2))     
+                      
+    units.push(Game_WarUnit.new(10, 8, "Mountain Tribes", SIDE_PEREIOUS, UNIT_INFANTRY,
+                425, 5, 5, [WA_COUNTER], [], false, false, true, 1))         
+    units.push(Game_WarUnit.new(11, 7, "Mountain Tribes", SIDE_PEREIOUS, UNIT_INFANTRY,
+                425, 5, 7, [], [], false, false, true, 3))          
+    units.push(Game_WarUnit.new(12, 8, "Mountain Tribes", SIDE_PEREIOUS, UNIT_INFANTRY,
+                425, 6, 6, [], [], false, false, true, 2))                                  
+                
+    units.push(Game_WarUnit.new(11, 6, "Mountain Tribes", SIDE_PEREIOUS, UNIT_SCOUT,
+                350, 6, 5, [WA_EVASION], [], false, false, true, 1))                                             
+                
+    units.push(Game_WarUnit.new(11, 8, "Pereious", SIDE_PEREIOUS, UNIT_CAVALRY,
+                900, 10, 6, [WA_MOUNTAINEER], ["Pereious"], true, false, true, 3))              
+    # Flip direction
+    for unit in units
+      unit.flip_direction = true
+    end      
+    # Rewards         
+    # A  Darkshield (59)
+    # B  Mountain Boots (362)
+    # C  Red Cape (362)
+    # D  Green Herb (5)             
+    return [units, 8, "Elysium Army", "Mountain Tribes", 
+                SIDE_ELYSIUM, SIDE_PEREIOUS, "Vishnu Citadel", 
+                1, 59, 
+                2, 211,  
+                2, 362,  
+                0, 4]
+  end            
+  #--------------------------------------------------------------------------
+  # * Battle 11: Ft. Brahma
+  #--------------------------------------------------------------------------
+  def setup_battle_11
+    units = []
+    # Elysium Side           
+    create_player_units(units, SIDE_ELYSIUM, [
+      [6, 7],      # Daniel
+      [5, 7],      # Ljusalf
+      [6, 16],      # Outsider
+      [5, 6],      # Paris
+      [31, 10],      # Bast
+      [6, 15],      # Shiro
+      [7, 15],      # Griever
+      [7, 6],     # Keyser               
+      [31, 13],       # Jovian
+      [6, 6],       # Nashal
+      [32, 12],       # Merrick
+      [7, 7],       # Eander
+      [7, 16],       # Erin
+      [5, 16]       # Marian
+      ])     
+    # Almenga Side                             
+    units.push(Game_WarUnit.new(21, 10, "Imperial Occupation Army", SIDE_ALMENGA, UNIT_SORCERY,
+                400, 5, 2, [], [], false, false, true, 1))    
+    units.push(Game_WarUnit.new(21, 12, "Imperial Occupation Army", SIDE_ALMENGA, UNIT_SORCERY,
+                400, 6, 1, [WA_EVASION], [], false, false, true, 2))    
+                                
+    units.push(Game_WarUnit.new(20, 11, "Imperial Occupation Army", SIDE_ALMENGA, UNIT_SCOUT,
+                425, 4, 3, [], [], false, false, true, 1))          
+    units.push(Game_WarUnit.new(22, 11, "Imperial Occupation Army", SIDE_ALMENGA, UNIT_SCOUT,
+                425, 3, 4, [WA_LIGHT_FEET], [], false, false, true, 2))                    
+                
+    units.push(Game_WarUnit.new(19, 10, "Imperial Occupation Army", SIDE_ALMENGA, UNIT_CAVALRY,
+                450, 4, 4, [WA_LIGHT_FEET], [], false, false, true, 1))           
+    units.push(Game_WarUnit.new(18, 11, "Imperial Occupation Army", SIDE_ALMENGA, UNIT_CAVALRY,
+                450, 5, 4, [], [], false, false, true, 1))        
+    units.push(Game_WarUnit.new(19, 12, "Imperial Occupation Army", SIDE_ALMENGA, UNIT_CAVALRY,
+                450, 4, 3, [], [], false, false, true, 1))              
+    units.push(Game_WarUnit.new(23, 11, "Imperial Occupation Army", SIDE_ALMENGA, UNIT_CAVALRY,
+                450, 4, 4, [WA_SHIELD], [], false, false, true, 2))                 
+                
+    units.push(Game_WarUnit.new(17, 10, "Imperial Occupation Army", SIDE_ALMENGA, UNIT_INFANTRY,
+                475, 5, 4, [], [], false, false, true, 1))      
+    units.push(Game_WarUnit.new(17, 11, "Imperial Occupation Army", SIDE_ALMENGA, UNIT_INFANTRY,
+                475, 5, 5, [WA_SCATTER], [], false, false, true, 1))   
+    units.push(Game_WarUnit.new(17, 12, "Imperial Occupation Army", SIDE_ALMENGA, UNIT_INFANTRY,
+                475, 5, 6, [], [], false, false, true, 1))                              
+    units.push(Game_WarUnit.new(24, 10, "Imperial Occupation Army", SIDE_ALMENGA, UNIT_INFANTRY,
+                475, 5, 6, [], [], false, false, true, 2))                      
+    units.push(Game_WarUnit.new(24, 11, "Imperial Occupation Army", SIDE_ALMENGA, UNIT_INFANTRY,
+                475, 4, 5, [], [], false, false, true, 2))                        
+    units.push(Game_WarUnit.new(24, 12, "Imperial Occupation Army", SIDE_ALMENGA, UNIT_INFANTRY,
+                475, 6, 5, [], [], false, false, true, 2))                             
+                
+    units.push(Game_WarUnit.new(21, 11, "Regin", SIDE_ALMENGA, UNIT_INFANTRY,
+                900, 7, 9, [], ["Regin"], true, false, true, 3))              
+    # Rewards                
+    # A  Barrier (67)
+    # B  Rainbow Ore (114)
+    # C  Golden Helmet (21)
+    # D  Green Herb (5)                
+    return [units, 11, "Elysium Army", "Imperial Occupation Army", 
+                SIDE_ELYSIUM, SIDE_ALMENGA, "Ft. Brahma", 
+                1, 67,
+                0, 114, 
+                2, 21, 
+                0, 5]
+  end          
+  #--------------------------------------------------------------------------
+  # * Battle 12: St. Reinard I
+  #--------------------------------------------------------------------------
+  def setup_battle_12
+    units = []
+    # Elysium Side           
+    create_player_units(units, SIDE_ELYSIUM, [
+      [7, 36],      # Daniel      
+      [7, 38],      # Ljusalf
+      [9, 38],      # Outsider
+      [6, 38],      # Paris
+      [7, 35],      # Bast
+      [6, 37],      # Shiro
+      [6, 36],      # Griever
+      [7, 37],     # Keyser         
+      [8, 35],     # Jovian
+      [8, 37],       # Nashal
+      [9, 37],       # Merrick
+      [8, 36],       # Eander
+      [9, 36],       # Erin
+      [8, 37]       # Marian
+      ])     
+    # Almenga Side                             
+    units.push(Game_WarUnit.new(20, 7, "Imperial Occupation Army", SIDE_ALMENGA, UNIT_SORCERY,
+                400, 5, 2, [], [], false, false, true, 1))    
+    units.push(Game_WarUnit.new(21, 7, "Imperial Occupation Army", SIDE_ALMENGA, UNIT_SORCERY,
+                400, 6, 1, [WA_BLOCKADE], [], false, false, true, 2))    
+                                
+    units.push(Game_WarUnit.new(19, 8, "Imperial Occupation Army", SIDE_ALMENGA, UNIT_SCOUT,
+                425, 4, 3, [], [], false, false, true, 1))          
+    units.push(Game_WarUnit.new(19, 9, "Imperial Occupation Army", SIDE_ALMENGA, UNIT_SCOUT,
+                425, 4, 3, [], [], false, false, true, 1))         
+    units.push(Game_WarUnit.new(22, 8, "Imperial Occupation Army", SIDE_ALMENGA, UNIT_SCOUT,
+                425, 3, 4, [WA_EVASION], [], false, false, true, 2))     
+    units.push(Game_WarUnit.new(22, 9, "Imperial Occupation Army", SIDE_ALMENGA, UNIT_SCOUT,
+                425, 3, 4, [], [], false, false, true, 3))                    
+                 
+    units.push(Game_WarUnit.new(20, 10, "Imperial Occupation Army", SIDE_ALMENGA, UNIT_CAVALRY,
+                450, 5, 4, [], [], false, false, true, 1))        
+    units.push(Game_WarUnit.new(21, 10, "Imperial Occupation Army", SIDE_ALMENGA, UNIT_CAVALRY,
+                450, 4, 3, [WA_SCATTER, WA_LIGHT_FEET], [], false, false, true, 2))              
+    units.push(Game_WarUnit.new(20, 9, "Imperial Occupation Army", SIDE_ALMENGA, UNIT_CAVALRY,
+                450, 4, 4, [], [], false, false, true, 1))                 
+                
+    units.push(Game_WarUnit.new(19, 10, "Imperial Occupation Army", SIDE_ALMENGA, UNIT_INFANTRY,
+                475, 5, 4, [WA_SCATTER], [], false, false, true, 1))      
+    units.push(Game_WarUnit.new(20, 11, "Imperial Occupation Army", SIDE_ALMENGA, UNIT_INFANTRY,
+                475, 5, 5, [], [], false, false, true, 1))   
+    units.push(Game_WarUnit.new(21, 11, "Imperial Occupation Army", SIDE_ALMENGA, UNIT_INFANTRY,
+                475, 5, 6, [], [], false, false, true, 2))                              
+    units.push(Game_WarUnit.new(22, 10, "Imperial Occupation Army", SIDE_ALMENGA, UNIT_INFANTRY,
+                475, 5, 6, [WA_FORCEFIELD], [], false, false, true, 2))                        
+                
+    units.push(Game_WarUnit.new(21, 9, "Ash", SIDE_ALMENGA, UNIT_CAVALRY,
+                1100, 9, 7, [WA_COUNTER, WA_SCATTER], ["Ash"], true, false, true, 2))              
+    # Reinforcements
+    $game_temp.war_units_extra = []
+    $game_temp.war_units_extra .push(Game_WarUnit.new(10, 25, "Tarlia", SIDE_ALMENGA, UNIT_INFANTRY,
+                1000, 5, 11, [WA_SHIELD, WA_BLOCKADE], ["Tarlia"], false, false, true, 9, "Ash! I must retreat!"))         
+    $game_temp.war_units_extra .push(Game_WarUnit.new(11, 26, "Imperial Occupation Army", SIDE_ALMENGA, UNIT_SCOUT,
+                400, 4, 3, [], [], false, false, true, 9))                
+    $game_temp.war_units_extra .push(Game_WarUnit.new(5, 25, "Imperial Occupation Army", SIDE_ALMENGA, UNIT_INFANTRY,
+                475, 5, 5, [], [], false, false, true, 9))                                
+    $game_temp.war_units_extra .push(Game_WarUnit.new(4, 26, "Imperial Occupation Army", SIDE_ALMENGA, UNIT_SCOUT,
+                400, 4, 3, [], [], false, false, true, 9))                
+    # Rewards                            
+    return [units,99, "Elysium Army", "Imperial Occupation Army", 
+                SIDE_ELYSIUM, SIDE_ALMENGA, "St. Reinard", 
+                0, 4,  
+                0, 4,  
+                0, 4,   
+                0, 4]     
+  end          
+  #--------------------------------------------------------------------------
+  # * Battle 13: St. Reinard II
+  #--------------------------------------------------------------------------
+  def setup_battle_13
+    units = []
+    # Elysium Side           
+    create_player_units(units, SIDE_ELYSIUM, [
+      [28, 32],      # Daniel      
+      [28, 33],      # Ljusalf
+      [30, 33],      # Outsider
+      [27, 33],      # Paris
+      [28, 30],      # Bast
+      [27, 32],      # Shiro
+      [27, 31],      # Griever
+      [28, 31],     # Keyser         
+      [29, 30],     # Jovian
+      [29, 32],       # Nashal
+      [30, 32],       # Merrick
+      [29, 31],       # Eander
+      [30, 31],       # Erin
+      [29, 33]       # Marian
+      ])     
+    # Almenga Side                             
+    units.push(Game_WarUnit.new(20, 7, "Imperial Occupation Army", SIDE_ALMENGA, UNIT_SORCERY,
+                400, 5, 2, [], [], false, false, true, 1))    
+    units.push(Game_WarUnit.new(21, 7, "Imperial Occupation Army", SIDE_ALMENGA, UNIT_SORCERY,
+                400, 6, 1, [WA_BLOCKADE], [], false, false, true, 2))    
+                                
+    units.push(Game_WarUnit.new(19, 8, "Imperial Occupation Army", SIDE_ALMENGA, UNIT_SCOUT,
+                425, 4, 3, [], [], false, false, true, 1))          
+    units.push(Game_WarUnit.new(19, 9, "Imperial Occupation Army", SIDE_ALMENGA, UNIT_SCOUT,
+                425, 4, 3, [], [], false, false, true, 1))         
+    units.push(Game_WarUnit.new(22, 8, "Imperial Occupation Army", SIDE_ALMENGA, UNIT_SCOUT,
+                425, 3, 4, [WA_EVASION], [], false, false, true, 2))     
+    units.push(Game_WarUnit.new(22, 9, "Imperial Occupation Army", SIDE_ALMENGA, UNIT_SCOUT,
+                425, 3, 4, [], [], false, false, true, 3))                    
+                 
+    units.push(Game_WarUnit.new(18, 11, "Imperial Occupation Army", SIDE_ALMENGA, UNIT_INFANTRY,
+                450, 4, 4, [], [], false, false, true, 4))   
+    units.push(Game_WarUnit.new(23, 11, "Imperial Occupation Army", SIDE_ALMENGA, UNIT_INFANTRY,
+                450, 4, 4, [], [], false, false, true, 5))   
+    units.push(Game_WarUnit.new(20, 10, "Imperial Occupation Army", SIDE_ALMENGA, UNIT_CAVALRY,
+                450, 5, 4, [], [], false, false, true, 1))        
+    units.push(Game_WarUnit.new(21, 10, "Imperial Occupation Army", SIDE_ALMENGA, UNIT_CAVALRY,
+                450, 4, 3, [WA_SCATTER, WA_LIGHT_FEET], [], false, false, true, 2))              
+    units.push(Game_WarUnit.new(20, 9, "Imperial Occupation Army", SIDE_ALMENGA, UNIT_CAVALRY,
+                450, 4, 4, [], [], false, false, true, 1))                 
+                
+    units.push(Game_WarUnit.new(18, 8, "Imperial Occupation Army", SIDE_ALMENGA, UNIT_INFANTRY,
+                475, 5, 4, [], [], false, false, true, 7))      
+    units.push(Game_WarUnit.new(23, 8, "Imperial Occupation Army", SIDE_ALMENGA, UNIT_INFANTRY,
+                475, 5, 4, [], [], false, false, true, 6))      
+    units.push(Game_WarUnit.new(19, 10, "Imperial Occupation Army", SIDE_ALMENGA, UNIT_INFANTRY,
+                475, 5, 4, [WA_SCATTER], [], false, false, true, 1))      
+    units.push(Game_WarUnit.new(20, 11, "Imperial Occupation Army", SIDE_ALMENGA, UNIT_INFANTRY,
+                475, 5, 5, [], [], false, false, true, 1))   
+    units.push(Game_WarUnit.new(21, 11, "Imperial Occupation Army", SIDE_ALMENGA, UNIT_INFANTRY,
+                475, 5, 6, [], [], false, false, true, 2))                              
+    units.push(Game_WarUnit.new(22, 10, "Imperial Occupation Army", SIDE_ALMENGA, UNIT_INFANTRY,
+                475, 5, 6, [WA_FORCEFIELD], [], false, false, true, 2))                         
+                
+    units.push(Game_WarUnit.new(21, 9, "Ash", SIDE_ALMENGA, UNIT_CAVALRY,
+                1100, 9, 7, [WA_COUNTER, WA_LIGHT_FEET], ["Ash"], true, false, true, 1))              
+    # Reinforcements
+    $game_temp.war_units_extra = []
+    $game_temp.war_units_extra .push(Game_WarUnit.new(18, 10, "Tarlia", SIDE_ELYSIUM, UNIT_INFANTRY,
+                1200, 5, 11, [WA_SHIELD, WA_BLOCKADE], ["Tarlia"], false, true, true, 9, "I've opened a path! Use it!", 0, true))             
+    # Flip direction
+    for unit in units + $game_temp.war_units_extra
+      unit.flip_direction = true
+    end                      
+    # Rewards                
+    # A  Purple Bandana (374)
+    # B  Cure-All (62)
+    # C  Golden Helmet (21)
+    # D  Green Herb (5)                   
+    return [units,13, "Elysium Army", "Imperial Occupation Army", 
+                SIDE_ELYSIUM, SIDE_ALMENGA, "St. Reinard", 
+                2, 374,  
+                1, 62,  
+                0, 4,   
+                0, 5]     
+  end          
+  #--------------------------------------------------------------------------
+  # * Battle 14: Jormundgand
+  #--------------------------------------------------------------------------
+  def setup_battle_14
+    units = []
+    # Elysium Side           
+    create_player_units(units, SIDE_ELYSIUM, [
+      [10, 23],      # Daniel      
+      [10, 25],      # Ljusalf
+      [12, 25],      # Outsider
+      [9, 25],      # Paris
+      [10, 22],      # Bast
+      [9, 24],      # Shiro
+      [9, 23],      # Griever
+      [10, 24],     # Keyser         
+      [11, 22],     # Jovian
+      [11, 24],       # Nashal
+      [12, 24],       # Merrick
+      [11, 23],       # Eander
+      [12, 23],       # Erin
+      [11, 25]       # Marian
+      ])     
+    # Almenga Side                             
+    units.push(Game_WarUnit.new(9, 10, "Imperial Elite Guard", SIDE_ALMENGA, UNIT_INFANTRY,
+                750, 7, 7, [], [], false, false, true, 1))   
+    units.push(Game_WarUnit.new(11, 10, "Imperial Elite Guard", SIDE_ALMENGA, UNIT_INFANTRY,
+                750, 7, 7, [], [], false, false, true, 1))                              
+    units.push(Game_WarUnit.new(10, 11, "Imperial Elite Guard", SIDE_ALMENGA, UNIT_INFANTRY,
+                750, 7, 7, [], [], false, false, true, 1))                         
+                
+    units.push(Game_WarUnit.new(10, 9, "Brunhild", SIDE_ALMENGA, UNIT_CAVALRY,
+                1500, 12, 12, [WA_COUNTER, WA_SCATTER, WA_FORCEFIELD], ["E_Brunhild"], true, false, true, 1))              
+    # Rewards                
+    # A  Pointed Shoes (214)
+    # B  Lightshield (60)
+    # C  Lightstrike (49)
+    # D  Green Herb (5)                   
+    return [units, 7, "Elysium Army", "Imperial Elite Guard", 
+                SIDE_ELYSIUM, SIDE_ALMENGA, "Jormundgand", 
+                2, 214,  
+                1, 60,  
+                1, 49,   
+                0, 5]     
+  end          
+  #--------------------------------------------------------------------------
+  # * Battle 15: Midgard Plains
+  #--------------------------------------------------------------------------
+  def setup_battle_15
+    units = []
+    # Elysium Side           
+    create_player_units(units, SIDE_ELYSIUM, [
+      [22, 13],      # Daniel      
+      [24, 13],      # Ljusalf
+      [24, 15],      # Outsider
+      [24, 12],      # Paris
+      [21, 13],      # Bast
+      [23, 12],      # Shiro
+      [22, 12],      # Griever
+      [23, 13],     # Keyser         
+      [21, 14],     # Jovian
+      [23, 14],       # Nashal
+      [23, 15],       # Merrick
+      [22, 14],       # Eander
+      [22, 15],       # Erin
+      [24, 14]       # Marian
+      ])     
+    # Demon Side                         
+    units.push(Game_WarUnit.new(8, 12, "Trevor", SIDE_DEMON, UNIT_DEMON,
+                1000, 12, 14, [WA_FORCEFIELD, WA_BLOCKADE], ["D-Trevor"], true, false, true, 1, "Heeheeheehahahahaha!"))       
+    units.push(Game_WarUnit.new(8, 14, "Sick", SIDE_DEMON, UNIT_DEMON,
+                1000, 10, 16, [WA_FORCEFIELD, WA_SCATTER], ["D-Sick"], true, false, true, 2, "Hohohohehehehihihi!"))           
+    # Flip direction
+    for unit in units
+      unit.flip_direction = true
+    end                                      
+    # Rewards                
+    # A  Demon Robe (214)
+    # B  Heal (72)
+    # C  Diamond Dust (12)
+    # D  Green Herb (5)                   
+    return [units, 6, "Elysium Army", "Demon Commandos", 
+                SIDE_ELYSIUM, SIDE_DEMON, "Midgard Plains", 
+                2, 130,  
+                1, 72,  
+                0, 12,   
+                0, 5]     
+  end          
+  #--------------------------------------------------------------------------
+  # * Battle 16: Vanaheim
+  #--------------------------------------------------------------------------
+  def setup_battle_16
+    units = []
+    # Elysium Side           
+    create_player_units(units, SIDE_ELYSIUM, [
+      [14, 20],      # Daniel      
+      [13, 27],      # Ljusalf
+      [15, 27],      # Outsider
+      [12, 27],      # Paris
+      [13, 24],      # Bast
+      [12, 26],      # Shiro
+      [12, 25],      # Griever
+      [13, 26],     # Keyser         
+      [14, 24],     # Jovian
+      [14, 26],       # Nashal
+      [15, 26],       # Merrick
+      [14, 25],       # Eander
+      [15, 25],       # Erin
+      [14, 27]       # Marian
+      ])     
+    # Daniel starts invisible
+    units[0].visible = false
+    # Almenga Side                                   
+    units.push(Game_WarUnit.new(24, 20, "Imperial Army", SIDE_ALMENGA, UNIT_SCOUT,
+                425, 3, 3, [], [], false, false, true, 1))                
+    units.push(Game_WarUnit.new(24, 19, "Imperial Army", SIDE_ALMENGA, UNIT_SCOUT,
+                425, 3, 3, [WA_COUNTER], [], false, false, true, 2))
+    units.push(Game_WarUnit.new(23, 20, "Imperial Army", SIDE_ALMENGA, UNIT_INFANTRY,
+                475, 5, 4, [], [], false, false, true, 1))         
+    units.push(Game_WarUnit.new(23, 19, "Imperial Army", SIDE_ALMENGA, UNIT_INFANTRY,
+                475, 4, 4, [], [], false, false, true, 2))          
+                   
+    units.push(Game_WarUnit.new(25, 19, "Leonius", SIDE_ALMENGA, UNIT_SCOUT,
+                900, 5, 8, [], ["Leonius"], false, false, true, 1, "This can't be! I thought I'd finally...!"))                   
+                                
+    units.push(Game_WarUnit.new(15, 14, "Imperial Army", SIDE_ALMENGA, UNIT_INFANTRY,
+                475, 5, 4, [], [], false, false, true, 3))          
+                
+    units.push(Game_WarUnit.new(14, 13, "Imperial Army", SIDE_ALMENGA, UNIT_CAVALRY,
+                450, 4, 4, [], [], false, false, true, 3))   
+    units.push(Game_WarUnit.new(16, 13, "Imperial Army", SIDE_ALMENGA, UNIT_CAVALRY,
+                450, 4, 4, [], [], false, false, true, 3))   
+                
+    units.push(Game_WarUnit.new(15, 13, "Regin", SIDE_ALMENGA, UNIT_INFANTRY,
+                950, 7, 9, [], ["Regin"], false, false, true, 3, "F-For the glory of the empire!"))     
+         
+                
+    units.push(Game_WarUnit.new(14, 10, "Imperial Army", SIDE_ALMENGA, UNIT_CAVALRY,
+                450, 4, 4, [WA_COUNTER], [], false, false, true, 4, "", 1))   
+    units.push(Game_WarUnit.new(15, 10, "Imperial Army", SIDE_ALMENGA, UNIT_CAVALRY,
+                450, 4, 5, [], [], false, false, true, 5, "", 1))   
+    units.push(Game_WarUnit.new(16, 10, "Imperial Army", SIDE_ALMENGA, UNIT_CAVALRY,
+                450, 4, 4, [], [], false, false, true, 6, "", 1))   
+                
+    units.push(Game_WarUnit.new(13, 9, "Imperial Army", SIDE_ALMENGA, UNIT_SCOUT,
+                425, 3, 3, [WA_LIGHT_FEET], [], false, false, true, 4, "", 1))       
+    units.push(Game_WarUnit.new(17, 9, "Imperial Army", SIDE_ALMENGA, UNIT_SCOUT,
+                425, 3, 3, [], [], false, false, true, 6, "", 1))       
+                
+    units.push(Game_WarUnit.new(13, 10, "Imperial Army", SIDE_ALMENGA, UNIT_INFANTRY,
+                475, 5, 4, [], [], false, false, true, 4, "", 1))          
+    units.push(Game_WarUnit.new(17, 10, "Imperial Army", SIDE_ALMENGA, UNIT_INFANTRY,
+                475, 5, 4, [WA_LIGHT_FEET], [], false, false, true, 6, "", 1))       
+    units.push(Game_WarUnit.new(14, 9, "Imperial Army", SIDE_ALMENGA, UNIT_INFANTRY,
+                475, 5, 5, [], [], false, false, true, 5, "", 1))            
+    units.push(Game_WarUnit.new(16, 9, "Imperial Army", SIDE_ALMENGA, UNIT_INFANTRY,
+                475, 4, 4, [], [], false, false, true, 5, "", 1))       
+                
+    units.push(Game_WarUnit.new(14, 8, "Imperial Army", SIDE_ALMENGA, UNIT_SORCERY,
+                400, 5, 3, [], [], false, false, true, 4, "", 1))         
+    units.push(Game_WarUnit.new(15, 8, "Imperial Army", SIDE_ALMENGA, UNIT_SORCERY,
+                400, 5, 2, [WA_EVASION], [], false, false, true, 5, "", 1))       
+    units.push(Game_WarUnit.new(16, 8, "Imperial Army", SIDE_ALMENGA, UNIT_SORCERY,
+                400, 6, 3, [], [], false, false, true, 6, "", 1))       
+                
+    units.push(Game_WarUnit.new(15, 9, "Gudrun", SIDE_ALMENGA, UNIT_CAVALRY,
+                1250, 10, 10, [WA_SHIELD], ["Gudrun"], true, false, true, 5, "Oh Siegfried, forgive me...", 1))              
+    # Rewards                
+    # A  Topaz Amulet (393)
+    # B  Crystal Plate (140)
+    # C  Diamond Dust (12)
+    # D  Green Herb (5)                   
+    return [units, 14, "Elysium Army", "Imperial Army", 
+                SIDE_ELYSIUM, SIDE_ALMENGA, "Vanaheim", 
+                2, 393,  
+                2, 140,  
+                0, 12,   
+                0, 5]     
+  end          
+  #--------------------------------------------------------------------------  
+  ################################
+  # * EXTRA BATTLES START HERE     #
+  ################################  
+  #--------------------------------------------------------------------------
+  #--------------------------------------------------------------------------
+  # * Battle 100: Cornered!
+  #--------------------------------------------------------------------------
+  def setup_battle_100
+    units = []
+    # Elysium Side              
+    create_player_units(units, SIDE_ELYSIUM, [
+      [13, 13],      # Daniel      
+      [12, 13],      # Ljusalf
+      [12, 12],      # Outsider
+      [12, 14],      # Paris
+      [14, 13],      # Bast
+      [13, 12],      # Shiro
+      [13, 14],      # Griever
+      [14, 15],     # Keyser         
+      [14, 12],     # Jovian
+      [13, 11],       # Nashal
+      [13, 15],       # Merrick
+      [14, 14],       # Eander
+      [13, 16],       # Erin
+      [12, 15]       # Marian
+      ])           
+    # Zelmony Side                           
+    units.push(Game_WarUnit.new(19, 14, "Mayfall Army", SIDE_ZELMONY, UNIT_INFANTRY,
+                500, 4, 5, [], [], false, false, true, 0))              
+    units.push(Game_WarUnit.new(19, 15, "Mayfall Army", SIDE_ZELMONY, UNIT_INFANTRY,
+                500, 4, 5, [], [], false, false, true, 1))               
+    units.push(Game_WarUnit.new(19, 16, "Mayfall Army", SIDE_ZELMONY, UNIT_INFANTRY,
+                500, 4, 5, [], [], false, false, true, 1))                     
+                
+    units.push(Game_WarUnit.new(20, 13, "Mayfall Army", SIDE_ZELMONY, UNIT_CAVALRY,
+                450, 4, 3, [], [], false, false, true, 0))              
+    units.push(Game_WarUnit.new(20, 14, "Mayfall Army", SIDE_ZELMONY, UNIT_CAVALRY,
+                450, 4, 3, [], [], false, false, true, 0))            
+    units.push(Game_WarUnit.new(20, 15, "Mayfall Army", SIDE_ZELMONY, UNIT_CAVALRY,
+                450, 4, 3, [], [], false, false, true, 1))        
+    units.push(Game_WarUnit.new(20, 16, "Mayfall Army", SIDE_ZELMONY, UNIT_CAVALRY,
+                450, 4, 3, [], [], false, false, true, 1))              
+    units.push(Game_WarUnit.new(20, 17, "Mayfall Army", SIDE_ZELMONY, UNIT_CAVALRY,
+                450, 4, 3, [], [], false, false, true, 1))                                    
+                
+    units.push(Game_WarUnit.new(21, 14, "Mayfall Army", SIDE_ZELMONY, UNIT_SCOUT,
+                475, 4, 4, [], [], false, false, true, 0))                  
+    units.push(Game_WarUnit.new(21, 16, "Mayfall Army", SIDE_ZELMONY, UNIT_SCOUT,
+                475, 4, 4, [], [], false, false, true, 1))                   
+                
+    units.push(Game_WarUnit.new(21, 15, "Merrick", SIDE_ZELMONY, UNIT_SCOUT,
+                900, 5, 9, [WA_FORESTER, WA_BERSERKER], ["Merrick"], true, false, true, 0))                 
+    # Rewards                
+    # N/A
+    return [units, 5, "Elysium Army", "Mayfall Army", 
+                SIDE_ELYSIUM, SIDE_ZELMONY, "Gaia's Heart", 
+                0, 1, 0, 1, 0, 1, 0, 1]
+  end        
+  #--------------------------------------------------------------------------
+  # * Battle 101: Forest Defenders
+  #--------------------------------------------------------------------------
+  def setup_battle_101
+    units = []
+    # Elysium Side              
+    create_player_units(units, SIDE_ELYSIUM, [
+      [20, 15],      # Daniel      
+      [22, 15],      # Ljusalf
+      [22, 17],      # Outsider
+      [22, 14],      # Paris
+      [19, 15],      # Bast
+      [21, 14],      # Shiro
+      [20, 14],      # Griever
+      [21, 15],     # Keyser         
+      [19, 16],     # Jovian
+      [21, 16],       # Nashal
+      [21, 17],       # Merrick
+      [20, 16],       # Eander
+      [20, 17],       # Erin
+      [22, 16]       # Marian
+      ])           
+    # Zelmony Side                           
+    units.push(Game_WarUnit.new(13, 10, "Forest Defenders", SIDE_ZELMONY, UNIT_INFANTRY,
+                500, 5, 5, [WA_FORESTER], [], false, false, true, 0))              
+    units.push(Game_WarUnit.new(12, 11, "Forest Defenders", SIDE_ZELMONY, UNIT_INFANTRY,
+                500, 4, 5, [WA_FORESTER], [], false, false, true, 0))                       
+                
+    units.push(Game_WarUnit.new(14, 8, "Forest Defenders", SIDE_ZELMONY, UNIT_CAVALRY,
+                450, 4, 3, [WA_FORESTER], [], false, false, true, 0))        
+    units.push(Game_WarUnit.new(10, 12, "Forest Defenders", SIDE_ZELMONY, UNIT_CAVALRY,
+                450, 4, 4, [WA_FORESTER], [], false, false, true, 0))                                       
+                
+    units.push(Game_WarUnit.new(12, 8, "Forest Defenders", SIDE_ZELMONY, UNIT_SCOUT,
+                475, 3, 4, [WA_FORESTER], [], false, false, true, 0))                  
+    units.push(Game_WarUnit.new(12, 9, "Forest Defenders", SIDE_ZELMONY, UNIT_SCOUT,
+                475, 4, 3, [WA_FORESTER], [], false, false, true, 0))      
+    units.push(Game_WarUnit.new(11, 10, "Forest Defenders", SIDE_ZELMONY, UNIT_SCOUT,
+                475, 3, 3, [WA_FORESTER], [], false, false, true, 0))      
+    units.push(Game_WarUnit.new(10, 10, "Forest Defenders", SIDE_ZELMONY, UNIT_SCOUT,
+                475, 3, 2, [WA_FORESTER], [], false, false, true, 0))      
+                
+    units.push(Game_WarUnit.new(10, 8, "Alex", SIDE_ZELMONY, UNIT_INFANTRY,
+                1000, 7, 8, [WA_FORESTER], ["Alex"], true, false, true, 0))       
+                
+    units.push(Game_WarUnit.new(14, 22, "Forest Defenders", SIDE_ZELMONY, UNIT_INFANTRY,
+                500, 5, 5, [WA_FORESTER], [], false, false, true, 1))    
+    units.push(Game_WarUnit.new(15, 22, "Forest Defenders", SIDE_ZELMONY, UNIT_INFANTRY,
+                500, 4, 4, [WA_FORESTER], [], false, false, true, 1))   
+    units.push(Game_WarUnit.new(16, 22, "Forest Defenders", SIDE_ZELMONY, UNIT_INFANTRY,
+                500, 4, 5, [WA_FORESTER], [], false, false, true, 1)) 
+                
+    units.push(Game_WarUnit.new(17, 23, "Forest Defenders", SIDE_ZELMONY, UNIT_CAVALRY,
+                450, 4, 3, [WA_FORESTER], [], false, false, true, 1))        
+    units.push(Game_WarUnit.new(13, 23, "Forest Defenders", SIDE_ZELMONY, UNIT_CAVALRY,
+                450, 4, 3, [WA_FORESTER], [], false, false, true, 1))        
+                
+    units.push(Game_WarUnit.new(16, 24, "Forest Defenders", SIDE_ZELMONY, UNIT_SCOUT,
+                475, 3, 3, [WA_FORESTER], [], false, false, true, 1))      
+                
+    units.push(Game_WarUnit.new(15, 25, "Ljusalf", SIDE_ZELMONY, UNIT_SORCERY,
+                700, 9, 3, [WA_FORESTER], ["Ljusalf"], false, false, true, 1))   
+    units.push(Game_WarUnit.new(14, 24, "Richard", SIDE_ZELMONY, UNIT_SCOUT,
+                750, 6, 6, [WA_FORESTER], ["Richard"], false, false, true, 1))  
+    # Flip direction
+    for unit in units
+      unit.flip_direction = true
+    end                      
+    # Rewards                
+    # N/A
+    return [units, 8, "Elysium Army", "Forest Defenders", 
+                SIDE_ELYSIUM, SIDE_ZELMONY, "Mayfall Forest", 
+                0, 1, 0, 1, 0, 1, 0, 1]
+  end        
+  #--------------------------------------------------------------------------
+  # * Battle 102: Oischin Defence
+  #--------------------------------------------------------------------------
+  def setup_battle_102
+    units = []
+    # Elysium Side              
+    create_player_units(units, SIDE_ELYSIUM, [    
+      [15, 15],      # Daniel      
+      [13, 15],      # Ljusalf
+      [13, 17],      # Outsider
+      [13, 14],      # Paris
+      [16, 15],      # Bast
+      [14, 14],      # Shiro
+      [15, 14],      # Griever
+      [14, 15],     # Keyser         
+      [16, 16],     # Jovian
+      [14, 16],       # Nashal
+      [14, 17],       # Merrick
+      [15, 16],       # Eander
+      [15, 17],       # Erin
+      [13, 16]       # Marian
+      ])           
+    # Zelmony Side                           
+    units.push(Game_WarUnit.new(14, 31, "Oischin Army", SIDE_ZELMONY, UNIT_SORCERY,
+                425, 4, 1, [WA_LIGHT_FEET], [], false, false, true, 0))     
+    units.push(Game_WarUnit.new(15, 30, "Oischin Army", SIDE_ZELMONY, UNIT_SORCERY,
+                425, 4, 2, [], [], false, false, true, 0))      
+    units.push(Game_WarUnit.new(16, 30, "Oischin Army", SIDE_ZELMONY, UNIT_SORCERY,
+                425, 5, 1, [], [], false, false, true, 0))      
+    units.push(Game_WarUnit.new(17, 31, "Oischin Army", SIDE_ZELMONY, UNIT_SORCERY,
+                425, 4, 2, [], [], false, false, true, 0))      
+                
+    units.push(Game_WarUnit.new(16, 32, "Deus", SIDE_ZELMONY, UNIT_SORCERY,
+                600, 7, 4, [WA_REGEN], ["Deus"], true, false, true, 0))                   
+          
+    units.push(Game_WarUnit.new(28, 21, "Oischin Army", SIDE_ZELMONY, UNIT_SORCERY,
+                425, 5, 1, [], [], false, false, true, 1))     
+    units.push(Game_WarUnit.new(27, 22, "Oischin Army", SIDE_ZELMONY, UNIT_SORCERY,
+                425, 5, 2, [], [], false, false, true, 1))       
+    units.push(Game_WarUnit.new(27, 23, "Oischin Army", SIDE_ZELMONY, UNIT_SORCERY,
+                425, 5, 1, [WA_FORCEFIELD], [], false, false, true, 1))       
+    units.push(Game_WarUnit.new(27, 24, "Oischin Army", SIDE_ZELMONY, UNIT_SORCERY,
+                425, 6, 1, [], [], false, false, true, 2))       
+    units.push(Game_WarUnit.new(27, 25, "Oischin Army", SIDE_ZELMONY, UNIT_SORCERY,
+                425, 4, 2, [], [], false, false, true, 2))       
+    units.push(Game_WarUnit.new(28, 26, "Oischin Army", SIDE_ZELMONY, UNIT_SORCERY,
+                425, 5, 1, [WA_SHIELD], [], false, false, true, 2))       
+                
+    units.push(Game_WarUnit.new(29, 23, "Marian", SIDE_ZELMONY, UNIT_SORCERY,
+                700, 10, 3, [WA_BLOCKADE, WA_SCATTER], ["Marian"], false, false, true, 1))   
+    units.push(Game_WarUnit.new(29, 24, "Galius", SIDE_ZELMONY, UNIT_SORCERY,
+                750, 8, 5, [WA_REGEN], ["Galius"], true, false, true, 2))   
+      
+    # Rewards                
+    # N/A
+    return [units, 9, "Elysium Army", "Oischin Army", 
+                SIDE_ELYSIUM, SIDE_ZELMONY, "Faraday City", 
+                0, 1, 0, 1, 0, 1, 0, 1]
+  end        
+  #--------------------------------------------------------------------------
+  # * Battle 103: Pereious' Revenge
+  #--------------------------------------------------------------------------
+  def setup_battle_103
+    units = []
+    # Elysium Side              
+    create_player_units(units, SIDE_ELYSIUM, [    
+      [12, 16],      # Daniel      
+      [10, 16],      # Ljusalf
+      [10, 18],      # Outsider
+      [10, 15],      # Paris
+      [13, 16],      # Bast
+      [11, 15],      # Shiro
+      [12, 15],      # Griever
+      [11, 16],     # Keyser         
+      [13, 17],     # Jovian
+      [11, 17],       # Nashal
+      [11, 18],       # Merrick
+      [12, 17],       # Eander
+      [12, 18],       # Erin
+      [10, 17]       # Marian
+      ])           
+    # Pereious Side               
+                
+    units.push(Game_WarUnit.new(18, 20, "Mountain Tribes", SIDE_PEREIOUS, UNIT_SCOUT,
+                425, 4, 3, [WA_MOUNTAINEER], [], false, false, true, 0))   
+    units.push(Game_WarUnit.new(20, 20, "Mountain Tribes", SIDE_PEREIOUS, UNIT_SCOUT,
+                425, 4, 3, [WA_MOUNTAINEER], [], false, false, true, 0))   
+                
+    units.push(Game_WarUnit.new(17, 20, "Mountain Tribes", SIDE_PEREIOUS, UNIT_CAVALRY,
+                450, 4, 4, [WA_MOUNTAINEER], [], false, false, true, 0))      
+    units.push(Game_WarUnit.new(21, 20, "Mountain Tribes", SIDE_PEREIOUS, UNIT_CAVALRY,
+                450, 4, 4, [WA_MOUNTAINEER], [], false, false, true, 0))      
+                
+    units.push(Game_WarUnit.new(18, 19, "Mountain Tribes", SIDE_PEREIOUS, UNIT_INFANTRY,
+                475, 5, 4, [WA_MOUNTAINEER], [], false, false, true, 0))           
+    units.push(Game_WarUnit.new(19, 19, "Mountain Tribes", SIDE_PEREIOUS, UNIT_INFANTRY,
+                475, 4, 4, [WA_MOUNTAINEER], [], false, false, true, 0))       
+    units.push(Game_WarUnit.new(20, 19, "Mountain Tribes", SIDE_PEREIOUS, UNIT_INFANTRY,
+                475, 5, 5, [WA_MOUNTAINEER], [], false, false, true, 0))    
+                
+    units.push(Game_WarUnit.new(19, 21, "Rashnu", SIDE_PEREIOUS, UNIT_SORCERY,
+                800, 9, 5, [WA_MOUNTAINEER, WA_FORCEFIELD], ["E_Rashnu"], false, false, true, 0))   
+                
+    units.push(Game_WarUnit.new(31, 11, "Mountain Tribes", SIDE_PEREIOUS, UNIT_SCOUT,
+                425, 4, 3, [WA_MOUNTAINEER], [], false, false, true, 2))          
+    units.push(Game_WarUnit.new(32, 11, "Mountain Tribes", SIDE_PEREIOUS, UNIT_SCOUT,
+                425, 3, 3, [WA_MOUNTAINEER], [], false, false, true, 2))          
+    units.push(Game_WarUnit.new(31, 14, "Mountain Tribes", SIDE_PEREIOUS, UNIT_SCOUT,
+                425, 4, 3, [WA_MOUNTAINEER], [], false, false, true, 1))          
+    units.push(Game_WarUnit.new(32, 14, "Mountain Tribes", SIDE_PEREIOUS, UNIT_SCOUT,
+                425, 3, 4, [WA_MOUNTAINEER], [], false, false, true, 1))                       
+                
+    units.push(Game_WarUnit.new(29, 11, "Mountain Tribes", SIDE_PEREIOUS, UNIT_CAVALRY,
+                450, 4, 4, [WA_MOUNTAINEER], [], false, false, true, 2))          
+    units.push(Game_WarUnit.new(29, 12, "Mountain Tribes", SIDE_PEREIOUS, UNIT_CAVALRY,
+                450, 5, 4, [WA_MOUNTAINEER], [], false, false, true, 1))       
+    units.push(Game_WarUnit.new(29, 13, "Mountain Tribes", SIDE_PEREIOUS, UNIT_CAVALRY,
+                450, 4, 4, [WA_MOUNTAINEER], [], false, false, true, 1))                
+                
+    units.push(Game_WarUnit.new(30, 11, "Mountain Tribes", SIDE_PEREIOUS, UNIT_INFANTRY,
+                475, 5, 4, [WA_MOUNTAINEER], [], false, false, true, 2))             
+    units.push(Game_WarUnit.new(30, 12, "Mountain Tribes", SIDE_PEREIOUS, UNIT_INFANTRY,
+                475, 4, 5, [WA_MOUNTAINEER], [], false, false, true, 2))                           
+    units.push(Game_WarUnit.new(30, 13, "Mountain Tribes", SIDE_PEREIOUS, UNIT_INFANTRY,
+                475, 5, 4, [WA_MOUNTAINEER], [], false, false, true, 1))                                         
+                
+    units.push(Game_WarUnit.new(32, 12, "Pereious", SIDE_PEREIOUS, UNIT_INFANTRY,
+                900, 10, 6, [WA_MOUNTAINEER], ["Pereious"], true, false, true, 1))   
+      
+    # Rewards                
+    # N/A
+    return [units, 10, "Elysium Army", "Mountain Tribes",
+                SIDE_ELYSIUM, SIDE_PEREIOUS, "Jinen Gama", 
+                0, 1, 0, 1, 0, 1, 0, 1]
+  end        
+  #--------------------------------------------------------------------------
+  # * Battle 104: Ninja Onslaught
+  #--------------------------------------------------------------------------
+  def setup_battle_104
+    units = []
+    # Elysium Side           
+    create_player_units(units, SIDE_ELYSIUM, [
+      [19, 17],      # Daniel      
+      [21, 17],      # Ljusalf
+      [21, 19],      # Outsider
+      [21, 16],      # Paris
+      [18, 17],      # Bast
+      [20, 16],      # Shiro
+      [19, 16],      # Griever
+      [20, 17],     # Keyser         
+      [18, 18],     # Jovian
+      [20, 18],       # Nashal
+      [20, 19],       # Merrick
+      [19, 18],       # Eander
+      [19, 19],       # Erin
+      [21, 18]       # Marian
+      ])                          
+    # Ninja Side                                                                                                       
+    units.push(Game_WarUnit.new(28, 22, "Sun Clan", SIDE_ZELMONY, UNIT_SCOUT,
+                425, 3, 3, [], [], false, false, true, 1))                                                   
+    units.push(Game_WarUnit.new(29, 22, "Sun Clan", SIDE_ZELMONY, UNIT_SCOUT,
+                425, 2, 3, [], [], false, false, true, 1))                                                     
+    units.push(Game_WarUnit.new(27, 23, "Sun Clan", SIDE_ZELMONY, UNIT_SCOUT,
+                425, 3, 3, [WA_BLOCKADE], [], false, false, true, 1))                                                     
+    units.push(Game_WarUnit.new(27, 24, "Sun Clan", SIDE_ZELMONY, UNIT_SCOUT,
+                425, 3, 4, [], [], false, false, true, 1))                                    
+    units.push(Game_WarUnit.new(29, 24, "Yomiko", SIDE_ZELMONY, UNIT_SCOUT,
+                750, 6, 6, [WA_EVASION], ["Yomiko"], true, false, true, 1))              
+                                                                 
+    units.push(Game_WarUnit.new(20, 8, "Sun Clan", SIDE_ZELMONY, UNIT_SCOUT,
+                425, 3, 3, [], [], false, false, true, 2))                                                   
+    units.push(Game_WarUnit.new(21, 9, "Sun Clan", SIDE_ZELMONY, UNIT_SCOUT,
+                425, 3, 3, [], [], false, false, true, 2))                                                     
+    units.push(Game_WarUnit.new(22, 9, "Sun Clan", SIDE_ZELMONY, UNIT_SCOUT,
+                425, 3, 2, [], [], false, false, true, 2))                                                     
+    units.push(Game_WarUnit.new(23, 10, "Sun Clan", SIDE_ZELMONY, UNIT_SCOUT,
+                425, 3, 3, [WA_LIGHT_FEET], [], false, false, true, 2))                                    
+    units.push(Game_WarUnit.new(22, 7, "Rorschach", SIDE_ZELMONY, UNIT_SCOUT,
+                800, 7, 6, [WA_SCATTER], ["Rorschach"], true, false, true, 2))          
+                
+    units.push(Game_WarUnit.new(9, 14, "Sun Clan", SIDE_ZELMONY, UNIT_SCOUT,
+                425, 3, 3, [], [], false, false, true, 4))                                                   
+    units.push(Game_WarUnit.new(10, 14, "Sun Clan", SIDE_ZELMONY, UNIT_SCOUT,
+                425, 3, 3, [], [], false, false, true, 4))                                                     
+    units.push(Game_WarUnit.new(10, 15, "Sun Clan", SIDE_ZELMONY, UNIT_SCOUT,
+                425, 3, 3, [], [], false, false, true, 4))                                                     
+    units.push(Game_WarUnit.new(10, 17, "Sun Clan", SIDE_ZELMONY, UNIT_SCOUT,
+                425, 3, 2, [WA_SHIELD], [], false, false, true, 3))                                                      
+    units.push(Game_WarUnit.new(10, 18, "Sun Clan", SIDE_ZELMONY, UNIT_SCOUT,
+                425, 3, 3, [], [], false, false, true, 3))                                                       
+    units.push(Game_WarUnit.new(9, 18, "Sun Clan", SIDE_ZELMONY, UNIT_SCOUT,
+                425, 4, 3, [], [], false, false, true, 3))                              
+    units.push(Game_WarUnit.new(9, 16, "Gilbert", SIDE_ZELMONY, UNIT_SCOUT,
+                900, 9, 4, [WA_COUNTER], ["Gilbert"], true, false, true, 3))        
+                  
+    # Flip direction
+    for unit in units
+      unit.flip_direction = true
+    end                       
+    # Rewards                
+    # N/A
+    return [units, 11, "Elysium Army", "Sun Clan",
+                SIDE_ELYSIUM, SIDE_KIRGARD, "Northern Kirgard", 
+                0, 1, 0, 1, 0, 1, 0, 1]
+  end          
+  #--------------------------------------------------------------------------
+  # * Battle 105: Knights of Matrech
+  #--------------------------------------------------------------------------
+  def setup_battle_105
+    units = []
+    # Elysium Side           
+    create_player_units(units, SIDE_ELYSIUM, [
+      [22, 18],      # Daniel      
+      [24, 18],      # Ljusalf
+      [24, 20],      # Outsider
+      [24, 17],      # Paris
+      [21, 18],      # Bast
+      [23, 17],      # Shiro
+      [22, 17],      # Griever
+      [23, 18],     # Keyser         
+      [21, 19],     # Jovian
+      [23, 19],       # Nashal
+      [23, 20],       # Merrick
+      [22, 19],       # Eander
+      [22, 20],       # Erin
+      [24, 19]       # Marian
+      ])                          
+    # Zelmony Side                                                            
+    units.push(Game_WarUnit.new(25, 10, "Mayfall Army", SIDE_ZELMONY, UNIT_CAVALRY,
+                475, 4, 4, [], [], false, false, true, 1))       
+    units.push(Game_WarUnit.new(26, 10, "Mayfall Army", SIDE_ZELMONY, UNIT_CAVALRY,
+                475, 4, 4, [], [], false, false, true, 1))               
+    units.push(Game_WarUnit.new(27, 10, "Mayfall Army", SIDE_ZELMONY, UNIT_CAVALRY,
+                475, 4, 3, [WA_FORCEFIELD], [], false, false, true, 1))         
+    units.push(Game_WarUnit.new(25, 8, "Mayfall Army", SIDE_ZELMONY, UNIT_SCOUT,
+                425, 3, 3, [], [], false, false, true, 1))                                                                        
+    units.push(Game_WarUnit.new(26, 8, "Mayfall Army", SIDE_ZELMONY, UNIT_SCOUT,
+                425, 3, 2, [], [], false, false, true, 1))                                                                       
+    units.push(Game_WarUnit.new(27, 8, "Mayfall Army", SIDE_ZELMONY, UNIT_SCOUT,
+                425, 3, 3, [WA_COUNTER], [], false, false, true, 1))                                     
+    units.push(Game_WarUnit.new(26, 9, "Merrick", SIDE_ZELMONY, UNIT_SCOUT,
+                800, 5, 9, [WA_FORESTER, WA_BERSERKER], ["Merrick"], true, false, true, 1))                   
+                
+    units.push(Game_WarUnit.new(12, 28, "Matrech Guard", SIDE_ZELMONY, UNIT_SORCERY,
+                400, 5, 2, [], [], false, false, true, 6))     
+    units.push(Game_WarUnit.new(14, 28, "Matrech Guard", SIDE_ZELMONY, UNIT_SORCERY,
+                400, 5, 2, [WA_FORCEFIELD], [], false, false, true, 2))     
+    units.push(Game_WarUnit.new(13, 28, "Matrech Guard", SIDE_ZELMONY, UNIT_SCOUT,
+                425, 3, 3, [WA_EVASION], [], false, false, true, 2))         
+    units.push(Game_WarUnit.new(12, 27, "Matrech Guard", SIDE_ZELMONY, UNIT_INFANTRY,
+                475, 4, 5, [WA_LIGHT_FEET], [], false, false, true, 6))          
+    units.push(Game_WarUnit.new(13, 27, "Matrech Guard", SIDE_ZELMONY, UNIT_INFANTRY,
+                475, 5, 5, [], [], false, false, true, 6))     
+    units.push(Game_WarUnit.new(14, 27, "Matrech Guard", SIDE_ZELMONY, UNIT_INFANTRY,
+                475, 5, 5, [], [], false, false, true, 2))    
+    units.push(Game_WarUnit.new(13, 25, "Bast", SIDE_ZELMONY, UNIT_INFANTRY,
+                850, 8, 6, [WA_COUNTER, WA_BLOCKADE], ["Bast"], true, false, true, 2))          
+                                                          
+    units.push(Game_WarUnit.new(10, 10, "Matrech Guard", SIDE_ZELMONY, UNIT_SORCERY,
+                400, 6, 2, [], [], false, false, true, 4))     
+    units.push(Game_WarUnit.new(10, 11, "Matrech Guard", SIDE_ZELMONY, UNIT_SCOUT,
+                425, 3, 3, [], [], false, false, true, 4))     
+    units.push(Game_WarUnit.new(9, 13, "Matrech Guard", SIDE_ZELMONY, UNIT_CAVALRY,
+                450, 4, 4, [], [], false, false, true, 3))   
+    units.push(Game_WarUnit.new(9, 15, "Matrech Guard", SIDE_ZELMONY, UNIT_CAVALRY,
+                450, 5, 4, [], [], false, false, true, 3))   
+    units.push(Game_WarUnit.new(11, 10, "Matrech Guard", SIDE_ZELMONY, UNIT_INFANTRY,
+                475, 5, 5, [WA_SHIELD], [], false, false, true, 4))       
+    units.push(Game_WarUnit.new(11, 12, "Matrech Guard", SIDE_ZELMONY, UNIT_INFANTRY,
+                475, 5, 5, [], [], false, false, true, 4))       
+    units.push(Game_WarUnit.new(10, 14, "Jasper", SIDE_ZELMONY, UNIT_CAVALRY,
+                675, 7, 4, [WA_LIGHT_FEET], ["Jasper"], false, false, true, 3))         
+    units.push(Game_WarUnit.new(11, 11, "Erin", SIDE_ZELMONY, UNIT_INFANTRY,
+                850, 7, 7, [], ["Erin"], true, false, true, 4))              
+    # Flip direction
+    for unit in units
+      unit.flip_direction = true
+    end                       
+    # Rewards                
+    # N/A
+    return [units, 13, "Elysium Army", "State Army",
+                SIDE_ELYSIUM, SIDE_ZELMONY, "Matrech", 
+                0, 1, 0, 1, 0, 1, 0, 1]
+  end          
+  #--------------------------------------------------------------------------
+  # * Battle 106: Royal Defence
+  #--------------------------------------------------------------------------
+  def setup_battle_106
+    units = []
+    # Elysium Side           
+    create_player_units(units, SIDE_ELYSIUM, [
+      [12, 31],      # Daniel      
+      [12, 33],      # Ljusalf
+      [14, 33],      # Outsider
+      [11, 33],      # Paris
+      [12, 30],      # Bast
+      [11, 32],      # Shiro
+      [11, 31],      # Griever
+      [12, 32],     # Keyser         
+      [13, 30],     # Jovian
+      [13, 32],       # Nashal
+      [14, 32],       # Merrick
+      [13, 31],       # Eander
+      [14, 31],       # Erin
+      [13, 33]       # Marian
+      ])                          
+    # Kirgard Side                                                              
+    units.push(Game_WarUnit.new(11, 22, "Kirgard 3rd Legion", SIDE_KIRGARD, UNIT_SCOUT,
+                425, 3, 3, [], [], false, false, true, 1))                                                                        
+    units.push(Game_WarUnit.new(15, 22, "Kirgard 3rd Legion", SIDE_KIRGARD, UNIT_SCOUT,
+                425, 3, 4, [], [], false, false, true, 1))                    
+    units.push(Game_WarUnit.new(12, 23, "Kirgard 3rd Legion", SIDE_KIRGARD, UNIT_INFANTRY,
+                475, 5, 4, [], [], false, false, true, 1))              
+    units.push(Game_WarUnit.new(14, 23, "Kirgard 3rd Legion", SIDE_KIRGARD, UNIT_INFANTRY,
+                475, 4, 4, [WA_SCATTER], [], false, false, true, 1))        
+    units.push(Game_WarUnit.new(13, 22, "Kirgard 3rd Legion", SIDE_KIRGARD, UNIT_INFANTRY,
+                475, 5, 4, [], [], false, false, true, 1))       
+    units.push(Game_WarUnit.new(13, 23, "Jovian", SIDE_KIRGARD, UNIT_INFANTRY,
+                900, 7, 6, [WA_COUNTER], ["Jovian"], true, false, true, 1))        
+                
+    units.push(Game_WarUnit.new(24, 17, "Kirgard 4th Legion", SIDE_KIRGARD, UNIT_SORCERY,
+                400, 5, 2, [], [], false, false, true, 2))     
+    units.push(Game_WarUnit.new(24, 19, "Kirgard 4th Legion", SIDE_KIRGARD, UNIT_SORCERY,
+                400, 4, 2, [WA_BLOCKADE], [], false, false, true, 6))     
+    units.push(Game_WarUnit.new(23, 17, "Kirgard 4th Legion", SIDE_KIRGARD, UNIT_SCOUT,
+                425, 3, 3, [], [], false, false, true, 2))         
+    units.push(Game_WarUnit.new(23, 19, "Kirgard 4th Legion", SIDE_KIRGARD, UNIT_SCOUT,
+                425, 3, 3, [], [], false, false, true, 6))                                                                          
+    units.push(Game_WarUnit.new(20, 18, "Kirgard 4th Legion", SIDE_KIRGARD, UNIT_CAVALRY,
+                450, 4, 4, [WA_LIGHT_FEET], [], false, false, true, 6))   
+    units.push(Game_WarUnit.new(21, 17, "Kirgard 4th Legion", SIDE_KIRGARD, UNIT_INFANTRY,
+                475, 4, 5, [], [], false, false, true, 2))       
+    units.push(Game_WarUnit.new(21, 19, "Kirgard 4th Legion", SIDE_KIRGARD, UNIT_INFANTRY,
+                475, 5, 4, [], [], false, false, true, 6))       
+    units.push(Game_WarUnit.new(22, 18, "Leonius", SIDE_KIRGARD, UNIT_SCOUT,
+                900, 5, 8, [], ["E_Leonius"], true, false, true, 2))          
+                                                          
+    units.push(Game_WarUnit.new(25, 8, "Kirgard 2nd Legion", SIDE_KIRGARD, UNIT_SORCERY,
+                400, 6, 2, [], [], false, false, true, 3))     
+    units.push(Game_WarUnit.new(27, 8, "Kirgard 1st Legion", SIDE_KIRGARD, UNIT_SORCERY,
+                400, 5, 1, [], [], false, false, true, 4))     
+    units.push(Game_WarUnit.new(24, 9, "Kirgard 2nd Legion", SIDE_KIRGARD, UNIT_SCOUT,
+                425, 3, 3, [WA_LIGHT_FEET], [], false, false, true, 3))     
+    units.push(Game_WarUnit.new(26, 9, "Kirgard 2nd Legion", SIDE_KIRGARD, UNIT_SCOUT,
+                425, 3, 2, [WA_SHIELD], [], false, false, true, 3))     
+    units.push(Game_WarUnit.new(28, 9, "Kirgard 1st Legion", SIDE_KIRGARD, UNIT_SCOUT,
+                425, 3, 3, [], [], false, false, true, 4))         
+    units.push(Game_WarUnit.new(25, 10, "Kirgard 2nd Legion", SIDE_KIRGARD, UNIT_CAVALRY,
+                450, 4, 4, [], [], false, false, true, 3))   
+    units.push(Game_WarUnit.new(26, 10, "Kirgard 1st Legion", SIDE_KIRGARD, UNIT_CAVALRY,
+                450, 4, 3, [], [], false, false, true, 4))   
+    units.push(Game_WarUnit.new(27, 10, "Kirgard 1st Legion", SIDE_KIRGARD, UNIT_CAVALRY,
+                450, 4, 4, [], [], false, false, true, 4))   
+    units.push(Game_WarUnit.new(24, 9, "Kirgard 2nd Legion", SIDE_KIRGARD, UNIT_INFANTRY,
+                475, 5, 4, [WA_COUNTER], [], false, false, true, 3))       
+    units.push(Game_WarUnit.new(28, 9, "Kirgard 1st Legion", SIDE_KIRGARD, UNIT_INFANTRY,
+                475, 5, 5, [], [], false, false, true, 4))       
+    units.push(Game_WarUnit.new(25, 9, "Keyser", SIDE_KIRGARD, UNIT_INFANTRY,
+                1000, 6, 10, [WA_BLOCKADE, WA_SHIELD], ["Keyser"], true, false, true, 3))            
+    units.push(Game_WarUnit.new(27, 9, "Eander", SIDE_KIRGARD, UNIT_CAVALRY,
+                1100, 9, 8, [WA_SCATTER], ["Eander"], true, false, true, 4))                
+    # Rewards                
+    # N/A
+    return [units, 15, "Elysium Army", "Kirgard Royal Army",
+                SIDE_ELYSIUM, SIDE_KIRGARD, "St. Reinard", 
+                0, 1, 0, 1, 0, 1, 0, 1]
+  end          
+  #--------------------------------------------------------------------------
+  # * Battle 107: Almenga Assault
+  #--------------------------------------------------------------------------
+  def setup_battle_107
+    units = []
+    # Elysium Side           
+    create_player_units(units, SIDE_ELYSIUM, [
+      [13, 21],      # Daniel      
+      [13, 23],      # Ljusalf
+      [15, 23],      # Outsider
+      [12, 23],      # Paris
+      [13, 20],      # Bast
+      [12, 22],      # Shiro
+      [12, 21],      # Griever
+      [13, 22],     # Keyser         
+      [14, 20],     # Jovian
+      [14, 22],       # Nashal
+      [15, 22],       # Merrick
+      [14, 21],       # Eander
+      [15, 21],       # Erin
+      [14, 23]      # Marian
+      ])     
+    # Almenga Side                                          
+    units.push(Game_WarUnit.new(13, 31, "Imperial Army", SIDE_ALMENGA, UNIT_CAVALRY,
+                450, 4, 4, [], [], false, false, true, 9))   
+    units.push(Game_WarUnit.new(14, 31, "Imperial Army", SIDE_ALMENGA, UNIT_CAVALRY,
+                450, 4, 4, [], [], false, false, true, 9))
+    units.push(Game_WarUnit.new(15, 31, "Imperial Army", SIDE_ALMENGA, UNIT_CAVALRY,
+                450, 4, 4, [WA_BLOCKADE], [], false, false, true, 9))       
+    units.push(Game_WarUnit.new(12, 32, "Imperial Army", SIDE_ALMENGA, UNIT_INFANTRY,
+                475, 5, 4, [WA_LIGHT_FEET], [], false, false, true, 7))    
+    units.push(Game_WarUnit.new(16, 32, "Imperial Army", SIDE_ALMENGA, UNIT_INFANTRY,
+                475, 5, 4, [], [], false, false, true, 8))            
+    units.push(Game_WarUnit.new(14, 32, "Ash", SIDE_ALMENGA, UNIT_CAVALRY,
+                1100, 9, 7, [WA_COUNTER, WA_SCATTER], ["Ash"], true, false, true, 9))                       
+    units.push(Game_WarUnit.new(13, 33, "Regin", SIDE_ALMENGA, UNIT_INFANTRY,
+                950, 7, 9, [], ["Regin"], true, false, true, 7))     
+    units.push(Game_WarUnit.new(15, 33, "Tarlia", SIDE_ALMENGA, UNIT_INFANTRY,
+                1000, 5, 11, [WA_SHIELD, WA_BLOCKADE], ["Tarlia"], true, false, true, 8))      
+    units.push(Game_WarUnit.new(12, 34, "Imperial Army", SIDE_ALMENGA, UNIT_SCOUT,
+                425, 3, 3, [], [], false, false, true, 7))   
+    units.push(Game_WarUnit.new(14, 34, "Imperial Army", SIDE_ALMENGA, UNIT_SCOUT,
+                425, 3, 3, [WA_COUNTER], [], false, false, true, 9))    
+    units.push(Game_WarUnit.new(16, 34, "Imperial Army", SIDE_ALMENGA, UNIT_SCOUT,
+                425, 3, 4, [], [], false, false, true, 8))        
+         
+                
+    units.push(Game_WarUnit.new(14, 11, "Imperial Army", SIDE_ALMENGA, UNIT_CAVALRY,
+                450, 4, 4, [WA_COUNTER], [], false, false, true, 1))  
+    units.push(Game_WarUnit.new(16, 11, "Imperial Army", SIDE_ALMENGA, UNIT_CAVALRY,
+                450, 4, 4, [], [], false, false, true, 1))   
+                
+    units.push(Game_WarUnit.new(15, 11, "Gudrun", SIDE_ALMENGA, UNIT_CAVALRY,
+                1250, 10, 10, [WA_SHIELD], ["Gudrun"], true, false, true, 1))     
+                                
+    units.push(Game_WarUnit.new(15, 10, "Imperial Army", SIDE_ALMENGA, UNIT_CAVALRY,
+                450, 4, 5, [], [], false, false, true, 5))   
+                
+    units.push(Game_WarUnit.new(13, 9, "Imperial Army", SIDE_ALMENGA, UNIT_SCOUT,
+                425, 3, 3, [WA_LIGHT_FEET], [], false, false, true, 4))       
+    units.push(Game_WarUnit.new(17, 9, "Imperial Army", SIDE_ALMENGA, UNIT_SCOUT,
+                425, 4, 3, [], [], false, false, true, 6))       
+                
+    units.push(Game_WarUnit.new(13, 10, "Imperial Army", SIDE_ALMENGA, UNIT_INFANTRY,
+                475, 5, 4, [], [], false, false, true, 4))          
+    units.push(Game_WarUnit.new(17, 10, "Imperial Army", SIDE_ALMENGA, UNIT_INFANTRY,
+                475, 5, 4, [WA_LIGHT_FEET], [], false, false, true, 6))       
+    units.push(Game_WarUnit.new(14, 10, "Imperial Army", SIDE_ALMENGA, UNIT_INFANTRY,
+                475, 5, 5, [], [], false, false, true, 5))            
+    units.push(Game_WarUnit.new(16, 10, "Imperial Army", SIDE_ALMENGA, UNIT_INFANTRY,
+                475, 4, 4, [], [], false, false, true, 5))       
+                
+    units.push(Game_WarUnit.new(14, 9, "Imperial Army", SIDE_ALMENGA, UNIT_SORCERY,
+                400, 5, 3, [], [], false, false, true, 4))         
+    units.push(Game_WarUnit.new(15, 8, "Imperial Army", SIDE_ALMENGA, UNIT_SORCERY,
+                400, 5, 2, [WA_EVASION], [], false, false, true, 5))       
+    units.push(Game_WarUnit.new(16, 9, "Imperial Army", SIDE_ALMENGA, UNIT_SORCERY,
+                400, 6, 3, [], [], false, false, true, 6))       
+                
+    units.push(Game_WarUnit.new(15, 9, "Brunhild", SIDE_ALMENGA, UNIT_CAVALRY,
+                1500, 12, 12, [WA_COUNTER, WA_SCATTER, WA_FORCEFIELD], ["E_Brunhild"], true, false, true, 5))                              
+    # Rewards                
+    # N/A
+    return [units, 13, "Elysium Army", "Imperial Army", 
+                SIDE_ELYSIUM, SIDE_ALMENGA, "Vanaheim", 
+                0, 1, 0, 1, 0, 1, 0, 1]
+  end          
+  #--------------------------------------------------------------------------
+  # * Battle 108: Master of Puppets
+  #--------------------------------------------------------------------------
+  def setup_battle_108
+    units = []
+    # Elysium Side           
+    create_player_units(units, SIDE_ELYSIUM, [
+      [8, 27],      # Daniel      
+      [8, 29],      # Ljusalf
+      [10, 29],      # Outsider
+      [7, 29],      # Paris
+      [8, 26],      # Bast
+      [7, 28],      # Shiro
+      [7, 27],      # Griever
+      [8, 28],     # Keyser         
+      [9, 26],     # Jovian
+      [9, 28],       # Nashal
+      [10, 28],       # Merrick
+      [9, 27],       # Eander
+      [10, 27],       # Erin
+      [9, 29]      # Marian
+      ])     
+    # Demon Side                                          
+    units.push(Game_WarUnit.new(10, 17, "Possessed Imperial Army", SIDE_DEMON, UNIT_INFANTRY,
+                475, 5, 4, [WA_BLOCKADE], [], false, false, true, 1))      
+    units.push(Game_WarUnit.new(11, 17, "Possessed Imperial Army", SIDE_DEMON, UNIT_INFANTRY,
+                475, 5, 5, [], [], false, false, true, 2))       
+    units.push(Game_WarUnit.new(13, 17, "Possessed Imperial Army", SIDE_DEMON, UNIT_INFANTRY,
+                475, 4, 5, [], [], false, false, true, 3))        
+    units.push(Game_WarUnit.new(10, 18, "Possessed Imperial Army", SIDE_DEMON, UNIT_SCOUT,
+                425, 3, 3, [WA_COUNTER], [], false, false, true, 1))   
+    units.push(Game_WarUnit.new(12, 18, "Possessed Imperial Army", SIDE_DEMON, UNIT_SCOUT,
+                425, 4, 3, [], [], false, false, true, 3))   
+    units.push(Game_WarUnit.new(11, 18, "Leonius", SIDE_DEMON, UNIT_SCOUT,
+                900, 5, 8, [], ["Leonius"], false, false, true, 2))     
+    units.push(Game_WarUnit.new(10, 16, "Possessed Imperial Army", SIDE_DEMON, UNIT_SORCERY,
+                400, 5, 2, [WA_FORCEFIELD], [], false, false, true, 1))         
+    units.push(Game_WarUnit.new(11, 16, "Possessed Imperial Army", SIDE_DEMON, UNIT_SORCERY,
+                400, 6, 2, [], [], false, false, true, 2))         
+    units.push(Game_WarUnit.new(12, 16, "Possessed Imperial Army", SIDE_DEMON, UNIT_SORCERY,
+                400, 5, 3, [], [], false, false, true, 3))       
+                
+    units.push(Game_WarUnit.new(21, 18, "Possessed Imperial Army", SIDE_DEMON, UNIT_CAVALRY,
+                450, 4, 4, [], [], false, false, true, 5))   
+    units.push(Game_WarUnit.new(20, 19, "Possessed Imperial Army", SIDE_DEMON, UNIT_CAVALRY,
+                450, 4, 4, [], [], false, false, true, 4))   
+    units.push(Game_WarUnit.new(21, 20, "Possessed Imperial Army", SIDE_DEMON, UNIT_CAVALRY,
+                450, 4, 4, [], [], false, false, true, 6))   
+    units.push(Game_WarUnit.new(22, 19, "Ash", SIDE_DEMON, UNIT_CAVALRY,
+                1100, 9, 7, [WA_COUNTER, WA_SCATTER], ["Ash"], true, false, true, 4))     
+    units.push(Game_WarUnit.new(22, 18, "Possessed Imperial Army", SIDE_DEMON, UNIT_INFANTRY,
+                475, 5, 4, [], [], false, false, true, 5))   
+    units.push(Game_WarUnit.new(22, 20, "Possessed Imperial Army", SIDE_DEMON, UNIT_INFANTRY,
+                475, 5, 4, [], [], false, false, true, 6))   
+    units.push(Game_WarUnit.new(22, 18, "Possessed Imperial Army", SIDE_DEMON, UNIT_SCOUT,
+                425, 3, 3, [WA_COUNTER], [], false, false, true, 5))   
+    units.push(Game_WarUnit.new(22, 20, "Possessed Imperial Army", SIDE_DEMON, UNIT_SCOUT,
+                425, 3, 3, [WA_COUNTER], [], false, false, true, 6))   
+                
+    units.push(Game_WarUnit.new(10, 3, "Trevor", SIDE_DEMON, UNIT_DEMON,
+                1000, 12, 14, [WA_FORCEFIELD, WA_BLOCKADE], ["D-Trevor"], true, false, true, 9))       
+    units.push(Game_WarUnit.new(12, 3, "Sick", SIDE_DEMON, UNIT_DEMON,
+                1000, 10, 16, [WA_FORCEFIELD, WA_SCATTER], ["D-Sick"], true, false, true, 8))                           
+    # Rewards                
+    # N/A
+    return [units, 13, "Elysium Army", "Demon Army", 
+                SIDE_ELYSIUM, SIDE_DEMON, "Eastern Kir River", 
+                0, 1, 0, 1, 0, 1, 0, 1]
+  end          
+  #--------------------------------------------------------------------------
+  # * Battle 109: Fated Battle
+  #--------------------------------------------------------------------------
+  def setup_battle_109
+    units = []
+    # Elysium Side           
+    create_player_units(units, SIDE_ELYSIUM, [
+      [16, 23],      # Daniel      
+      [16, 25],      # Ljusalf
+      [18, 25],      # Outsider
+      [15, 25],      # Paris
+      [16, 22],      # Bast
+      [15, 24],      # Shiro
+      [15, 23],      # Griever
+      [16, 24],     # Keyser         
+      [17, 22],     # Jovian
+      [17, 24],       # Nashal
+      [18, 24],       # Merrick
+      [17, 23],       # Eander
+      [18, 23],       # Erin
+      [17, 25]      # Marian
+      ])     
+    # Demon Side                                          
+    units.push(Game_WarUnit.new(16, 11, "Bast", SIDE_DEMON, UNIT_CAVALRY,
+                1000, 7, 7, [WA_BLOCKADE], ["Bast"], false, false, true, 9))       
+    units.push(Game_WarUnit.new(15, 11, "Jovian", SIDE_DEMON, UNIT_CAVALRY,
+                825, 8, 7, [WA_LIGHT_FEET], ["Jovian"], false, false, true, 9))                         
+    units.push(Game_WarUnit.new(17, 10, "Griever", SIDE_DEMON, UNIT_CAVALRY,
+                725, 12, 6, [], ["Griever"], false, false, true, 2))      
+                
+    units.push(Game_WarUnit.new(16, 10, "Daniel", SIDE_DEMON, UNIT_INFANTRY,
+                1200, 13, 13, [WA_REGEN, WA_FORCEFIELD], ["Daniel_hand"], true, false, true, 8))                  
+    units.push(Game_WarUnit.new(15, 10, "Eander", SIDE_DEMON, UNIT_CAVALRY,
+                1000, 10, 8, [WA_COUNTER], ["Eander"], false, false, true, 8))         
+    units.push(Game_WarUnit.new(14, 10, "Erin", SIDE_DEMON, UNIT_INFANTRY,
+                775, 6, 7, [WA_BLOCKADE], ["Erin"], false, false, true, 3))     
+                
+    units.push(Game_WarUnit.new(17, 9, "Shiro", SIDE_DEMON, UNIT_INFANTRY,
+                850, 5, 5, [WA_EVASION], ["Shiro"], false, false, true, 2))      
+    units.push(Game_WarUnit.new(16, 9, "Keyser", SIDE_DEMON, UNIT_INFANTRY,
+                900, 5, 9, [WA_SHIELD], ["Keyser"], false, false, true, 8))      
+    units.push(Game_WarUnit.new(15, 9, "Nashal", SIDE_DEMON, UNIT_INFANTRY,
+                800, 5, 6, [WA_SCATTER], ["Nashal"], false, false, true, 1))                  
+    units.push(Game_WarUnit.new(14, 9, "Merrick", SIDE_DEMON, UNIT_SCOUT,
+                725, 6, 6, [WA_BERSERKER], ["Merrick"], false, false, true, 3))    
+                
+    units.push(Game_WarUnit.new(17, 8, "Paris", SIDE_DEMON, UNIT_SCOUT,
+                750, 5, 4, [WA_MOUNTAINEER], ["Paris"], false, false, true, 2))              
+    units.push(Game_WarUnit.new(16, 8, "Ljusalf", SIDE_DEMON, UNIT_SORCERY,
+                700, 7, 2, [WA_FORESTER], ["Ljusalf"], false, false, true, 8))                  
+    units.push(Game_WarUnit.new(15, 8, "Outsider", SIDE_DEMON, UNIT_SCOUT,
+                750, 4, 3, [], ["Outsider"], false, false, true, 1))                           
+    units.push(Game_WarUnit.new(14, 8, "Marian", SIDE_DEMON, UNIT_SORCERY,
+                650, 9, 3, [WA_FORCEFIELD], ["Marian"], false, false, true, 3))                           
+    # Rewards                
+    # N/A
+    return [units, 13, "Elysium Army", "Elysium Army?", 
+                SIDE_ELYSIUM, SIDE_DEMON, "Elysium", 
+                0, 1, 0, 1, 0, 1, 0, 1]
+  end          
+  #--------------------------------------------------------------------------
+  # * Read war setup data and create player-side units
+  #--------------------------------------------------------------------------              
+  def create_player_units(units, side, locs)
+    for i in 0...locs.size
+      # Leader stats
+      leader = $data_warleaders[i+1]
+      if not $game_actors[leader.required_char].selectable
+        next
+      end
+      portraits = [leader.name]
+      men = leader.men
+      attack = leader.attack
+      defence = leader.defence
+      abilities = []        
+      type = $game_party.war_units[i+1][0]
+      # Penalties/Bonuses
+      if type == UNIT_INFANTRY
+        attack += 1
+        defence += 1
+      elsif type == UNIT_SORCERY
+        attack -= -1
+      end        
+      if leader.rating[type] == "B"
+        attack -= 1
+        defence -= 1
+      elsif leader.rating[type] == "C"
+        attack -= 2
+        defence -= 2
+      end        
+      # Member stats
+      for id in $game_party.war_units[i+1][1]
+        if id > 0
+          member = $data_warmembers[id]
+          portraits.push(member.name)
+          men += member.men
+          attack += member.attack
+          defence += member.defence
+          if member.ability > 0
+            abilities.push(member.ability)
+          end
+        end
+      end        
+      attack = [attack, 0].max
+      defence = [defence, 0].max
+      # Create unit
+      x = locs[i][0]
+      y = locs[i][1]
+      units.push(Game_WarUnit.new(x, y, leader.name, side, type,
+              men, attack, defence, abilities, portraits, (i == 0), true, false, 0, leader.deathmessage))     
+    end
+  end
+end

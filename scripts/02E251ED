@@ -1,0 +1,132 @@
+#==============================================================================
+# ** Window_Message_Small
+#------------------------------------------------------------------------------
+#  This message window is used to display text.
+#==============================================================================
+ 
+class Window_Message_Small < Window_Selectable
+  #--------------------------------------------------------------------------
+  # * Object Initialization
+  #--------------------------------------------------------------------------
+  def initialize
+    super(0, 208, 100, 64)
+    self.contents = Bitmap.new(width - 32, height - 32)    
+    self.visible = false
+    self.z = 9996
+    self.pause = true
+    @fade_in = false
+    @fade_out = false
+    @prepare_fade_out = false # Fade out from next frame on
+    @contents_showing = false
+  end
+  #--------------------------------------------------------------------------
+  # * Dispose
+  #--------------------------------------------------------------------------
+  def dispose
+    terminate_message
+    $game_temp.message_window_showing = false
+    super
+  end
+  #--------------------------------------------------------------------------
+  # * Terminate Message
+  #--------------------------------------------------------------------------
+  def terminate_message
+    @fade_out = true
+    # Clear showing flag
+    @contents_showing = false
+    # Call message callback
+    if $game_temp.message_proc != nil
+      $game_temp.message_proc.call
+    end
+    # Clear variables related to text
+    $game_temp.message_text_small = nil
+    $game_temp.message_proc = nil
+  end
+  #--------------------------------------------------------------------------
+  # * Refresh
+  #--------------------------------------------------------------------------
+  def refresh
+    # Prepare window for drawing text
+    self.opacity = 0
+    self.contents.clear
+    self.contents.font.color = normal_color
+    # If waiting for a message to be displayed,
+    if $game_temp.message_text_small != nil      
+      text = $game_temp.message_text_small
+      text.gsub!(/\\ITEMNAME/) { $game_temp.last_item_name }
+      lines = text.scan(/.*\n/)
+      width = 0
+      for line in lines
+        width = [width, self.contents.text_size(line).width].max
+      end      
+      self.width = width + 48
+      self.height = 64 + (lines.size - 1) * 24
+      self.x = 320 - self.width/2
+      self.contents = Bitmap.new(self.width - 32, self.height - 32)
+      y = 0
+      for line in lines
+        self.draw_text(0, y, self.contents.width, 32, line, 1)
+        y += 24
+      end
+    end    
+  end
+  #--------------------------------------------------------------------------
+  # * Set Window Position and Opacity Level
+  #--------------------------------------------------------------------------
+  def reset_window
+      self.back_opacity = 200        
+  end
+  #--------------------------------------------------------------------------
+  # * Frame Update
+  #--------------------------------------------------------------------------
+  def update
+    super
+    # If fade in
+    if @fade_in
+      self.opacity += 48
+      if self.opacity == 255
+        @fade_in = false
+      end
+      return
+    end
+    # If message is being displayed
+    if @contents_showing     
+      if Input.trigger?(Input::B) or  Input.trigger?(Input::C) 
+          $game_system.se_play($data_system.cancel_se)
+          terminate_message
+      end
+      return
+    end
+    # If display wait message or choice exists when not fading out
+    if @fade_out == false and $game_temp.message_text_small != nil      
+      update_newmessage
+      return
+    end
+    # If message which should be displayed is not shown, but window is visible
+    if @fade_out
+      self.opacity -= 48
+      if self.opacity == 0
+        @fade_out = false
+        self.visible = false
+        $game_temp.message_window_showing = false
+        self.contents.clear
+        if $game_temp.message_text_small != nil      
+          update_newmessage
+        end
+      end
+      return
+    end    
+  end
+  #--------------------------------------------------------------------------
+  # * Cursor Rectangle Update
+  #--------------------------------------------------------------------------   
+  def  update_newmessage
+    @contents_showing = true
+    $game_temp.message_window_showing = true
+    reset_window
+    refresh
+    Graphics.frame_reset
+    self.visible = true
+     @fade_in = true
+  end
+end

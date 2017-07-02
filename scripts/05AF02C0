@@ -1,0 +1,167 @@
+#==============================================================================
+# ** Scene_Menu
+#------------------------------------------------------------------------------
+#  This class performs menu screen processing.
+#==============================================================================
+
+class Scene_Menu
+  #--------------------------------------------------------------------------
+  # * Object Initialization
+  #     menu_index : command cursor's initial position
+  #--------------------------------------------------------------------------
+  def initialize(menu_index = 0)
+    @menu_index = menu_index
+  end
+  #--------------------------------------------------------------------------
+  # * Main Processing
+  #--------------------------------------------------------------------------
+  def main
+    # Make title graphic
+    @sprite = Sprite.new
+    @sprite.bitmap = RPG::Cache.picture("Backgrounds/Menu" + $game_system.windowskin_id.to_s)    
+    # Make command window
+    s = []
+    s.push("Items")
+    s.push("Equipment")
+    s.push("Magic")
+    s.push("Stats")
+    s.push("Formation")
+    s.push("Arrange")
+    s.push("Settings")
+    s.push("Help")
+    s.push("Quit")    
+    @command_window = Window_Command.new(150, s)
+    @command_window.windowskin_suffix = "_left"
+    @command_window.index = @menu_index
+    if $game_party.flashback_mode
+      @command_window.disable_item(0)
+      @command_window.disable_item(1)
+    end
+    # Make play time window
+    @playtime_window = Window_PlayTime.new
+    @playtime_window.windowskin_suffix = "_left"
+    @playtime_window.x = 0
+    @playtime_window.y = 360
+    # Make gold window
+    @gold_window = Window_Gold.new
+    @gold_window.windowskin_suffix = "_left"
+    @gold_window.x = 0
+    @gold_window.y = 400
+    # Make status window
+    @status_window = []
+    for i in 0...6
+      @status_window[i] = Window_MenuStatus.new($game_party.actors[i])
+      @status_window[i].x = 340
+      @status_window[i].y = i*76
+    end
+    @status_window[6] = Window_Base_Short.new(165, 0, 175, 48)
+    @status_window[6].contents = Bitmap.new(175, 48)      
+    @status_window[6].contents.font.color = @status_window[6].system_color
+    @status_window[6].draw_text(24, 8, 200, 32, "Entourage")
+    for i in 0...2
+      @status_window[7+i] = Window_Base_Short.new(165, 40+i*40, 175, 48)
+      @status_window[7+i].contents = Bitmap.new(175, 48)      
+      if $game_party.entourage[i] != nil
+        @status_window[7+i].draw_text(24, 8, 200, 32, $game_party.entourage[i].name)
+      end
+    end
+    # Execute transition
+    Graphics.transition
+    # Main loop
+    loop do
+      # Update game screen
+      Graphics.update
+      # Update input information
+      Input.update
+      # Frame update
+      update
+      # Abort loop if screen is changed
+      if $scene != self
+        break
+      end
+    end
+    # Prepare for transition
+    Graphics.freeze
+    # Dispose of windows
+    @command_window.dispose
+    @playtime_window.dispose
+    @gold_window.dispose
+    for w in @status_window
+      w.dispose
+    end
+    # Dispose of title graphic
+    @sprite.bitmap.dispose
+    @sprite.dispose
+  end
+  #--------------------------------------------------------------------------
+  # * Frame Update
+  #--------------------------------------------------------------------------
+  def update
+    # Update windows
+    @command_window.update
+    @playtime_window.update
+    @gold_window.update
+    update_command
+  end
+  #--------------------------------------------------------------------------
+  # * Frame Update (when command window is active)
+  #--------------------------------------------------------------------------
+  def update_command
+    # If B button was pressed
+    if Input.trigger?(Input::B)
+      # Play cancel SE
+      $game_system.se_play($data_system.cancel_se)
+      # Switch to map screen
+      $scene = Scene_Map.new
+      return
+    end
+    # If C button was pressed
+    if Input.trigger?(Input::C)
+      # If command other than save or end game, and party members = 0
+      if $game_party.actors.size == 0 and @command_window.index < 4
+        # Play buzzer SE
+        $game_system.se_play($data_system.buzzer_se)
+        return
+      end
+      # Branch by command window cursor position
+      case @command_window.index
+      when 0  # item
+        if $game_party.flashback_mode
+          $game_system.se_play($data_system.buzzer_se)
+          return
+        end
+        $game_system.se_play($data_system.decision_se)
+        $scene = Scene_Item.new
+      when 1  # equipment
+        if $game_party.flashback_mode
+          $game_system.se_play($data_system.buzzer_se)
+          return
+        end
+        $game_system.se_play($data_system.decision_se)
+        $scene = Scene_Equip.new
+      when 2  # magic
+        $game_system.se_play($data_system.decision_se)
+        $scene = Scene_Magic.new
+      when 3  # status
+        $game_system.se_play($data_system.decision_se)
+        $scene = Scene_Status.new(0, false)
+      when 4  # formation
+        $game_system.se_play($data_system.decision_se)
+        $scene = Scene_Formation.new
+      when 5  # arrange
+        $game_system.se_play($data_system.decision_se)
+        $scene = Scene_Arrange.new
+      when 6  # Settings
+        $game_system.se_play($data_system.decision_se)
+        $scene = Scene_Options.new
+      when 7  # help
+        $game_system.se_play($data_system.decision_se)
+        $scene = Scene_Help.new
+      when 8  # end game
+        $game_system.se_play($data_system.decision_se)
+        $scene = Scene_End.new
+      end
+      return
+    end
+  end
+end

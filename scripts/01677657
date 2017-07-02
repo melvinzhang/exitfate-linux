@@ -1,0 +1,108 @@
+#==============================================================================
+# ** Window_SimList
+#------------------------------------------------------------------------------
+#  This window displays the list of simulation war battles
+#==============================================================================
+
+class Window_SimList < Window_Selectable
+  #--------------------------------------------------------------------------
+  # * Object Initialization
+  #--------------------------------------------------------------------------
+  def initialize(index = 0)
+    super(16, 75, 300, 32 + 24 * 13)
+    refresh
+    self.index = index
+  end
+  #--------------------------------------------------------------------------
+  # * Get Data
+  #--------------------------------------------------------------------------
+  def data
+    return @data[@index]
+  end
+  #--------------------------------------------------------------------------
+  # * Set selected index to certain battle id
+  #--------------------------------------------------------------------------  
+  def set_index(index)
+    for i in 0...@data.length
+      if @data[i] != nil and @data[i].battle_id == index
+        @index = i
+      end
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Refresh
+  #--------------------------------------------------------------------------
+  def refresh
+    if self.contents != nil
+      self.contents.dispose
+      self.contents = nil
+    end
+    @data = []
+    for i in 1...$data_sim.length
+      # Check if player has the appropriate battle plan
+      if $game_party.item_number(i + 150) == 0
+        @data.push(nil)
+      else
+        @data.push($data_sim[i])
+      end
+    end
+    @item_max = @data.size
+    if @item_max > 0
+      self.contents = Bitmap.new(width - 32, row_max * @row_height + 32)
+      for i in 0...@item_max
+        draw_item(i)
+      end
+    end
+  end
+  #--------------------------------------------------------------------------
+  # * Draw Item
+  #     index : item number
+  #--------------------------------------------------------------------------
+  def draw_item(index)    
+    item = @data[index]
+    x = 4
+    y = index * @row_height - 4    
+    rect = Rect.new(x, y+4, self.width - 32, @row_height)
+    self.contents.fill_rect(rect, Color.new(0, 0, 0, 0))
+    # Check if player has the appropriate battle plan
+    if item == nil
+      self.contents.font.color = disabled_color      
+      self.draw_text(x, y, 28, 32, (index + 1).to_s + ".", 2)
+      self.draw_text(x+30, y, 250, 32, "? ? ? ?", 0)
+    else
+      self.contents.font.color = normal_color
+      self.draw_text(x, y, 28, 32, (index + 1).to_s + ".", 2)
+      self.draw_text(x+30, y, 250, 32, item.name, 0)
+      # Determine ranking
+      score = $game_party.get_war_score(item.battle_id)
+      if score == 0
+        rating = "-"
+        self.contents.font.color = Color.new(128, 128, 128)        
+      elsif score >= 95
+        rating = "A"
+        self.contents.font.color = Color.new(255, 255, 128)
+      elsif score >= 85
+        rating = "B"
+        self.contents.font.color = Color.new(128, 128, 255)        
+      elsif score >= 75
+        rating = "C"
+        self.contents.font.color = Color.new(128, 255, 128)         
+      elsif score >= 50
+        rating = "D"
+        self.contents.font.color = Color.new(255, 255, 255)
+      else
+        rating = "F"
+        self.contents.font.color = Color.new(255, 0, 0)         
+      end
+      self.contents.font.bold = true
+      self.draw_text(0, y, 300-32, 32, rating, 2)
+      self.contents.font.bold = false
+    end    
+  end
+  #--------------------------------------------------------------------------
+  # * Help Text Update
+  #--------------------------------------------------------------------------
+  def update_help
+    #@help_window.set_text(self.item == nil ? "" : self.item.description)
+  end
+end

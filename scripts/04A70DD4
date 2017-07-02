@@ -1,0 +1,81 @@
+#==============================================================================
+# ** Window_Message_Name
+#------------------------------------------------------------------------------
+#  Small class for displaying dialogue actor name
+#==============================================================================
+ 
+class Window_Message_Name < Window_Base
+  #--------------------------------------------------------------------------
+  # * Object Initialization
+  #--------------------------------------------------------------------------
+  def initialize
+    super(0, 0, 160, 47)
+    self.z = 9997
+    @picture_window = Window_Message_Name_Picture.new(self.width, self.height)
+    self.visible = false
+    self.opacity = 0
+    self.contents_opacity = 0
+    refresh
+  end  
+  #--------------------------------------------------------------------------
+  # * Refresh
+  #--------------------------------------------------------------------------
+  def refresh  
+    self.width = $game_temp.dialogue_name.length * 10 + 32    
+    if $game_temp.dialogue_name == ""
+      self.visible = false
+    else
+      self.visible = true
+    end
+    @picture_window.x = self.x
+    @picture_window.y = self.y
+    @picture_window.refresh(self.width, self.height)
+  end
+  #--------------------------------------------------------------------------
+  # * Dispose
+  #--------------------------------------------------------------------------
+  def dispose
+    @picture_window.dispose
+    super
+  end
+  #--------------------------------------------------------------------------
+  # * Contents Opacity
+  #--------------------------------------------------------------------------
+  def contents_opacity=(op)
+    super(op)
+    @picture_window.opacity = op
+  end
+  #--------------------------------------------------------------------------
+  # * Visible
+  #--------------------------------------------------------------------------
+  def visible=(vis)
+    @picture_window.visible = vis
+    super(vis)
+  end
+end
+#==============================================================================
+# ** Window_Message_Name_Picture
+#------------------------------------------------------------------------------
+#  Small class for displaying dialogue actor name
+#==============================================================================
+ 
+class Window_Message_Name_Picture < Sprite
+  #--------------------------------------------------------------------------
+  # * Object Initialization
+  #--------------------------------------------------------------------------
+  def initialize(width, height)
+    super()
+    self.z = 9998
+    refresh(width, height)
+  end  
+  #--------------------------------------------------------------------------
+  # * Refresh
+  #--------------------------------------------------------------------------  
+  def refresh(width, height)
+    self.bitmap = Bitmap.new([1, width].max, height)
+    self.bitmap.font.color = Color.new(0, 0, 0, 192)
+    bitmap.draw_text(16 + 1, 8 + 1, self.bitmap.width, 32, $game_temp.dialogue_name)
+    self.bitmap.font.color = Color.new(255, 255, 255, 192)
+    bitmap.draw_text(16, 8, self.bitmap.width, 32, $game_temp.dialogue_name)  
+  end
+end 
