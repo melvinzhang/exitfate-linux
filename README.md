@@ -20,12 +20,12 @@ In the Windows version, only the position of the new party members have to be se
 
 The behavior of the Linux port now follows the Windows version.
 
-### Additional bugs left in all version
-
-See http://exitfate.webs.com/guides/errors.htm
-
 ## Updating the Linux port
 
 To incorporate the fixes into the Linux port, download (Game103.zip)[https://github.com/melvinzhang/exitfate-linux/releases/download/1.03/Game103.zip] and unzip the contents into your exitfate directory.
 
 This creates two new directories, Data and Graphics. Then rename Game.rgssad to Game.rgssad.bak so that the engine will use the files from Data and Graphics directories.
+
+## Remaining bugs present in all versions
+
+See http://exitfate.webs.com/guides/errors.htm
