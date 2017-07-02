@@ -28,4 +28,4 @@ See http://exitfate.webs.com/guides/errors.htm
 
 To incorporate the fixes into the Linux port, download (Game103.zip)[https://github.com/melvinzhang/exitfate-linux/releases/download/1.03/Game103.zip] and unzip the contents into your exitfate directory.
 
-This creates two new directories, Data and Graphics. Then rename the current Game.rgssad to Game.rgssad.bak.
+This creates two new directories, Data and Graphics. Then rename Game.rgssad to Game.rgssad.bak so that the engine will use the files from Data and Graphics directories.
