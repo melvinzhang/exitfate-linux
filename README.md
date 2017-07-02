@@ -19,3 +19,7 @@ Any change in party members causes the party formation to be reset. This require
 In the Windows version, only the position of the new party members have to be set, the existing members stay in the current position.
 
 The behavior of the Linux port now follows the Windows version.
+
+### Additional bugs left in all version
+
+See http://exitfate.webs.com/guides/errors.htm
