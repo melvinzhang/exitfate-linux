@@ -6,16 +6,19 @@
 
 begin  
   #unless $DEBUG
-  if false
+  #if false
     # Fullscreen
-    $showm = Win32API.new ('user32', 'keybd_event', ['I','I','L','L'], "v")
-    $showm.call(18,0,0,0) 
-    $showm.call(13,0,0,0) 
-    $showm.call(13,0,2,0) 
-    $showm.call(18,0,2,0) 
-  end
+  #  $showm = Win32API.new ('user32', 'keybd_event', ['I','I','L','L'], "v")
+  #  $showm.call(18,0,0,0) 
+  #  $showm.call(13,0,0,0) 
+  #  $showm.call(13,0,2,0) 
+  #  $showm.call(18,0,2,0) 
+  #end
   # Prepare for transition
   Graphics.freeze
+  lines = IO.readlines('fullscreen.txt')
+eval (lines[0])
+
   # Make scene object (title screen)
   $scene = Scene_Title.new
   # Call main method as long as $scene is effective

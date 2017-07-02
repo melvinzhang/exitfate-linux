@@ -55,7 +55,7 @@ class Scene_Arrange
       @status_window[i] = Window_MenuStatus.new($game_party.actors[i], true, true, show_forced)
       @status_window[i].x = 465
       @status_window[i].y = i*36
-      @old_actors.push($game_party.actors[i].id)
+      @old_actors.push($game_party.actors[i])#.id)
     end
     @entourage_window = Window_Base_Short.new(465, 6*36, 300, 40)
     @entourage_window.contents = Bitmap.new(175, 48)      

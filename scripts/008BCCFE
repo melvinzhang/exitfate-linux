@@ -213,11 +213,12 @@ class Scene_Stats
   #--------------------------------------------------------------------------  
   def draw_ranking_row(y, actor, value, rank)
     w = 220
-    bgcolor = rank == 1 ? Color.new (200, 200, 0, 128) : 
-                  rank == 2 ? Color.new (200, 100, 0, 128) : 
-                  rank == 3 ? Color.new (200, 0, 0, 128) : 
-                  rank <= 10 ? Color.new (140, 65, 65, 128) : 
-                  Color.new(128, 128, 128, 128)
+  bgcolor = Color.new (200)#, 200, 0, 128)
+    #bgcolor = rank == 1 ? Color.new (200, 200, 0, 128) : 
+    #              rank == 2 ? Color.new (200, 100, 0, 128) : 
+    #              rank == 3 ? Color.new (200, 0, 0, 128) : 
+    #              rank <= 10 ? Color.new (140, 65, 65, 128) : 
+    #              Color.new(128, 128, 128, 128)
     @ranking_sprite.bitmap.fill_rect(0, y, w, 23, bgcolor)
     prefix = rank.to_s + ". "
     if rank < 10

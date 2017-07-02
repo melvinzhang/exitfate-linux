@@ -465,9 +465,9 @@ Each character, enemy and magic spell
 possesses an element. There are six elements 
 in total, and each has an opposing element:
 
-[Icons\\Element_1.png]@Light@ <-> [Icons\\Element_2.png]@Dark@ 
-[Icons\\Element_3.png]@Fire@  <-> [Icons\\Element_4.png]@Ice@ 
-[Icons\\Element_5.png]@Water@ <-> [Icons\\Element_6.png]@Thunder@ 
+[Icons/Element_1.png]@Light@ <-> [Icons/Element_2.png]@Dark@ 
+[Icons/Element_3.png]@Fire@  <-> [Icons/Element_4.png]@Ice@ 
+[Icons/Element_5.png]@Water@ <-> [Icons/Element_6.png]@Thunder@ 
 
 The effects of elements are as follows:
 
@@ -506,7 +506,7 @@ a letter:
 @F@  Small stat penalty
 
 If someone a character has a relation with 
-falls in battle, the [Animations\\Status\\0]icon will show up. 
+falls in battle, the [Animations/Status/0]icon will show up. 
 Until the character is revived or the battle
 ends, the stat boost will be doubled (except 
 in the case of an @F@-relation, in which the 
@@ -525,7 +525,7 @@ boost).
       node_b.children.push(node_b_ba)
       node_b_ba.contents = "@Battle@
 
-[Pictures\\Help_1]
+[Pictures/Help_1]
 
 @1@ The enemy
 @2@ The active party
@@ -563,7 +563,7 @@ if any equipment has actually been changed.
 Choosing Magic will show the following 
 screen:
 
-[Pictures\\Help_2]
+[Pictures/Help_2]
 
 Here, all available spells are shown, along 
 with their element, the @MP@ cost, and the 
@@ -614,104 +614,104 @@ status 'Poison').
 
 @Negative effects@
 
-[Animations\\Status\\2]@Stun@
+[Animations/Status/2]@Stun@
  Lasts 1 turn
  Affected character can't act for a single
   turn.
  
-[Animations\\Status\\3]@Amnesia@ 
+[Animations/Status/3]@Amnesia@ 
  Lasts 4 turns
  MAG is temporarily reduced.
 
-[Animations\\Status\\4]@Mindblow@
+[Animations/Status/4]@Mindblow@
  Lasts 3 turns
  Character stops regenerating MP.
  
-[Animations\\Status\\5]@Poison@
+[Animations/Status/5]@Poison@
  Lasts 5 turns
  Character takes damage every turn.
 
-[Animations\\Status\\6]@Chaos@ 
+[Animations/Status/6]@Chaos@ 
  Lasts 3 turns
  Character will randomly attack an enemy or 
   ally each turn.
  
-[Animations\\Status\\7]@Blind@ 
+[Animations/Status/7]@Blind@ 
  Lasts 4 turns
  ACC is temporarily reduced.
  
-[Animations\\Status\\8]@Berserk@
+[Animations/Status/8]@Berserk@
  Lasts 4 turns 
  ACC is temporarily reduced and character 
   will attack a random enemy each turn.
  
-[Animations\\Status\\9]@Slow@ 
+[Animations/Status/9]@Slow@ 
  Lasts 4 turns
  SPD is temporarily reduced.
  
-[Animations\\Status\\10]@Freeze@
+[Animations/Status/10]@Freeze@
  Lasts 3 turns.
  Character can't dodge physical attacks and 
   will instantly die when hit by one.
  
-[Animations\\Status\\11]@Silence@
+[Animations/Status/11]@Silence@
  Lasts 4 turn.
  Character can't use any magic.
 
-[Animations\\Status\\12]@Sleep@ 
+[Animations/Status/12]@Sleep@ 
  Lasts 4 turns or until hit with physical 
   attack.
  Character can't act.
  
-[Animations\\Status\\13]@Enfeeble@ 
+[Animations/Status/13]@Enfeeble@ 
  Lasts 4 turns
  STR is temporarily reduced.
  
-[Animations\\Status\\14]@Paralyze@ 
+[Animations/Status/14]@Paralyze@ 
  Lasts 3 turns
  Character can't act.
  
  
 @Positive effects@
 
-[Animations\\Status\\0]@Boost@
+[Animations/Status/0]@Boost@
  Lasts while characters with relation are KO.
  Boosts character's stats. See help for 
   Relations for more information.
 
-[Animations\\Status\\15]@Regen@
+[Animations/Status/15]@Regen@
  Lasts 6 turns
  Character recovers HP every turn.
  
-[Animations\\Status\\16]@Lock@ 
+[Animations/Status/16]@Lock@ 
  Lasts 10 turns
  Locks character status. No new effects can 
   be added, and existing ones will not wear 
   off.
  
-[Animations\\Status\\17]@Haste@
+[Animations/Status/17]@Haste@
  Lasts 5 turns
  SPD is temporarily increased.
  
-[Animations\\Status\\18]@Barrier@ 
+[Animations/Status/18]@Barrier@ 
  Lasts 5 turns
  Reduces damage from physical attacks.
  
-[Animations\\Status\\19]@Shield@ 
+[Animations/Status/19]@Shield@ 
  Lasts 5 turns
  Reduces damage from magical attacks.
 
-[Animations\\Status\\20]@Blink@ 
+[Animations/Status/20]@Blink@ 
  Lasts 5 turns
  Character has one in three chance to dodge 
  any attack.
  
-[Animations\\Status\\21]@Elemental Strike@ (Any Element)
+[Animations/Status/21]@Elemental Strike@ (Any Element)
  Lasts 4 turns
  Character's physical attacks are 
   temporarily of this element.
  
-[Animations\\Status\\28]@Elemental Shield@ (Any Element)
+[Animations/Status/28]@Elemental Shield@ (Any Element)
  Lasts 4 turns
  Character temporarily takes less damage 
   from attacks of this element."
